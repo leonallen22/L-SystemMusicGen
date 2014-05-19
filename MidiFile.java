@@ -94,16 +94,12 @@ public class MidiFile
 							System.out.print("Default " + (i+1) + "\r\n\tAlphabet: ");
 							
 							for(String x : a)
-							{
 								System.out.print(x + " ");
-							}
 							
 							System.out.println("\r\n\tAxiom: " + ax + "\r\n\tRules:");
 							
 							for(int j=0 ; j < a.length ; ++j)
-							{
 								System.out.println("\t\t" + a[j] + ": " + r[j]);
-							}
 							
 						}
 						
@@ -124,9 +120,7 @@ public class MidiFile
 						System.out.println("Define alphabet one symbol at a time, enter \"!\" to stop: ");
 						
 						while(!alpha.equals("!"));
-						{
 							alpha = scan.next();
-						}
 						
 						System.out.println("Define axiom: ");
 						String newaxiom = "!";

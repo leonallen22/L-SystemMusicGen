@@ -88,16 +88,12 @@ public class LSystem {
 					String alpha = m_alphabet.get(j);
 					
 					if(Tree[i].equals(alpha))
-					{
 						Tree[i] = m_rule.get(j);
-					}
 				}
 			}
 			
 			for(String str : Tree)
-			{
 				newTree.append(str);
-			}
 			
 			m_tree = newTree.toString();
 		}
@@ -115,9 +111,7 @@ public class LSystem {
 		StringBuffer prodrules = new StringBuffer();
 		
 		for(int i=0 ; i < m_alphabet.size() ; ++i)
-		{
 			prodrules.append("\t\t" + m_alphabet.get(i) + ": " + m_rule.get(i) + "\r\n");
-		}
 		
 		return prodrules.toString();
 	}
@@ -128,9 +122,7 @@ public class LSystem {
 		StringBuffer alpha = new StringBuffer();
 		
 		for(String c : m_alphabet)
-		{
 			alpha.append(String.valueOf(c) + " ");
-		}
 		
 		return alpha.toString();
 	}
@@ -176,9 +168,7 @@ public class LSystem {
 		m_alphabet.clear();
 		
 		for(String x : defaultAlphabets.get(defnum))
-		{
 			m_alphabet.add(x);
-		}
 	}
 	
 	public void setAxiomDef(int defnum)
@@ -191,8 +181,6 @@ public class LSystem {
 		m_rule.clear();
 		
 		for(String x : defaultRules.get(defnum))
-		{
 			m_rule.add(x);
-		}
 	}
 }

@@ -6,6 +6,7 @@
  */
 
 import org.jfugue.*;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,6 +15,7 @@ public class MidiFile
 	public static void main(String[] args)
 	{
 		Scanner scan = new Scanner(System.in);
+		scan.useDelimiter(System.getProperty("line.separator"));
 		Player player = new Player();					//Create a player object to play a Pattern
 		LSystem lsys = new LSystem();					//L-System for music generation
 		ScoreGenerator scoreGen = new ScoreGenerator();	//Generates a JFugue score from an L-System production
@@ -23,7 +25,18 @@ public class MidiFile
 		
 		while(opt <= 1 && opt >= 7 || !exit)
 		{
-			System.out.println("L-System:\r\n\tAlphabet: " + lsys.getAlphabet() + "\r\n\tAxiom: " + lsys.getAxiom() + "\r\n\tRules:\r\n" + lsys.getRules() + "\r\n\r\nKey Signature: " + scoreGen.getKey());
+			StringBuffer bufferA = new StringBuffer();
+			StringBuffer bufferR = new StringBuffer();
+			ArrayList<String> lsysalpha = lsys.getAlphabet();
+			ArrayList<String> lsysrules = lsys.getRules();
+			
+			for(String c : lsys.getAlphabet())
+				bufferA.append(String.valueOf(c) + " ");
+			
+			for(int i=0 ; i < lsysrules.size() ; ++i)
+				bufferR.append("\t\t" + lsysalpha.get(i) + ": " + lsysrules.get(i) + "\r\n");
+			
+			System.out.println("L-System:\r\n\tAlphabet: " + bufferA.toString() + "\r\n\tAxiom: " + lsys.getAxiom() + "\r\n\tRules:\r\n" + bufferR.toString() + "\r\n\r\nKey Signature: " + scoreGen.getKey());
 			System.out.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Exit");
 			opt = scan.nextInt();
 			
@@ -74,7 +87,7 @@ public class MidiFile
 				
 				case 2:
 					int input = 0;
-					System.out.println("1: Use a default L-System\r\n2: Build your own L-System\r\n");
+					System.out.println("1: Use a predefined L-System\r\n2: Build your own L-System\r\n");
 					
 					while(input != 1 && input != 2)
 						input = scan.nextInt();
@@ -130,7 +143,15 @@ public class MidiFile
 						
 						lsys.setAxiom(newaxiom);
 						
-						System.out.println("Define new rules: \r\n");
+						System.out.println("Define new rules (each char separated with a space): \r\n");
+						ArrayList<String> newrules = new ArrayList<String>();
+						ArrayList<String> alpha1 = lsys.getAlphabet();
+						for(int i=0 ; i < alpha1.size() ; ++i)
+						{
+							System.out.println(alpha1.get(i) + ": ");
+							newrules.add(scan.next());
+						}
+						lsys.setRules(newrules);
 					}
 					break;
 				
@@ -156,6 +177,9 @@ public class MidiFile
 							alphabet.set(j, symbol);
 							++j;
 						}
+						
+						else
+							break;
 					}
 					
 					lsys.setAlphabet(alphabet);
@@ -172,7 +196,16 @@ public class MidiFile
 					break;
 				
 				case 5:
-					System.out.println("Define new rules: \r\n");
+					System.out.println("Define new rules (each char separated with a space): \r\n");
+					ArrayList<String> newrules = new ArrayList<String>();
+					ArrayList<String> alpha1 = lsys.getAlphabet();
+					for(int i=0 ; i < alpha1.size() ; ++i)
+					{
+						System.out.println(alpha1.get(i) + ": ");
+						newrules.add(scan.next());
+					}
+					
+					lsys.setRules(newrules);
 					break;
 				
 				case 6:

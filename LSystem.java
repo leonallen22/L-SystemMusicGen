@@ -14,6 +14,7 @@ public class LSystem {
 	protected	ArrayList<String[]> defaultAlphabets;
 	protected	ArrayList<String> defaultAxioms;
 	protected	ArrayList<String[]> defaultRules;
+	
 	protected	String []	m_defAlphabet1	= {"A", "B"};
 	protected	String []	m_defAlphabet2	= {"A", "B"};
 	protected	String []	m_defAlphabet3	= {"A", "B"};
@@ -106,25 +107,15 @@ public class LSystem {
 	}
 	
 	/** Return the set of production rules of the L-System */
-	public String getRules()
+	public ArrayList<String> getRules()
 	{
-		StringBuffer prodrules = new StringBuffer();
-		
-		for(int i=0 ; i < m_alphabet.size() ; ++i)
-			prodrules.append("\t\t" + m_alphabet.get(i) + ": " + m_rule.get(i) + "\r\n");
-		
-		return prodrules.toString();
+		return m_rule;
 	}
 	
 	/** Return the alphabet of the L-System */
-	public String getAlphabet()
+	public ArrayList<String> getAlphabet()
 	{
-		StringBuffer alpha = new StringBuffer();
-		
-		for(String c : m_alphabet)
-			alpha.append(String.valueOf(c) + " ");
-		
-		return alpha.toString();
+		return m_alphabet;
 	}
 	
 	/** Return the axiom for the L-System */

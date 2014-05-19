@@ -189,7 +189,7 @@ public class ScoreGenerator
 	{
 		StringBuffer buffer = new StringBuffer();	//Stores the score string that will be returned
 		int degree = 1;								//Represents the degree of the current pitch in the given key signature
-		int pitch = tonic;						//Represents the pitch of the note and the relative height of the turtle
+		int pitch = tonic;							//Represents the pitch of the note and the relative height of the turtle
 		int yaw = 0;								//Represents the angle the turtle is facing
 		char[] prod = production.toCharArray();		//Array of characters from the production
 		String str = "";

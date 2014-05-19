@@ -10,29 +10,12 @@ public class LSystem {
 	protected	ArrayList<String>	m_alphabet;
 	protected	String				m_axiom;
 	protected	ArrayList<String>	m_rule;
-	
 	protected	ArrayList<String[]> defaultAlphabets;
 	protected	ArrayList<String> defaultAxioms;
 	protected	ArrayList<String[]> defaultRules;
-	
-	protected	String []	m_defAlphabet1	= {"A", "B"};
-	protected	String []	m_defAlphabet2	= {"A", "B"};
-	protected	String []	m_defAlphabet3	= {"A", "B"};
-	protected	String []	m_defAlphabet4	= {"A"};
-	protected	String []	m_defAlphabet5	= {"A", "B", "C", "D"};
-	protected	String		m_defAxiom1		= "A";
-	protected	String		m_defAxiom2		= "A";
-	protected	String		m_defAxiom3		= "A";
-	protected	String		m_defAxiom4		= "A";
-	protected	String		m_defAxiom5		= "A C A";
-	protected	String []	m_defRule1		= {"g + g - g B", "+ g - g B"};
-	protected	String []	m_defRule2		= {"- B g + A g A + g B -", "+ A g - B g B - g A +"};
-	protected 	String [] 	m_defRule3 		= {"A + g - g B - g + g + g -", "- g + g A - g +"};
-	protected 	String [] 	m_defRule4 		= {"g + g g - g + g g - g + g g g - g - g g g + g - g g + g - g g + g"};
-	protected	String []	m_defRule5		= {"g - g B g + A g A + g B g - g", "+ A g - B g B - g A +", "+ C g + g - g - C g C - g - g + g C +", "- g + g A - g +"};
 	protected	String		m_tree;
 	
-	/** Constructor. */
+	/** Constructor. Defaults to Preset L-System #1.*/
 	public LSystem()
 	{	
 		defaultAlphabets = new ArrayList<String[]>();
@@ -57,12 +40,12 @@ public class LSystem {
 		defaultRules.add(new String[]{"g + g g - g + g g - g + g g g - g - g g g + g - g g + g - g g + g"});
 		defaultRules.add(new String[]{"g - g B g + A g A + g B g - g", "+ A g - B g B - g A +", "+ C g + g - g - C g C - g - g + g C +", "- g + g A - g +"});
 		
-		for(String x : m_defAlphabet2)
+		for(String x : defaultAlphabets.get(0))
 			m_alphabet.add(x);
 		
-		m_axiom	= m_defAxiom2;
+		m_axiom	= defaultAxioms.get(0);
 		
-		for(String x : m_defRule2)
+		for(String x : defaultRules.get(0))
 			m_rule.add(x);
 		
 		m_tree = "";
@@ -100,19 +83,19 @@ public class LSystem {
 		}
 	}
 	
-	/** Return the current state of the L-System	 */
+	/** Return the current state of the L-System */
 	public String getTree()
 	{
 		return m_tree;
 	}
 	
-	/** Return the set of production rules of the L-System */
+	/** Return the set of production rules of the L-System as an ArrayList of Strings */
 	public ArrayList<String> getRules()
 	{
 		return m_rule;
 	}
 	
-	/** Return the alphabet of the L-System */
+	/** Return the alphabet of the L-System as an ArrayList of Strings */
 	public ArrayList<String> getAlphabet()
 	{
 		return m_alphabet;
@@ -124,36 +107,43 @@ public class LSystem {
 		return m_axiom;
 	}
 	
+	/** Return an ArrayList of all preset L-System alphabets as arrays of Strings */
 	public ArrayList<String[]> getDefaultAlphabets()
 	{
 		return defaultAlphabets;
 	}
 	
+	/** Return an ArrayList of all preset L-System axioms as Strings */
 	public ArrayList<String> getDefaultAxioms()
 	{
 		return defaultAxioms;
 	}
 	
+	/** Return an ArrayList of all preset L-System production rules as arrays of Strings */
 	public ArrayList<String[]> getDefaultRules()
 	{
 		return defaultRules;
 	}
 	
+	/** Set the accepted String as the L-System's axiom */
 	public void setAxiom(String axiom)
 	{
 		m_axiom = axiom;
 	}
 	
+	/** Set the accepted ArrayList of Strings as the L-System's alphabet */
 	public void setAlphabet(ArrayList<String> newalphabet)
 	{
 		m_alphabet = newalphabet;
 	}
 	
+	/** Set the accepted ArrayList of Strings as the L-System's production rules */
 	public void setRules(ArrayList<String> newrules)
 	{
 		m_rule = newrules;
 	}
 	
+	/** Set the L-System's alphabet to one of the preset L-Systems' based on the parameter */
 	public void setAlphabetDef(int defnum)
 	{
 		m_alphabet.clear();
@@ -162,11 +152,13 @@ public class LSystem {
 			m_alphabet.add(x);
 	}
 	
+	/** Set the L-System's axiom to one of the preset L-Systems' based on the parameter */
 	public void setAxiomDef(int defnum)
 	{
 		m_axiom = defaultAxioms.get(defnum);
 	}
 	
+	/** Set the L-System's production rules to one of the preset L-Systems' based on the parameter */
 	public void setRulesDef(int defnum)
 	{
 		m_rule.clear();

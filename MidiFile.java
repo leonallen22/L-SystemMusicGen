@@ -47,11 +47,13 @@ public class MidiFile
 					
 					if(lsys.getAlphabet().size() != lsys.getRules().size())
 						System.out.println("Make sure each symbol in the alphabet has a corresponding rule.");
+					
 					else
 					{
 						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n");
 						int choice = scan.nextInt();
 						
+						//Continue iterating
 						if(choice == 1)
 						{
 							System.out.println("Iterations: ");
@@ -65,6 +67,7 @@ public class MidiFile
 							player.play(pattern);
 						}
 						
+						//Replay last iteration
 						else if(choice == 2)
 						{
 							String production = "";
@@ -161,6 +164,7 @@ public class MidiFile
 							else
 								break;
 						}
+						
 						lsys.setAlphabet(newalphabet);
 						
 						System.out.println("Define axiom: ");
@@ -174,11 +178,13 @@ public class MidiFile
 						System.out.println("Define new rules (each char separated with a space): \r\n");
 						ArrayList<String> newrules = new ArrayList<String>();
 						ArrayList<String> alpha1 = lsys.getAlphabet();
+						
 						for(int i=0 ; i < alpha1.size() ; ++i)
 						{
 							System.out.println(alpha1.get(i) + ": ");
 							newrules.add(scan.next());
 						}
+						
 						lsys.setRules(newrules);
 					}
 					break;
@@ -217,6 +223,7 @@ public class MidiFile
 					System.out.println("Define new rules (each char separated with a space): \r\n");
 					ArrayList<String> newrules = new ArrayList<String>();
 					ArrayList<String> alpha1 = lsys.getAlphabet();
+					
 					for(int i=0 ; i < alpha1.size() ; ++i)
 					{
 						System.out.println(alpha1.get(i) + ": ");

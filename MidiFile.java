@@ -42,49 +42,68 @@ public class MidiFile
 			
 			switch(opt)
 			{
+				//Generate music using the current L-System
 				case 1:
-					System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n");
-					int choice = scan.nextInt();
 					
-					if(choice == 1)
+					if(lsys.getAlphabet().size() != lsys.getRules().size())
+						System.out.println("Make sure each symbol in the alphabet has a corresponding rule.");
+					else
 					{
-						System.out.println("Iterations: ");
-						int iter = scan.nextInt();
-						lsys.iterate(iter);									//Expand the system the given number of times
-						String production = lsys.getTree();					//Retrieve the production
+						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n");
+						int choice = scan.nextInt();
 						
-						System.out.println(production);						//Print the raw production on-screen
-						Pattern pattern = scoreGen.genScore(production);	//Convert the production into a suitable format; store in a Pattern
-						player.play(pattern);
-					}
-					
-					else if(choice == 2)
-					{
-						int iterations = 0;
-						
-						while(true)
+						if(choice == 1)
 						{
+							System.out.println("Iterations: ");
+							int iter = scan.nextInt();
+							lsys.iterate(iter);									//Expand the system the given number of times
+							String production = lsys.getTree();					//Retrieve the production
+							System.out.println(production);						//Print the raw production on-screen
 							
-							System.out.println("Enter 1 to iterate; anything else to quit.");
-							String input = scan.next();
+							Pattern pattern = scoreGen.genScore(production);	//Convert the production into a suitable format; store in a Pattern
+							System.out.println(pattern.toString());
+							player.play(pattern);
+						}
+						
+						else if(choice == 2)
+						{
+							String production = "";
+							Pattern pattern = new Pattern();
+							int input = 0;
+							int iterations = 0;
 							
-							if(input.equals("1"))
+							while(true)
 							{
-								lsys.iterate(++iterations);
-								String production = lsys.getTree();
-								System.out.println("\r\nIteration: " + iterations);
+								System.out.println("Enter 1 to iterate, 2 to play again, and anything else to quit.");
+								input = scan.nextInt();
 								
-								System.out.println(production);
-								Pattern pattern = scoreGen.genScore(production);
-								player.play(pattern);
+								if(input == 1)
+								{
+									lsys.iterate(++iterations);
+									production = lsys.getTree();
+									System.out.println("\r\nIteration: " + iterations);
+									System.out.println(production);
+									
+									pattern = scoreGen.genScore(production);
+									System.out.println(pattern.toString());
+									player.play(pattern);
+								}
+								
+								else if(input == 2)
+								{
+									System.out.println(production);
+									pattern = scoreGen.genScore(production);
+									player.play(pattern);
+								}
+								
+								else
+									break;
 							}
-							
-							else
-								break;
 						}
 					}
 					break;
 				
+				//Define a new L-System
 				case 2:
 					int input = 0;
 					System.out.println("1: Use a predefined L-System\r\n2: Build your own L-System\r\n");
@@ -127,13 +146,22 @@ public class MidiFile
 						lsys.setRulesDef(def-1);
 					}
 					
-					else
+					else if(input == 2)
 					{
-						alpha = "";
 						System.out.println("Define alphabet one symbol at a time, enter \"!\" to stop: ");
+						ArrayList<String> newalphabet = new ArrayList<String>();
+						alpha = "";
 						
-						while(!alpha.equals("!"));
+						while(true)
+						{
 							alpha = scan.next();
+							
+							if(!alpha.equals("!"))
+								newalphabet.add(alpha);
+							else
+								break;
+						}
+						lsys.setAlphabet(newalphabet);
 						
 						System.out.println("Define axiom: ");
 						String newaxiom = "!";
@@ -155,36 +183,25 @@ public class MidiFile
 					}
 					break;
 				
+				//Define a new alphabet only
 				case 3:
 					System.out.println("Define alphabet one symbol at a time, enter \"!\" to stop: ");
 					ArrayList<String> newalphabet = new ArrayList<String>();
 					
-					while(!alpha.equals("!"));
+					while(true)
 					{
 						alpha = scan.next();
-						newalphabet.add(alpha);
-					}
-					
-					ArrayList<String> alphabet = new ArrayList<String>();
-					int j = 0;
-					
-					for(int i=0 ; i < newalphabet.size() ; ++i)
-					{
-						String symbol = newalphabet.get(i);
 						
-						if(!symbol.equals("!"))
-						{
-							alphabet.set(j, symbol);
-							++j;
-						}
-						
+						if(!alpha.equals("!"))
+							newalphabet.add(alpha);
 						else
 							break;
 					}
 					
-					lsys.setAlphabet(alphabet);
+					lsys.setAlphabet(newalphabet);
 					break;
 				
+				//Define a new axiom only
 				case 4:
 					System.out.println("Define axiom: ");
 					String newaxiom = "!";
@@ -195,6 +212,7 @@ public class MidiFile
 					lsys.setAxiom(newaxiom);
 					break;
 				
+				//Define new rules only
 				case 5:
 					System.out.println("Define new rules (each char separated with a space): \r\n");
 					ArrayList<String> newrules = new ArrayList<String>();
@@ -208,6 +226,7 @@ public class MidiFile
 					lsys.setRules(newrules);
 					break;
 				
+				//Change key signature
 				case 6:
 					System.out.println("1:  C\r\n2:  G\r\n3:  D\r\n4:  A\r\n5:  E\r\n6:  B\r\n7:  Gb/F#\r\n8:  Db\r\n9:  Ab\r\n10: Eb\r\n11: Bb\r\n12: F");
 					int newkey = 0;
@@ -218,6 +237,7 @@ public class MidiFile
 					scoreGen.setKey(newkey);
 					break;
 					
+				//Exit program
 				case 7:
 					exit = true;
 					break;

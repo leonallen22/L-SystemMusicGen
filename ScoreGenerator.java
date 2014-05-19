@@ -128,7 +128,7 @@ public class ScoreGenerator
 	/** Accepts a string and parses through it to generate a pattern properly formatted for JFugue */
 	public Pattern genScore(String production)
 	{
-		Pattern pat = new Pattern();
+		String pat = "";
 		
 		switch(this.keySig)
 		{
@@ -181,11 +181,13 @@ public class ScoreGenerator
 				break;
 		}
 		
-		return pat;
+		Pattern pattern = new Pattern(pat);
+		
+		return pattern;
 	}
 	
 	/** Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production */
-	public Pattern generate(String production, int tonic)
+	public String generate(String production, int tonic)
 	{
 		StringBuffer buffer = new StringBuffer();	//Stores the score string that will be returned
 		int degree = 1;								//Represents the degree of the current pitch in the given key signature
@@ -256,8 +258,6 @@ public class ScoreGenerator
 			}
 		}
 		
-		System.out.println(buffer.toString());			//Print the generated score on-screen
-		Pattern pat = new Pattern(buffer.toString());	//Store the score in a Pattern to return
-		return pat;
+		return buffer.toString();
 	}
 }

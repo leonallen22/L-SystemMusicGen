@@ -53,7 +53,7 @@ public class MidiFile
 						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n");
 						int choice = scan.nextInt();
 						
-						//Continue iterating
+						//Iterate a set number of times once
 						if(choice == 1)
 						{
 							System.out.println("Iterations: ");
@@ -67,7 +67,7 @@ public class MidiFile
 							player.play(pattern);
 						}
 						
-						//Replay last iteration
+						//Iterate step-by-step
 						else if(choice == 2)
 						{
 							String production = "";
@@ -80,6 +80,7 @@ public class MidiFile
 								System.out.println("Enter 1 to iterate, 2 to play again, and anything else to quit.");
 								input = scan.nextInt();
 								
+								//Continue iterating
 								if(input == 1)
 								{
 									lsys.iterate(++iterations);
@@ -92,6 +93,7 @@ public class MidiFile
 									player.play(pattern);
 								}
 								
+								//Replay last iteration
 								else if(input == 2)
 								{
 									System.out.println(production);

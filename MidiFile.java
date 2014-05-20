@@ -44,7 +44,6 @@ public class MidiFile
 			{
 				//Generate music using the current L-System
 				case 1:
-					
 					if(lsys.getAlphabet().size() != lsys.getRules().size())
 						System.out.println("Make sure each symbol in the alphabet has a corresponding rule.");
 					
@@ -96,7 +95,6 @@ public class MidiFile
 								//Replay last iteration
 								else if(input == 2)
 								{
-									System.out.println(production);
 									pattern = scoreGen.genScore(production);
 									player.play(pattern);
 								}

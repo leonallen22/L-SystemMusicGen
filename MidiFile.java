@@ -1,5 +1,5 @@
 /**
- * Generate a production with a context-free L-system, 
+ * Generate a production with a context-free L-system,
  * convert the production into a score properly formatted for JFugue,
  * then play the generated score using JFugue.
  * @author		Harry Allen

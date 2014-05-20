@@ -16,9 +16,9 @@ public class MidiFile
 	{
 		Scanner scan = new Scanner(System.in);
 		scan.useDelimiter(System.getProperty("line.separator"));
-		Player player = new Player();					//Create a player object to play a Pattern
-		LSystem lsys = new LSystem();					//L-System for music generation
-		ScoreGenerator scoreGen = new ScoreGenerator();	//Generates a JFugue score from an L-System production
+		Player player = new Player();								//Create a player object to play a Pattern
+		LSystem lsys = new LSystem();								//L-System for music generation
+		ScoreGenerator scoreGen = new ScoreGenerator();				//Generates a JFugue score from an L-System production
 		String alpha = "";
 		int opt = 0;
 		boolean exit = false;

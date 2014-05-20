@@ -69,6 +69,24 @@ public class Turtle
 		return thickness.peek().intValue();
 	}
 	
+	public int getDirection()
+	{
+		if(Math.abs(yaw.peek() % 360) == 0)
+			return 1;
+		
+		else if(Math.abs(yaw.peek() % 360) == 180)
+			return 3;
+		
+		else if(yaw.peek() % 360 == 90 || yaw.peek() % 360 == -270)
+			return 2;
+		
+		else if(yaw.peek() % 360 == 270 || yaw.peek() % 360 == -90)
+			return 4;
+		
+		else
+			return 0;
+	}
+	
 	public int popX()
 	{
 		return X.pop().intValue();
@@ -104,37 +122,37 @@ public class Turtle
 		return thickness.pop().intValue();
 	}
 	
-	public void setX(int x)
+	public void pushX(int x)
 	{
 		X.push(new Integer(x));
 	}
 	
-	public void setY(int y)
+	public void pushY(int y)
 	{
 		Y.push(new Integer(y));
 	}
 	
-	public void setZ(int z)
+	public void pushZ(int z)
 	{
 		Z.push(new Integer(z));
 	}
 	
-	public void setYaw(int yw)
+	public void pushYaw(int yw)
 	{
 		yaw.push(new Integer(yw));
 	}
 	
-	public void setAngle(int a)
+	public void pushAngle(int a)
 	{
 		angle.push(new Integer(a));
 	}
 	
-	public void setColor(int c)
+	public void pushColor(int c)
 	{
 		color.push(new Integer(c));
 	}
 	
-	public void setThickness(int t)
+	public void pushThickness(int t)
 	{
 		thickness.push(new Integer(t));
 	}

@@ -1,5 +1,5 @@
 /**
- * Generate a properly formatter score for use in JFugue from an L-system production.
+ * Generate a properly formatted score for use in JFugue from an L-system production.
  * @author		Harry Allen
  */
 
@@ -7,16 +7,14 @@ import org.jfugue.Pattern;
 
 /**
  * To do:
- * Use String Buffer for score building 
  * Allow symbols of arbitrary length to be used in alphabet
  * Implement all key signatures
- * Allow notes of arbitrary length to be played
  * implement tempo
  */
 
 public class ScoreGenerator
 {
-	private int angle;
+	private Turtle turtle;
 	private int keySig;
 	private int tempo;
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};
@@ -24,7 +22,7 @@ public class ScoreGenerator
 	/** Default Constructor */
 	public ScoreGenerator()
 	{
-		angle = 90;
+		turtle = new Turtle();
 		keySig = 1;
 		tempo = 120;
 	}
@@ -32,7 +30,8 @@ public class ScoreGenerator
 	/** Constructor. Accepts an integer for angle */
 	public ScoreGenerator(int angle)
 	{
-		this.angle = angle;
+		turtle = new Turtle();
+		turtle.pushAngle(angle);
 		keySig = 1;
 		tempo = 120;
 	}
@@ -40,7 +39,8 @@ public class ScoreGenerator
 	/** Constructor. Accepts 3 integers for angle, keySig, and tempo, respectively */
 	public ScoreGenerator(int angle, int key, int tempo)
 	{
-		this.angle = angle;
+		turtle = new Turtle();
+		turtle.pushAngle(angle);
 		
 		if(key >= 1 && key <= 15)
 			this.keySig = key;
@@ -48,12 +48,6 @@ public class ScoreGenerator
 			this.keySig = 1;
 		
 		this.tempo = tempo;
-	}
-	
-	/** Returns value of angle */
-	public int getAngle()
-	{
-		return this.angle;
 	}
 	
 	/** Returns value of keySig */
@@ -66,12 +60,6 @@ public class ScoreGenerator
 	public int getTempo()
 	{
 		return this.tempo;
-	}
-	
-	/** Sets the value of angle to the integer accepted */
-	public void setAngle(int angle)
-	{
-		this.angle = angle;
 	}
 	
 	/** Sets the value of keySig to the integer accepted */
@@ -191,27 +179,28 @@ public class ScoreGenerator
 	{
 		StringBuffer buffer = new StringBuffer();	//Stores the score string that will be returned
 		int degree = 1;								//Represents the degree of the current pitch in the given key signature
-		int pitch = tonic;							//Represents the pitch of the note and the relative height of the turtle
-		int yaw = 0;								//Represents the angle the turtle is facing
 		char[] prod = production.toCharArray();		//Array of characters from the production
 		String str = "";
+		turtle.popY();
+		turtle.pushY(tonic);							//Represents the pitch of the note and the relative height of the turtle
 		
 		//Step through each symbol in production
 		for(int i=0 ; i < prod.length ; ++i)
 		{
 			if(prod[i] == '-')
-				yaw += angle;
+				turtle.pushYaw(turtle.getYaw() + turtle.getAngle());
 			
 			else if(prod[i] == '+')
-				yaw -= angle;
+				turtle.pushYaw(turtle.getYaw() - turtle.getAngle());
 			
 			//Turtle draws a line
 			else if(prod[i] == 'g')
 			{
+				int pitch = turtle.getY();
 				str = buffer.toString();
 				
 				//If turtle is horizontal, record line as a note
-				if(Math.abs(yaw % 360) == 0 || Math.abs(yaw % 360) == 180)
+				if(turtle.getDirection() == 1 || turtle.getDirection() == 3)
 				{
 					if(str.endsWith("[" + pitch + "]i") || str.endsWith("[" + pitch + "]ii") || str.endsWith("[" + pitch + "]iii") || str.endsWith("[" + pitch + "]iiii"))
 						buffer.append("i");
@@ -221,36 +210,54 @@ public class ScoreGenerator
 				}
 				
 				//If turtle facing upward, record line as a change up in pitch
-				else if(yaw % 360 == 90 || yaw % 360 == -270)
+				else if(turtle.getDirection() == 2)
 				{
 					if(degree == 3 || degree == 7)
-						pitch = upHalfStep(pitch);
+					{
+						turtle.popY();
+						turtle.pushY(upHalfStep(pitch));
+					}
 					
 					else
-						pitch =  upWholeStep(pitch);
+					{
+						turtle.popY();
+						turtle.pushY(upWholeStep(pitch));
+					}
 					
 					++degree;
 					
-					if(pitch > 127)
-						pitch = pitch - 72;
+					if(turtle.getY() > 127)
+					{
+						pitch = turtle.popY();
+						turtle.pushY(pitch - 72);
+					}
 					
 					if(degree == 8)
 						degree = 1;
 				}
 				
 				//If turtle facing downward, record line as a change down in pitch
-				else if(yaw % 360 == 270 || yaw % 360 == -90)
+				else if(turtle.getDirection() == 4)
 				{
 					if(degree == 1 || degree == 4)
-						pitch = downHalfStep(pitch);
+					{
+						turtle.popY();
+						turtle.pushY(downHalfStep(pitch));
+					}
 					
 					else
-						pitch = downWholeStep(pitch);
+					{
+						turtle.popY();
+						turtle.pushY(downWholeStep(pitch));
+					}
 					
 					--degree;
 					
-					if(pitch < 0)
-						pitch = pitch + 60;
+					if(turtle.getY() < 0)
+					{
+						pitch = turtle.popY();
+						turtle.pushY(pitch + 60);
+					}
 					
 					if(degree == 0)
 						degree = 7;

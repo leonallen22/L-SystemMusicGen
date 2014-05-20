@@ -9,7 +9,8 @@ import org.jfugue.Pattern;
  * To do:
  * Allow symbols of arbitrary length to be used in alphabet
  * Implement all key signatures
- * implement tempo
+ * Implement tempo
+ * Map all turtle attributes to changes in the score
  */
 
 public class ScoreGenerator
@@ -177,8 +178,9 @@ public class ScoreGenerator
 	/** Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production */
 	public String generate(String production, int tonic)
 	{
-		StringBuffer buffer = new StringBuffer();	//Stores the score string that will be returned
+		StringBuffer buffer = new StringBuffer("V0 ");	//Stores the score string that will be returned
 		int degree = 1;								//Represents the degree of the current pitch in the given key signature
+		int voices = 1;
 		char[] prod = production.toCharArray();		//Array of characters from the production
 		String str = "";
 		turtle.popY();
@@ -187,81 +189,99 @@ public class ScoreGenerator
 		//Step through each symbol in production
 		for(int i=0 ; i < prod.length ; ++i)
 		{
-			if(prod[i] == '-')
-				turtle.pushYaw(turtle.getYaw() + turtle.getAngle());
-			
-			else if(prod[i] == '+')
-				turtle.pushYaw(turtle.getYaw() - turtle.getAngle());
-			
-			//Turtle draws a line
-			else if(prod[i] == 'g')
+			switch(prod[i])
 			{
-				int pitch = turtle.getY();
-				str = buffer.toString();
+				//Increment turtle's yaw
+				case '-':
+					turtle.pushYaw(turtle.getYaw() + turtle.getAngle());
+					break;
 				
-				//If turtle is horizontal, record line as a note
-				if(turtle.getDirection() == 1 || turtle.getDirection() == 3)
-				{
-					if(str.endsWith("[" + pitch + "]i") || str.endsWith("[" + pitch + "]ii") || str.endsWith("[" + pitch + "]iii") || str.endsWith("[" + pitch + "]iiii"))
-						buffer.append("i");
-					
-					else
-						buffer.append(" [" + pitch + "]i");
-				}
+				//Decrement turtle's yaw
+				case '+':
+					turtle.pushYaw(turtle.getYaw() - turtle.getAngle());
+					break;
 				
-				//If turtle facing upward, record line as a change up in pitch
-				else if(turtle.getDirection() == 2)
-				{
-					if(degree == 3 || degree == 7)
+				//Turtle draws a line
+				case 'g':
+					int pitch = turtle.getY();
+					str = buffer.toString();
+					
+					//If turtle is horizontal, record line as a note
+					if(turtle.getDirection() == 1 || turtle.getDirection() == 3)
 					{
-						turtle.popY();
-						turtle.pushY(upHalfStep(pitch));
+						if(str.endsWith("[" + pitch + "]i") || str.endsWith("[" + pitch + "]ii") || str.endsWith("[" + pitch + "]iii") || str.endsWith("[" + pitch + "]iiii"))
+							buffer.append("i");
+						
+						else
+							buffer.append(" [" + pitch + "]i");
 					}
 					
-					else
+					//If turtle facing upward, record line as a change up in pitch
+					else if(turtle.getDirection() == 2)
 					{
-						turtle.popY();
-						turtle.pushY(upWholeStep(pitch));
+						if(degree == 3 || degree == 7)
+						{
+							turtle.popY();
+							turtle.pushY(upHalfStep(pitch));
+						}
+						
+						else
+						{
+							turtle.popY();
+							turtle.pushY(upWholeStep(pitch));
+						}
+						
+						++degree;
+						
+						if(turtle.getY() > 127)
+						{
+							pitch = turtle.popY();
+							turtle.pushY(pitch - 72);
+						}
+						
+						if(degree == 8)
+							degree = 1;
 					}
 					
-					++degree;
-					
-					if(turtle.getY() > 127)
+					//If turtle facing downward, record line as a change down in pitch
+					else if(turtle.getDirection() == 4)
 					{
-						pitch = turtle.popY();
-						turtle.pushY(pitch - 72);
+						if(degree == 1 || degree == 4)
+						{
+							turtle.popY();
+							turtle.pushY(downHalfStep(pitch));
+						}
+						
+						else
+						{
+							turtle.popY();
+							turtle.pushY(downWholeStep(pitch));
+						}
+						
+						--degree;
+						
+						if(turtle.getY() < 0)
+						{
+							pitch = turtle.popY();
+							turtle.pushY(pitch + 60);
+						}
+						
+						if(degree == 0)
+							degree = 7;
 					}
+					break;
 					
-					if(degree == 8)
-						degree = 1;
-				}
-				
-				//If turtle facing downward, record line as a change down in pitch
-				else if(turtle.getDirection() == 4)
-				{
-					if(degree == 1 || degree == 4)
-					{
-						turtle.popY();
-						turtle.pushY(downHalfStep(pitch));
-					}
+				case '[':
+					turtle.saveState();
+					buffer.append("V" + voices + " ");
+					++voices;
+					break;
 					
-					else
-					{
-						turtle.popY();
-						turtle.pushY(downWholeStep(pitch));
-					}
-					
-					--degree;
-					
-					if(turtle.getY() < 0)
-					{
-						pitch = turtle.popY();
-						turtle.pushY(pitch + 60);
-					}
-					
-					if(degree == 0)
-						degree = 7;
-				}
+				case ']':
+					turtle.restoreState();
+					--voices;
+					buffer.append("V" + voices + " ");
+					break;
 			}
 		}
 		

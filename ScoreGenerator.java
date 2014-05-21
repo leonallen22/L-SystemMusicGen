@@ -114,6 +114,12 @@ public class ScoreGenerator
 		return note-12;
 	}
 	
+	/** Resets turtle to defaults between consecutive iterations */
+	public void resetTurtle()
+	{
+		turtle.reset();
+	}
+	
 	/** Accepts a string and parses through it to generate a pattern properly formatted for JFugue */
 	public Pattern genScore(String production)
 	{
@@ -178,10 +184,11 @@ public class ScoreGenerator
 	/** Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production */
 	public String generate(String production, int tonic)
 	{
-		StringBuffer buffer = new StringBuffer("V0 ");	//Stores the score string that will be returned
+		StringBuffer buffer = new StringBuffer("V0 I80 ");	//Stores the score string that will be returned
 		int degree = 1;								//Represents the degree of the current pitch in the given key signature
 		int voices = 1;								//Represents the number of voices currently active in the score
 		int layers = 1;								//Represents the number of layers currently active in a voice
+		int color = turtle.getColor();
 		char[] prod = production.toCharArray();		//Array of characters from the production
 		String str = "";
 		turtle.popY();
@@ -211,7 +218,9 @@ public class ScoreGenerator
 					//If turtle is horizontal, record line as a note
 					if(direction == 1 || direction == 3)
 					{
-						if(str.endsWith("[" + pitch + "]i") || str.endsWith("[" + pitch + "]ii") || str.endsWith("[" + pitch + "]iii") || str.endsWith("[" + pitch + "]iiii"))
+						String regex = ".*\\[" + pitch + "\\]i+";
+						
+						if(str.matches(regex))
 							buffer.append("i");
 						
 						else
@@ -279,14 +288,14 @@ public class ScoreGenerator
 						if(layers < 16)
 						{
 							turtle.saveState();
-							buffer.append(" L" + layers + " ");
+							buffer.append(" L" + layers + " I80 ");
 							++layers;
 						}
 						
 						else
 						{
 							turtle.saveState();
-							buffer.append(" V" + voices + " ");
+							buffer.append(" V" + voices + " I80 ");
 							++voices;
 							layers = 1;
 						}
@@ -314,11 +323,21 @@ public class ScoreGenerator
 					break;
 					
 				case '#':
+					color = turtle.popColor();
+					int hueChange = turtle.getHueChange();
+					turtle.pushColor(color + hueChange);
 					
+					if(prod[i+2] != '#' && prod[i+2] != '@')
+						buffer.append(" X1=" + (750-turtle.getColor())/3);
 					break;
 					
 				case '@':
+					color = turtle.popColor();
+					int hueC = turtle.getHueChange();
+					turtle.pushColor(color - hueC);
 					
+					if(prod[i+2] != '#' && prod[i+2] != '@')
+						buffer.append(" X1=" + (750-turtle.getColor())/3);
 					break;
 			}
 		}

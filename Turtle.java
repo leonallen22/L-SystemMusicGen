@@ -32,7 +32,7 @@ public class Turtle
 		Z.push(0);
 		yaw.push(0);
 		angle.push(90);
-		color.push(565);
+		color.push(750);
 		hueChange.push(10);
 		thickness.push(50);
 	}
@@ -245,5 +245,27 @@ public class Turtle
 		color.pop();
 		hueChange.pop();
 		thickness.pop();
+	}
+	
+	/** Reset turtle to defaults */
+	public void reset()
+	{
+		X.clear();
+		Y.clear();
+		Z.clear();
+		yaw.clear();
+		angle.clear();
+		color.clear();
+		hueChange.clear();
+		thickness.clear();
+		
+		X.push(0);
+		Y.push(0);
+		Z.push(0);
+		yaw.push(0);
+		angle.push(90);
+		color.push(750);
+		hueChange.push(10);
+		thickness.push(50);
 	}
 }

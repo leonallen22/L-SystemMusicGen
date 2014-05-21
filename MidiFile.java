@@ -29,6 +29,7 @@ public class MidiFile
 			StringBuffer bufferR = new StringBuffer();
 			ArrayList<String> lsysalpha = lsys.getAlphabet();
 			ArrayList<String> lsysrules = lsys.getRules();
+			scoreGen.resetTurtle();
 			String option = "";
 			opt = 0;
 			
@@ -80,6 +81,7 @@ public class MidiFile
 							
 							Pattern pattern = scoreGen.genScore(production);	//Convert the production into a suitable format; store in a Pattern
 							System.out.println(pattern.toString());
+							//Pattern pattern = new Pattern("I80 X[MOD_WHEEL_COARSE]=0 [83]iiiii [72]iiiii [76]iiii [68]iiii [89]iiiii [59]iiii [60]iiiii X[MOD_WHEEL_COARSE]=127 [80]iiii [68]iiii [95]iiiii [83]iiii [72]iii [75]iiii [80]iii [75]iii [86]iiiii");
 							player.play(pattern);
 						}
 						
@@ -93,6 +95,7 @@ public class MidiFile
 							
 							while(true)
 							{
+								scoreGen.resetTurtle();
 								System.out.println("Enter 1 to iterate, 2 to play again, and anything else to quit.");
 								input = scan.next();
 								

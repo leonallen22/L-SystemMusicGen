@@ -276,19 +276,49 @@ public class ScoreGenerator
 				case '[':
 					if(voices < 16)
 					{
-						turtle.saveState();
-						buffer.append( " V" + voices + " ");
-						++voices;
+						if(layers < 16)
+						{
+							turtle.saveState();
+							buffer.append(" L" + layers + " ");
+							++layers;
+						}
+						
+						else
+						{
+							turtle.saveState();
+							buffer.append(" V" + voices + " ");
+							++voices;
+							layers = 1;
+						}
 					}
 					break;
 					
 				case ']':
-					if(voices > 1)
+					if(voices >= 1)
 					{
-						turtle.restoreState();
-						--voices;
-						buffer.append(" V" + (voices-1) + " ");
+						if(layers > 1)
+						{
+							turtle.restoreState();
+							--layers;
+							buffer.append(" L" + (layers-1) + " ");
+						}
+						
+						else if(voices > 1)
+						{
+							turtle.restoreState();
+							--voices;
+							layers = 16;
+							buffer.append(" V" + (voices-1) + " " + " L" + (layers-1) + " ");
+						}
 					}
+					break;
+					
+				case '#':
+					
+					break;
+					
+				case '@':
+					
 					break;
 			}
 		}

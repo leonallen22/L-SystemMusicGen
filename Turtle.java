@@ -1,19 +1,19 @@
 /** 
  * Turtle to simulate drawing to be interpreted, producing a musical score to be played
  * @author Harry Allen
- *
  */
 import java.util.Stack;
 
 public class Turtle
 {
-	private Stack<Integer> X;
-	private Stack<Integer> Y;
-	private Stack<Integer> Z;
-	private Stack<Integer> yaw;
-	private Stack<Integer> angle;
-	private Stack<Integer> color;
-	private Stack<Integer> thickness;
+	private Stack<Integer> X;				//Turtle's position on the X-axis
+	private Stack<Integer> Y;				//Turtle's position on the Y-axis
+	private Stack<Integer> Z;				//Turtle's position on the Z-axis
+	private Stack<Integer> yaw;				//Turtle's heading
+	private Stack<Integer> angle;			//Turtle's angle increment/decrement value
+	private Stack<Integer> color;			//Turtle's draw color. Based on visible light spectrum wavelengths: 380-750 nm
+	private Stack<Integer> hueChange;		//Turtle's color increment/decrement value
+	private Stack<Integer> thickness;		//Turtle's draw thickness
 	
 	/** Default Constructor. */
 	public Turtle()
@@ -24,6 +24,7 @@ public class Turtle
 		yaw = new Stack<Integer>();
 		angle = new Stack<Integer>();
 		color = new Stack<Integer>();
+		hueChange = new Stack<Integer>();
 		thickness = new Stack<Integer>();
 		
 		X.push(0);
@@ -31,7 +32,8 @@ public class Turtle
 		Z.push(0);
 		yaw.push(0);
 		angle.push(90);
-		color.push(0);
+		color.push(565);
+		hueChange.push(10);
 		thickness.push(50);
 	}
 	
@@ -59,7 +61,7 @@ public class Turtle
 		return yaw.peek().intValue();
 	}
 	
-	/** Returns turtle's current angle increment value. */
+	/** Returns turtle's current angle increment/decrement value. */
 	public int getAngle()
 	{
 		return angle.peek().intValue();
@@ -71,6 +73,12 @@ public class Turtle
 		return color.peek().intValue();
 	}
 	
+	/** Returns turtle's current color increment/decrement value */
+	public int getHueChange()
+	{
+		return hueChange.peek().intValue();
+	}
+	
 	/** Returns turtle's current draw thickness. */
 	public int getThickness()
 	{
@@ -80,16 +88,16 @@ public class Turtle
 	/** Returns turtle's current direction represented as an integer. */
 	public int getDirection()
 	{
-		if(Math.abs(yaw.peek() % 360) == 0)
+		if(yaw.peek() == 0)
 			return 1;
 		
-		else if(Math.abs(yaw.peek() % 360) == 180)
+		else if(yaw.peek()== 180)
 			return 3;
 		
-		else if(yaw.peek() % 360 == 90 || yaw.peek() % 360 == -270)
+		else if(yaw.peek() == 90)
 			return 2;
 		
-		else if(yaw.peek() % 360 == 270 || yaw.peek() % 360 == -90)
+		else if(yaw.peek() == 270)
 			return 4;
 		
 		else
@@ -120,7 +128,7 @@ public class Turtle
 		return yaw.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current angle increment value. */
+	/** Returns & pops turtle's current angle increment/decrement value. */
 	public int popAngle()
 	{
 		return angle.pop().intValue();
@@ -130,6 +138,12 @@ public class Turtle
 	public int popColor()
 	{
 		return color.pop().intValue();
+	}
+	
+	/** Returns & pops turtle's current color increment/decrement value. */
+	public int popHueChange()
+	{
+		return hueChange.pop().intValue();
 	}
 	
 	/** Returns & pops turtle's current draw thickness. */
@@ -159,10 +173,20 @@ public class Turtle
 	/** Pushes the given integer to turtle's current yaw or heading. */
 	public void pushYaw(int yw)
 	{
-		yaw.push(new Integer(yw));
+		if(yw >= 0 && yw < 360)
+			yaw.push(new Integer(yw));
+		
+		else if(yw == 360)
+			yaw.push(new Integer(0));
+		
+		else if(yw < 0)
+			yaw.push(new Integer(yw+360));
+		
+		else
+			yaw.push(new Integer(yw-360));
 	}
 	
-	/** Pushes the given integer to turtle's current angle increment value. */
+	/** Pushes the given integer to turtle's current angle increment/decrement value. */
 	public void pushAngle(int a)
 	{
 		angle.push(new Integer(a));
@@ -171,12 +195,55 @@ public class Turtle
 	/** Pushes the given integer to turtle's current draw color. */
 	public void pushColor(int c)
 	{
-		color.push(new Integer(c));
+		if(c >= 380 && c <= 750)
+			color.push(new Integer(c));
+		
+		else if(c < 380)
+		{
+			c = 380 - c;
+			color.push(new Integer(750-c));
+		}
+		
+		else
+		{
+			c = c - 750;
+			color.push(new Integer(380+c));
+		}
+	}
+	
+	/** Pushes the given integer to turtle's current angle increment/decrement value. */
+	public void pushHueChange(int h)
+	{
+		hueChange.push(new Integer(h));
 	}
 	
 	/** Pushes the given integer to turtle's current draw thickness. */
 	public void pushThickness(int t)
 	{
 		thickness.push(new Integer(t));
+	}
+	
+	public void saveState()
+	{
+		X.push(X.peek());
+		Y.push(Y.peek());
+		Z.push(Z.peek());
+		yaw.push(yaw.peek());
+		angle.push(angle.peek());
+		color.push(color.peek());
+		hueChange.push(hueChange.peek());
+		thickness.push(thickness.peek());
+	}
+	
+	public void restoreState()
+	{
+		X.pop();
+		Y.pop();
+		Z.pop();
+		yaw.pop();
+		angle.pop();
+		color.pop();
+		hueChange.pop();
+		thickness.pop();
 	}
 }

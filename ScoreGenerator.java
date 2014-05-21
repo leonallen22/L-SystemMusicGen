@@ -180,7 +180,8 @@ public class ScoreGenerator
 	{
 		StringBuffer buffer = new StringBuffer("V0 ");	//Stores the score string that will be returned
 		int degree = 1;								//Represents the degree of the current pitch in the given key signature
-		int voices = 1;
+		int voices = 1;								//Represents the number of voices currently active in the score
+		int layers = 1;								//Represents the number of layers currently active in a voice
 		char[] prod = production.toCharArray();		//Array of characters from the production
 		String str = "";
 		turtle.popY();
@@ -193,21 +194,22 @@ public class ScoreGenerator
 			{
 				//Increment turtle's yaw
 				case '-':
-					turtle.pushYaw(turtle.getYaw() + turtle.getAngle());
+					turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
 					break;
 				
 				//Decrement turtle's yaw
 				case '+':
-					turtle.pushYaw(turtle.getYaw() - turtle.getAngle());
+					turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
 					break;
 				
 				//Turtle draws a line
 				case 'g':
 					int pitch = turtle.getY();
+					int direction = turtle.getDirection();
 					str = buffer.toString();
 					
 					//If turtle is horizontal, record line as a note
-					if(turtle.getDirection() == 1 || turtle.getDirection() == 3)
+					if(direction == 1 || direction == 3)
 					{
 						if(str.endsWith("[" + pitch + "]i") || str.endsWith("[" + pitch + "]ii") || str.endsWith("[" + pitch + "]iii") || str.endsWith("[" + pitch + "]iiii"))
 							buffer.append("i");
@@ -217,7 +219,7 @@ public class ScoreGenerator
 					}
 					
 					//If turtle facing upward, record line as a change up in pitch
-					else if(turtle.getDirection() == 2)
+					else if(direction == 2)
 					{
 						if(degree == 3 || degree == 7)
 						{
@@ -244,7 +246,7 @@ public class ScoreGenerator
 					}
 					
 					//If turtle facing downward, record line as a change down in pitch
-					else if(turtle.getDirection() == 4)
+					else if(direction == 4)
 					{
 						if(degree == 1 || degree == 4)
 						{
@@ -272,15 +274,21 @@ public class ScoreGenerator
 					break;
 					
 				case '[':
-					turtle.saveState();
-					buffer.append("V" + voices + " ");
-					++voices;
+					if(voices < 16)
+					{
+						turtle.saveState();
+						buffer.append( " V" + voices + " ");
+						++voices;
+					}
 					break;
 					
 				case ']':
-					turtle.restoreState();
-					--voices;
-					buffer.append("V" + voices + " ");
+					if(voices > 1)
+					{
+						turtle.restoreState();
+						--voices;
+						buffer.append(" V" + (voices-1) + " ");
+					}
 					break;
 			}
 		}

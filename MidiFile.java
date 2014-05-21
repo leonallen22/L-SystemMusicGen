@@ -23,12 +23,14 @@ public class MidiFile
 		int opt = 0;
 		boolean exit = false;
 		
-		while(opt <= 1 && opt >= 7 || !exit)
+		while(!exit)
 		{
 			StringBuffer bufferA = new StringBuffer();
 			StringBuffer bufferR = new StringBuffer();
 			ArrayList<String> lsysalpha = lsys.getAlphabet();
 			ArrayList<String> lsysrules = lsys.getRules();
+			String option = "";
+			opt = 0;
 			
 			for(String c : lsys.getAlphabet())
 				bufferA.append(String.valueOf(c) + " ");
@@ -38,7 +40,19 @@ public class MidiFile
 			
 			System.out.println("L-System:\r\n\tAlphabet: " + bufferA.toString() + "\r\n\tAxiom: " + lsys.getAxiom() + "\r\n\tRules:\r\n" + bufferR.toString() + "\r\n\r\nKey Signature: " + scoreGen.getKey());
 			System.out.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Exit");
-			opt = scan.nextInt();
+			
+			while(opt < 1 || opt > 7)
+			{
+				option = scan.next();
+				try
+				{
+					opt = Integer.valueOf(option);
+				}
+				catch(NumberFormatException e)
+				{
+					opt = 0;
+				}
+			}
 			
 			switch(opt)
 			{
@@ -50,10 +64,13 @@ public class MidiFile
 					else
 					{
 						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n");
-						int choice = scan.nextInt();
+						String choice = "";
+						
+						while(!choice.equals("1") && !choice.equals("2"))
+							choice = scan.next();
 						
 						//Iterate a set number of times once
-						if(choice == 1)
+						if(choice.equals("1"))
 						{
 							System.out.println("Iterations: ");
 							int iter = scan.nextInt();
@@ -67,20 +84,20 @@ public class MidiFile
 						}
 						
 						//Iterate step-by-step
-						else if(choice == 2)
+						else if(choice.equals("2"))
 						{
 							String production = "";
 							Pattern pattern = new Pattern();
-							int input = 0;
+							String input = "";
 							int iterations = 0;
 							
 							while(true)
 							{
 								System.out.println("Enter 1 to iterate, 2 to play again, and anything else to quit.");
-								input = scan.nextInt();
+								input = scan.next();
 								
 								//Continue iterating
-								if(input == 1)
+								if(input.equals("1"))
 								{
 									lsys.iterate(++iterations);
 									production = lsys.getTree();
@@ -93,7 +110,7 @@ public class MidiFile
 								}
 								
 								//Replay last iteration
-								else if(input == 2)
+								else if(input.equals("2"))
 								{
 									pattern = scoreGen.genScore(production);
 									player.play(pattern);
@@ -108,13 +125,13 @@ public class MidiFile
 				
 				//Define a new L-System
 				case 2:
-					int input = 0;
+					String input = "";
 					System.out.println("1: Use a predefined L-System\r\n2: Build your own L-System\r\n");
 					
-					while(input != 1 && input != 2)
-						input = scan.nextInt();
+					while(!input.equals("1") && !input.equals("2"))
+						input = scan.next();
 					
-					if(input == 1)
+					if(input.equals("1"))
 					{
 						ArrayList<String[]> defaultalpha = lsys.getDefaultAlphabets();
 						ArrayList<String> defaultaxiom = lsys.getDefaultAxioms();
@@ -139,17 +156,29 @@ public class MidiFile
 						}
 						
 						System.out.println("Choose a default L-System: ");
+						String d = "";
 						int def = 0;
 						
 						while(def < 1 || def > lsys.getDefaultAlphabets().size())
-							def = scan.nextInt();
+						{
+							d = scan.next();
+							
+							try
+							{
+								def = Integer.valueOf(d);
+							}
+							catch(NumberFormatException e)
+							{
+								def = 0;
+							}
+						}
 						
 						lsys.setAlphabetDef(def-1);
 						lsys.setAxiomDef(def-1);
 						lsys.setRulesDef(def-1);
 					}
 					
-					else if(input == 2)
+					else if(input.equals("2"))
 					{
 						System.out.println("Define alphabet one symbol at a time, enter \"!\" to stop: ");
 						ArrayList<String> newalphabet = new ArrayList<String>();
@@ -236,12 +265,24 @@ public class MidiFile
 				//Change key signature
 				case 6:
 					System.out.println("1:  C\r\n2:  G\r\n3:  D\r\n4:  A\r\n5:  E\r\n6:  B\r\n7:  Gb/F#\r\n8:  Db\r\n9:  Ab\r\n10: Eb\r\n11: Bb\r\n12: F");
-					int newkey = 0;
+					String newkey = "";
+					int key = 0;
 					
-					while(!(newkey >= 1 && newkey <= 12))
-						newkey = scan.nextInt();
+					while(key < 1 || key > 12)
+					{
+						newkey = scan.next();
+						
+						try
+						{
+							key = Integer.valueOf(newkey);
+						}
+						catch(NumberFormatException e)
+						{
+							key = 0;
+						}
+					}
 					
-					scoreGen.setKey(newkey);
+					scoreGen.setKey(key);
 					break;
 					
 				//Exit program

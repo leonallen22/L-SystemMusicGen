@@ -18,6 +18,7 @@ public class ScoreGenerator
 	private Turtle turtle;
 	private int keySig;
 	private int tempo;
+	int degree;																							//Represents the degree of the current pitch in the given key signature
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};
 	
 	/** Default Constructor */
@@ -26,6 +27,7 @@ public class ScoreGenerator
 		turtle = new Turtle();
 		keySig = 1;
 		tempo = 120;
+		degree = 1;
 	}
 	
 	/** Constructor. Accepts an integer for angle */
@@ -35,6 +37,7 @@ public class ScoreGenerator
 		turtle.pushAngle(angle);
 		keySig = 1;
 		tempo = 120;
+		degree = 1;
 	}
 	
 	/** Constructor. Accepts 3 integers for angle, keySig, and tempo, respectively */
@@ -49,6 +52,8 @@ public class ScoreGenerator
 			this.keySig = 1;
 		
 		this.tempo = tempo;
+		
+		degree = 1;
 	}
 	
 	/** Returns value of keySig */
@@ -184,15 +189,14 @@ public class ScoreGenerator
 	/** Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production */
 	private String generate(String production, int tonic)
 	{
-		StringBuffer buffer = new StringBuffer("V0 I80 ");	//Stores the score string that will be returned
-		int degree = 1;										//Represents the degree of the current pitch in the given key signature
-		int voices = 1;										//Represents the number of voices currently active in the score
-		int layers = 1;										//Represents the number of layers currently active in a voice
+		StringBuffer buffer = new StringBuffer("T" + tempo + " V0 I80 ");	//Stores the score string that will be returned
+		int voices = 1;														//Represents the number of voices currently active in the score
+		degree = 1;
+		int layers = 1;														//Represents the number of layers currently active in a voice
 		int color = turtle.getColor();
-		char[] prod = production.toCharArray();				//Array of characters from the production
-		String str = "";
+		char[] prod = production.toCharArray();								//Array of characters from the production
 		turtle.popY();
-		turtle.pushY(tonic);								//Represents the pitch of the note and the relative height of the turtle
+		turtle.pushY(tonic);												//Represents the pitch of the note and the relative height of the turtle
 		
 		//Step through each symbol in production
 		for(int i=0 ; i < prod.length ; ++i)
@@ -211,74 +215,28 @@ public class ScoreGenerator
 				
 				//Turtle draws a line
 				case 'g':
-					int pitch = turtle.getY();
-					int direction = turtle.getDirection();
-					str = buffer.toString();
+					buffer = drawLine(buffer, true);
+					break;
+				
+				//Turtle moves without drawing
+				case 'f':
+					buffer = drawLine(buffer, false);
+					break;
 					
-					//If turtle is horizontal, record line as a note
+				case 'r':
+					int direction = turtle.getDirection();
+					
+					//If turtle is horizontal, record line as a rest
 					if(direction == 1 || direction == 3)
 					{
-						String regex = ".*\\[" + pitch + "\\]i+";
+						String str = buffer.toString();
+						String regex = ".*Rs+";
 						
 						if(str.matches(regex))
-							buffer.append("i");
+							buffer.append("s");
 						
 						else
-							buffer.append(" [" + pitch + "]i");
-					}
-					
-					//If turtle facing upward, record line as a change up in pitch
-					else if(direction == 2)
-					{
-						if(degree == 3 || degree == 7)
-						{
-							turtle.popY();
-							turtle.pushY(upHalfStep(pitch));
-						}
-						
-						else
-						{
-							turtle.popY();
-							turtle.pushY(upWholeStep(pitch));
-						}
-						
-						++degree;
-						
-						if(turtle.getY() > 127)
-						{
-							pitch = turtle.popY();
-							turtle.pushY(pitch - 72);
-						}
-						
-						if(degree == 8)
-							degree = 1;
-					}
-					
-					//If turtle facing downward, record line as a change down in pitch
-					else if(direction == 4)
-					{
-						if(degree == 1 || degree == 4)
-						{
-							turtle.popY();
-							turtle.pushY(downHalfStep(pitch));
-						}
-						
-						else
-						{
-							turtle.popY();
-							turtle.pushY(downWholeStep(pitch));
-						}
-						
-						--degree;
-						
-						if(turtle.getY() < 0)
-						{
-							pitch = turtle.popY();
-							turtle.pushY(pitch + 60);
-						}
-						
-						if(degree == 0)
-							degree = 7;
+							buffer.append(" Rs");
 					}
 					break;
 					
@@ -343,5 +301,84 @@ public class ScoreGenerator
 		}
 		
 		return buffer.toString();
+	}
+	
+	private StringBuffer drawLine(StringBuffer buffer, boolean draw)
+	{
+		int pitch = turtle.getY();
+		int direction = turtle.getDirection();
+		
+		//If turtle is horizontal, record line as a note
+		if((direction == 1 || direction == 3) && draw)
+		{
+			String str = buffer.toString();
+			String regex = ".*\\[" + pitch + "\\]s+";
+			
+			if(str.matches(regex))
+				buffer.append("s");
+			
+			else
+				buffer.append(" [" + pitch + "]s");
+		}
+		
+		
+		else if(direction == 1 || direction == 3)
+			buffer.append(" [" + pitch + "]s");
+		
+		//If turtle facing upward, record line as a change up in pitch
+		else if(direction == 2)
+		{
+			if(degree == 3 || degree == 7)
+			{
+				turtle.popY();
+				turtle.pushY(upHalfStep(pitch));
+			}
+			
+			else
+			{
+				turtle.popY();
+				turtle.pushY(upWholeStep(pitch));
+			}
+			
+			++degree;
+			
+			if(turtle.getY() > 115)
+			{
+				pitch = turtle.popY();
+				turtle.pushY(pitch - 60);
+			}
+			
+			if(degree == 8)
+				degree = 1;
+		}
+		
+		//If turtle facing downward, record line as a change down in pitch
+		else if(direction == 4)
+		{
+			if(degree == 1 || degree == 4)
+			{
+				turtle.popY();
+				turtle.pushY(downHalfStep(pitch));
+			}
+			
+			else
+			{
+				turtle.popY();
+				turtle.pushY(downWholeStep(pitch));
+			}
+			
+			--degree;
+			
+			if(turtle.getY() < 24)
+			{
+				pitch = turtle.popY();
+				turtle.pushY(pitch + 36);
+			}
+			
+			if(degree == 0)
+				degree = 7;
+		}
+		
+		return buffer;
 	}
 }

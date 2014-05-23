@@ -11,7 +11,7 @@ public class LSystem {
 	protected	String				m_axiom;
 	protected	ArrayList<String>	m_rule;
 	protected	ArrayList<String[]> defaultAlphabets;
-	protected	ArrayList<String> defaultAxioms;
+	protected	ArrayList<String> 	defaultAxioms;
 	protected	ArrayList<String[]> defaultRules;
 	protected	String		m_tree;
 	
@@ -29,16 +29,22 @@ public class LSystem {
 		defaultAlphabets.add(new String[]{"A", "B"});
 		defaultAlphabets.add(new String[]{"A", "B", "C", "D"});
 		defaultAlphabets.add(new String[]{"B", "L", "R", "T"});
+		defaultAlphabets.add(new String[]{"A", "B"});
+		defaultAlphabets.add(new String[]{"A", "B", "g"});
 		defaultAxioms.add("A");
 		defaultAxioms.add("A B");
 		defaultAxioms.add("A");
 		defaultAxioms.add("A C A");
 		defaultAxioms.add("R @ @ B");
+		defaultAxioms.add("A");
+		defaultAxioms.add("A");
 		defaultRules.add(new String[]{"g + g - g B", "+ g - g B"});
 		defaultRules.add(new String[]{"- B g + A g A + g B -", "+ A g - B g B - g A +"});
 		defaultRules.add(new String[]{"A + g - g B - g + g + g -", "- g + g A - g +"});
 		defaultRules.add(new String[]{"g - g B g + A g A + g B g - g", "+ A g - B g B - g A +", "+ C g + g - g - @ @ D g D - g - g + g C +", "- g + g @ A - g +"});
 		defaultRules.add(new String[]{"@ @ T L - B + + B", "- g + g - g", "@ @ R", "T g"});
+		defaultRules.add(new String[]{"- g g g g g + g g f g g B", " - g g g g + g + g g - g + g g g - g A"});
+		defaultRules.add(new String[]{"- g g g g g + g g f g g B", " - g g g g + g + g g - g + g g g - g A", "- g"});
 		
 		for(String x : defaultAlphabets.get(0))
 			m_alphabet.add(x);

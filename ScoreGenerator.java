@@ -182,17 +182,17 @@ public class ScoreGenerator
 	}
 	
 	/** Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production */
-	public String generate(String production, int tonic)
+	private String generate(String production, int tonic)
 	{
 		StringBuffer buffer = new StringBuffer("V0 I80 ");	//Stores the score string that will be returned
-		int degree = 1;								//Represents the degree of the current pitch in the given key signature
-		int voices = 1;								//Represents the number of voices currently active in the score
-		int layers = 1;								//Represents the number of layers currently active in a voice
+		int degree = 1;										//Represents the degree of the current pitch in the given key signature
+		int voices = 1;										//Represents the number of voices currently active in the score
+		int layers = 1;										//Represents the number of layers currently active in a voice
 		int color = turtle.getColor();
-		char[] prod = production.toCharArray();		//Array of characters from the production
+		char[] prod = production.toCharArray();				//Array of characters from the production
 		String str = "";
 		turtle.popY();
-		turtle.pushY(tonic);							//Represents the pitch of the note and the relative height of the turtle
+		turtle.pushY(tonic);								//Represents the pitch of the note and the relative height of the turtle
 		
 		//Step through each symbol in production
 		for(int i=0 ; i < prod.length ; ++i)

@@ -3,11 +3,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.jfugue.*;
+import com.esotericsoftware.wildcard.Paths;
 import javax.sound.midi.InvalidMidiDataException;
 
 public class MusicAnalyzer
 {
 	private ArrayList<ArrayList<Double>> prob;
+	private String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};
 	
 	public MusicAnalyzer()
 	{
@@ -31,6 +33,7 @@ public class MusicAnalyzer
 	public void analyze()
 	{
 		Player player = new Player();
+		ArrayList<Double> note;
 		String musicstring = "";
 		char[] music;
 		double C = 0, Csharp = 0, Dflat = 0, D = 0, Dsharp = 0, Eflat = 0, E = 0, F = 0, Fsharp = 0, 
@@ -38,7 +41,7 @@ public class MusicAnalyzer
 		
 		try
 		{
-			Pattern pat = player.loadMidi(new File("test.mid"));
+			Pattern pat = player.loadMidi(new File("bwv772.mid"));
 			musicstring = pat.getMusicString();
 		}
 		catch(InvalidMidiDataException e)
@@ -51,126 +54,160 @@ public class MusicAnalyzer
 		}
 		
 		music = musicstring.toCharArray();
+		int prevnote = -1;
 		
 		for(int i=0; i < music.length ; ++i)
 		{
-			int prevnote = -1;
+			if(prevnote != -1)
+				note = prob.get(prevnote);
+			
+			else
+			{
+				note = new ArrayList<Double>();
+				
+				for(int j=0 ; j < 12 ; ++j)
+					note.add(0.0);
+			}
 			
 			switch(music[i])
 			{
 				case 'C':
-					if(music[i+1] == '#')
+					if(prevnote == -1)
 					{
+						
+						break;
+					}
+					
+					else if(music[i+1] == '#')
+					{
+						note.set(1, note.get(1)+1);
 						++Csharp;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(0, note.get(0)+1);
 						++C;
-						++i;
 					}
 					break;
 					
 				case 'D':
-					if(music[i+1] == 'b')
+					if(prevnote == -1)
+						break;
+					
+					else if(music[i+1] == 'b')
 					{
+						note.set(1, note.get(1)+1);
 						++Dflat;
-						i = i + 2;
 					}
 					
 					else if(music[i+1] == '#')
 					{
+						note.set(3, note.get(3)+1);
 						++Dsharp;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(2, note.get(2)+1);
 						++D;
-						++i;
 					}
 					break;
 					
 				case 'E':
-					if(music[i+1] == 'b')
+					if(prevnote == -1)
+						break;
+					
+					else if(music[i+1] == 'b')
 					{
+						note.set(3, note.get(3)+1);
 						++Eflat;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(4, note.get(4)+1);
 						++E;
-						++i;
 					}
 					break;
 					
 				case 'F':
-					if(music[i+1] == '#')
+					if(prevnote == -1)
+						break;
+					
+					else if(music[i+1] == '#')
 					{
+						note.set(6, note.get(6)+1);
 						++Fsharp;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(5, note.get(5)+1);
 						++F;
-						++i;
 					}
 					break;
 					
 				case 'G':
-					if(music[i+1] == 'b')
+					if(prevnote == -1)
+						break;
+					
+					else if(music[i+1] == 'b')
 					{
+						note.set(6, note.get(6)+1);
 						++Gflat;
-						i = i + 2;
 					}
 					
 					else if(music[i+1] == '#')
 					{
+						note.set(8, note.get(8)+1);
 						++Gsharp;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(7, note.get(7)+1);
 						++G;
-						++i;
 					}
 					break;
 					
 				case 'A':
-					if(music[i+1] == 'b')
+					if(prevnote == -1)
+						break;
+					
+					else if(music[i+1] == 'b')
 					{
+						note.set(8, note.get(8)+1);
 						++Aflat;
-						i = i + 2;
 					}
 					
 					else if(music[i+1] == '#')
 					{
+						note.set(10, note.get(10)+1);
 						++Asharp;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(9, note.get(9)+1);
 						++A;
-						++i;
 					}
 					break;
 					
 				case 'B':
-					if(music[i+1] == 'b')
+					if(prevnote == -1)
+						break;
+					
+					else if(music[i+1] == 'b')
 					{
+						note.set(10, note.get(10)+1);
 						++Bflat;
-						i = i + 2;
 					}
 					
 					else
 					{
+						note.set(11, note.get(11)+1);
 						++B;
-						++i;
 					}
 					break;
 			}
@@ -179,84 +216,136 @@ public class MusicAnalyzer
 			{
 				case 'C':
 					if(music[i+1] == '#')
+					{
 						prevnote = 1;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 0;
+						++i;
+					}
 					break;
 					
 				case 'D':
 					if(music[i+1] == 'b')
+					{
 						prevnote = 1;
+						i = i + 2;
+					}
 					
 					else if(music[i+1] == '#')
+					{
 						prevnote = 3;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 2;
+						++i;
+					}
 					break;
 					
 				case 'E':
 					if(music[i+1] == 'b')
+					{
 						prevnote = 3;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 4;
+						++i;
+					}
 					break;
 					
 				case 'F':
 					if(music[i+1] == '#')
+					{
 						prevnote = 6;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 5;
+						++i;
+					}
 					break;
 					
 				case 'G':
 					if(music[i+1] == 'b')
+					{
 						prevnote = 6;
+						i = i + 2;
+					}
 					
 					else if(music[i+1] == '#')
+					{
 						prevnote = 8;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 7;
+						++i;
+					}
 					break;
 					
 				case 'A':
 					if(music[i+1] == 'b')
+					{
 						prevnote = 8;
+						i = i + 2;
+					}
 					
 					else if(music[i+1] == '#')
+					{
 						prevnote = 10;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 9;
+						++i;
+					}
 					break;
 					
 				case 'B':
 					if(music[i+1] == 'b')
+					{
 						prevnote = 10;
+						i = i + 2;
+					}
 					
 					else
+					{
 						prevnote = 11;
+						++i;
+					}
 					break;
 			}
 				
 		}
 		
-		prob.set(0, C);
-		prob.set(1, Csharp+Dflat);
-		prob.set(2, D);
-		prob.set(3, Dsharp+Eflat);
-		prob.set(4, E);
-		prob.set(5, F);
-		prob.set(6, Fsharp+Gflat);
-		prob.set(7, G);
-		prob.set(8, Gsharp+Aflat);
-		prob.set(9, A);
-		prob.set(10, Asharp+Bflat);
-		prob.set(11, B);
+		System.out.println("\tC\tC#\tD\tD#\tE\tF\tF#\tG\tG#\tA\tA#\tB");
+		int k = 0;
+		for(ArrayList<Double> list : prob)
+		{
+			System.out.print(notes[k] + "\t");
+			for(Double x : list)
+			{
+				System.out.print(x + "\t");
+			}
+			System.out.println();
+			++k;
+		}
 		
+		Paths midis = new Paths();
 	}
 }

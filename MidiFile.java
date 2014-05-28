@@ -6,10 +6,13 @@
  */
 
 import org.jfugue.*;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
 import java.io.File;
+
+import javax.sound.midi.InvalidMidiDataException;
 
 public class MidiFile
 {
@@ -43,7 +46,7 @@ public class MidiFile
 			System.out.println("L-System:\r\n\tAlphabet: " + bufferA.toString() + "\r\n\tAxiom: " + lsys.getAxiom() + "\r\n\tRules:\r\n" + bufferR.toString() + "\r\n\r\nTempo: " + scoreGen.getTempo() + "\r\nKey Signature: " + scoreGen.getKey());
 			System.out.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Change tempo\r\n8: Exit");
 			
-			while(opt < 1 || opt > 8)
+			while(opt < 1 || opt > 9)
 			{
 				try
 				{
@@ -373,6 +376,27 @@ public class MidiFile
 				case 8:
 					exit = true;
 					break;
+					
+				case 9:
+					MusicAnalyzer analyzer = new MusicAnalyzer();
+					analyzer.analyze();
+					/*String musicstring = "";
+					try
+					{
+						Pattern pat = player.loadMidi(new File("bwv772.mid"));
+						musicstring = pat.getMusicString();
+					}
+					catch(InvalidMidiDataException e)
+					{
+						System.out.println(e.toString());
+					}
+					catch(IOException e)
+					{
+						System.out.println(e.toString());
+					}
+					System.out.println(musicstring);*/
+					break;
+					
 			}
 		}
 		

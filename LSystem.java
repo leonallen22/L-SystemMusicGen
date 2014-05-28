@@ -31,11 +31,13 @@ public class LSystem {
 		defaultAlphabets.add(new String[]{"B", "L", "R", "T"});
 		defaultAlphabets.add(new String[]{"A", "B"});
 		defaultAlphabets.add(new String[]{"A", "B", "g"});
+		defaultAlphabets.add(new String[]{"A", "B", "g"});
 		defaultAxioms.add("A");
 		defaultAxioms.add("A B");
 		defaultAxioms.add("A");
 		defaultAxioms.add("A C A");
 		defaultAxioms.add("R @ @ B");
+		defaultAxioms.add("A");
 		defaultAxioms.add("A");
 		defaultAxioms.add("A");
 		defaultRules.add(new String[]{"g + g - g B", "+ g - g B"});
@@ -45,6 +47,7 @@ public class LSystem {
 		defaultRules.add(new String[]{"@ @ T L - B + + B", "- g + g - g", "@ @ R", "T g"});
 		defaultRules.add(new String[]{"- g g g g g + g g f g g B", " - g g g g + g + g g - g + g g g - g A"});
 		defaultRules.add(new String[]{"- g g g g g + g g f g g B", " - g g g g + g + g g - g + g g g - g A", "- g"});
+		defaultRules.add(new String[]{"g g - g + g + g - g - g + g g - g g + B", "g g - g + g g + g - g g f g + g - g g A", "- g"});
 		
 		for(String x : defaultAlphabets.get(0))
 			m_alphabet.add(x);

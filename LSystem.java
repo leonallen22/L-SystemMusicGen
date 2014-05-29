@@ -15,7 +15,9 @@ public class LSystem {
 	protected	ArrayList<String[]> defaultRules;
 	protected	String		m_tree;
 	
-	/** Constructor. Defaults to Preset L-System #1.*/
+	/**
+	 * Constructor. Defaults to Preset L-System #1.
+	 */
 	public LSystem()
 	{	
 		defaultAlphabets = new ArrayList<String[]>();
@@ -61,9 +63,8 @@ public class LSystem {
 	}
 	
 	/**
-	 * Generate the tree by iterating through the
-	 * specified number of times, expanding symbols using
-	 *  the rules where applicable.
+	 * Generate the tree by iterating through the specified number of times, expanding symbols using the rules where applicable.
+	 * @param maxLength: maximum number of iterations
 	 */
 	public void iterate(int maxLength)
 	{		
@@ -92,67 +93,93 @@ public class LSystem {
 		}
 	}
 	
-	/** Return the current state of the L-System */
+	/**
+	 * @return The current state of the L-System.
+	 */
 	public String getTree()
 	{
 		return m_tree;
 	}
 	
-	/** Return the set of production rules of the L-System as an ArrayList of Strings */
+	/**
+	 * @return The set of production rules of the L-System as an ArrayList of Strings.
+	 */
 	public ArrayList<String> getRules()
 	{
 		return m_rule;
 	}
 	
-	/** Return the alphabet of the L-System as an ArrayList of Strings */
+	/**
+	 * @return The alphabet of the L-System as an ArrayList of Strings.
+	 */
 	public ArrayList<String> getAlphabet()
 	{
 		return m_alphabet;
 	}
 	
-	/** Return the axiom for the L-System */
+	/**
+	 * @return The axiom for the L-System.
+	 */
 	public String getAxiom()
 	{
 		return m_axiom;
 	}
 	
-	/** Return an ArrayList of all preset L-System alphabets as arrays of Strings */
+	/**
+	 * @return An ArrayList of all preset L-System alphabets as arrays of Strings
+	 */
 	public ArrayList<String[]> getDefaultAlphabets()
 	{
 		return defaultAlphabets;
 	}
 	
-	/** Return an ArrayList of all preset L-System axioms as Strings */
+	/**
+	 * @return An ArrayList of all preset L-System axioms as Strings.
+	 */
 	public ArrayList<String> getDefaultAxioms()
 	{
 		return defaultAxioms;
 	}
 	
-	/** Return an ArrayList of all preset L-System production rules as arrays of Strings */
+	/**
+	 * @return An ArrayList of all preset L-System production rules as arrays of Strings.
+	 */
 	public ArrayList<String[]> getDefaultRules()
 	{
 		return defaultRules;
 	}
 	
-	/** Set the accepted String as the L-System's axiom */
+	/**
+	 * Set the accepted String as the L-System's axiom.
+	 * @param axiom: new axiom
+	 */
 	public void setAxiom(String axiom)
 	{
 		m_axiom = axiom;
 	}
 	
-	/** Set the accepted ArrayList of Strings as the L-System's alphabet */
+	/**
+	 * Set the accepted ArrayList of Strings as the L-System's alphabet.
+	 * @param newalphabet: new alphabet
+	 */
 	public void setAlphabet(ArrayList<String> newalphabet)
 	{
 		m_alphabet = newalphabet;
 	}
 	
-	/** Set the accepted ArrayList of Strings as the L-System's production rules */
+	/**
+	 * Set the accepted ArrayList of Strings as the L-System's production rules.
+	 * @param newrules: new set of rules
+	 */
 	public void setRules(ArrayList<String> newrules)
 	{
 		m_rule = newrules;
 	}
 	
-	/** Set the L-System's alphabet to one of the preset L-Systems' based on the parameter */
+	/**
+	 * Set the L-System's alphabet to one of the preset L-Systems' based on the parameter.
+	 * @param defnum: the number of the default to be set
+	 */
 	public void setAlphabetDef(int defnum)
 	{
 		m_alphabet.clear();
@@ -161,13 +188,19 @@ public class LSystem {
 			m_alphabet.add(x);
 	}
 	
-	/** Set the L-System's axiom to one of the preset L-Systems' based on the parameter */
+	/**
+	 * Set the L-System's axiom to one of the preset L-Systems' based on the parameter.
+	 * @param defnum: the number of the default to be set
+	 */
 	public void setAxiomDef(int defnum)
 	{
 		m_axiom = defaultAxioms.get(defnum);
 	}
 	
-	/** Set the L-System's production rules to one of the preset L-Systems' based on the parameter */
+	/**
+	 * Set the L-System's production rules to one of the preset L-Systems' based on the parameter.
+	 * @param defnum: the number of the default to be set
+	 */
 	public void setRulesDef(int defnum)
 	{
 		m_rule.clear();

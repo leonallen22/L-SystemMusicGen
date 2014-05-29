@@ -15,7 +15,9 @@ public class Turtle
 	private Stack<Integer> hueChange;		//Turtle's color increment/decrement value
 	private Stack<Integer> thickness;		//Turtle's draw thickness
 	
-	/** Default Constructor. */
+	/**
+	 * Default Constructor.
+	 */
 	public Turtle()
 	{
 		X = new Stack<Integer>();
@@ -37,55 +39,73 @@ public class Turtle
 		thickness.push(50);
 	}
 	
-	/** Returns turtle's current X-axis position. */
+	/**
+	 * @return The turtle's current X-axis position.
+	 */
 	public int getX()
 	{
 		return X.peek().intValue();
 	}
 	
-	/** Returns turtle's current Y-axis position. */
+	/**
+	 * @return The turtle's current Y-axis position.
+	 */
 	public int getY()
 	{
 		return Y.peek().intValue();
 	}
 	
-	/** Returns turtle's current Z-axis position. */
+	/**
+	 * @return The turtle's current Z-axis position.
+	 */
 	public int getZ()
 	{
 		return Z.peek().intValue();
 	}
 	
-	/** Returns turtle's current yaw or heading. */
+	/**
+	 * @return The turtle's current yaw or heading.
+	 */
 	public int getYaw()
 	{
 		return yaw.peek().intValue();
 	}
 	
-	/** Returns turtle's current angle increment/decrement value. */
+	/**
+	 * @return The turtle's current angle increment/decrement value.
+	 */
 	public int getAngle()
 	{
 		return angle.peek().intValue();
 	}
 	
-	/** Returns turtle's current draw color. */
+	/**
+	 * @return The turtle's current draw color.
+	 */
 	public int getColor()
 	{
 		return color.peek().intValue();
 	}
 	
-	/** Returns turtle's current color increment/decrement value */
+	/**
+	 * @return The turtle's current color increment/decrement value.
+	 */
 	public int getHueChange()
 	{
 		return hueChange.peek().intValue();
 	}
 	
-	/** Returns turtle's current draw thickness. */
+	/**
+	 * @return The turtle's current draw thickness.
+	 */
 	public int getThickness()
 	{
 		return thickness.peek().intValue();
 	}
 	
-	/** Returns turtle's current direction represented as an integer. */
+	/**
+	 * @return The turtle's current direction represented as an integer.
+	 */
 	public int getDirection()
 	{
 		if(yaw.peek() == 0)
@@ -104,73 +124,109 @@ public class Turtle
 			return 0;
 	}
 	
-	/** Returns & pops turtle's current X-axis position. */
+	/**
+	 * Pops turtle's current X-axis position.
+	 * @return The turtle's current X-axis position.
+	 */
 	public int popX()
 	{
 		return X.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current Y-axis position. */
+	/**
+	 * Pops turtle's current Y-axis position.
+	 * @return The turtle's current Y-axis position.
+	 */
 	public int popY()
 	{
 		return Y.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current Z-axis position. */
+	/**
+	 * Pops turtle's current Z-axis position.
+	 * @return The turtle's current Z-axis position.
+	 */
 	public int popZ()
 	{
 		return Z.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current yaw or heading. */
+	/**
+	 * Pops turtle's current yaw or heading.
+	 * @return The turtle's current yaw or heading.
+	 */
 	public int popYaw()
 	{
 		return yaw.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current angle increment/decrement value. */
+	/**
+	 * Pops turtle's current angle increment/decrement value.
+	 * @return The turtle's current angle increment/decrement value.
+	 */
 	public int popAngle()
 	{
 		return angle.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current draw color. */
+	/**
+	 * Pops turtle's current draw color.
+	 * @return The turtle's current draw color.
+	 */
 	public int popColor()
 	{
 		return color.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current color increment/decrement value. */
+	/**
+	 * Pops turtle's current color increment/decrement value.
+	 * @return The turtle's current color increment/decrement value.
+	 */
 	public int popHueChange()
 	{
 		return hueChange.pop().intValue();
 	}
 	
-	/** Returns & pops turtle's current draw thickness. */
+	/**
+	 * Pops turtle's current draw thickness.
+	 * @return The turtle's current draw thickness.
+	 */
 	public int popThickness()
 	{
 		return thickness.pop().intValue();
 	}
 	
-	/** Pushes the given integer to turtle's current X-axis position. */
+	/**
+	 * Pushes the given integer to turtle's current X-axis position.
+	 * @param x: new X-axis position
+	 */
 	public void pushX(int x)
 	{
 		X.push(new Integer(x));
 	}
 	
-	/** Pushes the given integer to turtle's current Y-axis position. */
+	/**
+	 * Pushes the given integer to turtle's current Y-axis position.
+	 * @param y: new Y-axis position
+	 */
 	public void pushY(int y)
 	{
 		Y.push(new Integer(y));
 	}
 	
-	/** Pushes the given integer to turtle's current Z-axis position. */
+	/**
+	 * Pushes the given integer to turtle's current Z-axis position.
+	 * @param z: new Z-axis position
+	 */
 	public void pushZ(int z)
 	{
 		Z.push(new Integer(z));
 	}
 	
-	/** Pushes the given integer to turtle's current yaw or heading. */
+	/**
+	 * Pushes the given integer to turtle's current yaw or heading.
+	 * @param yw: new yaw
+	 */
 	public void pushYaw(int yw)
 	{
 		if(yw >= 0 && yw < 360)
@@ -186,13 +242,19 @@ public class Turtle
 			yaw.push(new Integer(yw-360));
 	}
 	
-	/** Pushes the given integer to turtle's current angle increment/decrement value. */
+	/**
+	 * Pushes the given integer to turtle's current angle increment/decrement value.
+	 * @param a: new angle
+	 */
 	public void pushAngle(int a)
 	{
 		angle.push(new Integer(a));
 	}
 	
-	/** Pushes the given integer to turtle's current draw color. */
+	/**
+	 * Pushes the given integer to turtle's current draw color.
+	 * @param c: new color
+	 */
 	public void pushColor(int c)
 	{
 		if(c >= 380 && c <= 750)
@@ -211,18 +273,27 @@ public class Turtle
 		}
 	}
 	
-	/** Pushes the given integer to turtle's current angle increment/decrement value. */
+	/**
+	 * Pushes the given integer to turtle's current angle increment/decrement value.
+	 * @param h: new hueChange
+	 */
 	public void pushHueChange(int h)
 	{
 		hueChange.push(new Integer(h));
 	}
 	
-	/** Pushes the given integer to turtle's current draw thickness. */
+	/**
+	 * Pushes the given integer to turtle's current draw thickness.
+	 * @param t: new draw thickness
+	 */
 	public void pushThickness(int t)
 	{
 		thickness.push(new Integer(t));
 	}
 	
+	/**
+	 * Push duplicate copies of the Turtle's current state.
+	 */
 	public void saveState()
 	{
 		X.push(X.peek());
@@ -235,6 +306,9 @@ public class Turtle
 		thickness.push(thickness.peek());
 	}
 	
+	/**
+	 * Restore Turtle to previous state.
+	 */
 	public void restoreState()
 	{
 		X.pop();
@@ -247,7 +321,9 @@ public class Turtle
 		thickness.pop();
 	}
 	
-	/** Reset turtle to defaults */
+	/**
+	 * Reset turtle to defaults.
+	 */
 	public void reset()
 	{
 		X.clear();

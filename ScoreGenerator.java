@@ -6,12 +6,6 @@
 import org.jfugue.Pattern;
 import java.util.ArrayList;
 
-/**
- * To do:
- * Implement all key signatures
- * Finish & integrate MusicAnalyzer
- */
-
 public class ScoreGenerator
 {
 	private Turtle turtle;																						//Turtle to keep track of "drawing" actions

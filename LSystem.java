@@ -1,22 +1,21 @@
+import java.util.ArrayList;
+
 /**
  * Generate a production with a context-free L-system.
  * @author		Harry Allen
  */
-
-import java.util.ArrayList;
-
 public class LSystem {
 
-	protected	ArrayList<String>	m_alphabet;
-	protected	String				m_axiom;
-	protected	ArrayList<String>	m_rule;
-	protected	ArrayList<String[]> defaultAlphabets;
-	protected	ArrayList<String> 	defaultAxioms;
-	protected	ArrayList<String[]> defaultRules;
-	protected	String		m_tree;
+	private	ArrayList<String>	m_alphabet;
+	private	String				m_axiom;
+	private	ArrayList<String>	m_rule;
+	private	ArrayList<String[]> defaultAlphabets;
+	private	ArrayList<String> 	defaultAxioms;
+	private	ArrayList<String[]> defaultRules;
+	private	String		m_tree;
 	
 	/**
-	 * Constructor. Defaults to Preset L-System #1.
+	 * Default Constructor. Defaults to Preset L-System #1.
 	 */
 	public LSystem()
 	{	
@@ -64,7 +63,7 @@ public class LSystem {
 	
 	/**
 	 * Generate the tree by iterating through the specified number of times, expanding symbols using the rules where applicable.
-	 * @param maxLength: maximum number of iterations
+	 * @param maxLength maximum number of iterations
 	 */
 	public void iterate(int maxLength)
 	{		
@@ -151,7 +150,7 @@ public class LSystem {
 	
 	/**
 	 * Set the accepted String as the L-System's axiom.
-	 * @param axiom: new axiom
+	 * @param axiom new axiom
 	 */
 	public void setAxiom(String axiom)
 	{
@@ -160,7 +159,7 @@ public class LSystem {
 	
 	/**
 	 * Set the accepted ArrayList of Strings as the L-System's alphabet.
-	 * @param newalphabet: new alphabet
+	 * @param newalphabet new alphabet
 	 */
 	public void setAlphabet(ArrayList<String> newalphabet)
 	{
@@ -169,7 +168,7 @@ public class LSystem {
 	
 	/**
 	 * Set the accepted ArrayList of Strings as the L-System's production rules.
-	 * @param newrules: new set of rules
+	 * @param newrules new set of rules
 	 */
 	public void setRules(ArrayList<String> newrules)
 	{
@@ -178,7 +177,7 @@ public class LSystem {
 	
 	/**
 	 * Set the L-System's alphabet to one of the preset L-Systems' based on the parameter.
-	 * @param defnum: the number of the default to be set
+	 * @param defnum the number of the default to be set
 	 */
 	public void setAlphabetDef(int defnum)
 	{
@@ -190,7 +189,7 @@ public class LSystem {
 	
 	/**
 	 * Set the L-System's axiom to one of the preset L-Systems' based on the parameter.
-	 * @param defnum: the number of the default to be set
+	 * @param defnum the number of the default to be set
 	 */
 	public void setAxiomDef(int defnum)
 	{
@@ -199,7 +198,7 @@ public class LSystem {
 	
 	/**
 	 * Set the L-System's production rules to one of the preset L-Systems' based on the parameter.
-	 * @param defnum: the number of the default to be set
+	 * @param defnum the number of the default to be set
 	 */
 	public void setRulesDef(int defnum)
 	{

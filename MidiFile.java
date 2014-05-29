@@ -1,18 +1,16 @@
-/**
- * Generate a production with a context-free L-system,
- * convert the production into a score properly formatted for JFugue,
- * then play the generated score using JFugue.
- * @author		Harry Allen
- */
-
 import org.jfugue.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
 import java.io.File;
 
-import javax.sound.midi.InvalidMidiDataException;
-
+/**
+ * Generate a production with a context-free L-system,
+ * convert the production into a score properly formatted for JFugue,
+ * then play the generated score using JFugue.
+ * @author		Harry Allen
+ * @version		1.0
+ */
 public class MidiFile
 {
 	public static void main(String[] args)
@@ -379,21 +377,6 @@ public class MidiFile
 				case 9:
 					MusicAnalyzer analyzer = new MusicAnalyzer();
 					analyzer.analyze();
-					/*String musicstring = "";
-					try
-					{
-						Pattern pat = player.loadMidi(new File("bwv772.mid"));
-						musicstring = pat.getMusicString();
-					}
-					catch(InvalidMidiDataException e)
-					{
-						System.out.println(e.toString());
-					}
-					catch(IOException e)
-					{
-						System.out.println(e.toString());
-					}
-					System.out.println(musicstring);*/
 					break;
 					
 			}

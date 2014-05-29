@@ -1,13 +1,13 @@
-/**
- * Analyzes a series of MIDI files, producing a first-order Markov Chain of the probability of a note following a given note.
- */
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.jfugue.*;
-import com.esotericsoftware.wildcard.Paths;
+import com.esotericsoftware.wildcard.*;
 import javax.sound.midi.InvalidMidiDataException;
 
+/**
+ * Analyzes a series of MIDI files, producing a first-order Markov Chain of the probability of a note following a given note.
+ */
 public class MusicAnalyzer
 {
 	private ArrayList<ArrayList<Double>> prob;			//Markov chain: stores the probability vector for each note
@@ -33,7 +33,7 @@ public class MusicAnalyzer
 	
 	/**
 	 * Returns the probability vector for the note passed as parameter.
-	 * @param note
+	 * @param note note of the probability vector to return
 	 * @return The probability vector for the note accepted as the parameter
 	 */
 	public ArrayList<Double> getProbability(int note)

@@ -1,18 +1,17 @@
+import org.jfugue.Pattern;
+import java.util.ArrayList;
+
 /**
  * Generate a properly formatted score for use in JFugue from an L-system production.
  * @author		Harry Allen
  */
-
-import org.jfugue.Pattern;
-import java.util.ArrayList;
-
 public class ScoreGenerator
 {
 	private Turtle turtle;																						//Turtle to keep track of "drawing" actions
 	private MusicAnalyzer analyzer;																				//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
 	private int keySig;																							//Stores current key signature
 	private int tempo;																							//Stores tempo for music to be played
-	int degree;																									//Represents the degree of the current pitch in the given key signature
+	private int degree;																									//Represents the degree of the current pitch in the given key signature
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};			//Stores key signatures
 	private String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};	//Stores all possible notes
 	
@@ -30,7 +29,7 @@ public class ScoreGenerator
 	
 	/**
 	 * Constructor.
-	 * @param angle: the angle at which the turtle should start
+	 * @param angle the angle at which the turtle should start
 	 */
 	public ScoreGenerator(int angle)
 	{
@@ -44,9 +43,9 @@ public class ScoreGenerator
 	
 	/**
 	 * Constructor.
-	 * @param angle: the angle at which the turtle should start
-	 * @param key: the initial key signature
-	 * @param tempo: the initial tempo
+	 * @param angle the angle at which the turtle should start
+	 * @param key the initial key signature
+	 * @param tempo the initial tempo
 	 */
 	public ScoreGenerator(int angle, int key, int tempo)
 	{
@@ -82,7 +81,7 @@ public class ScoreGenerator
 	
 	/**
 	 * Sets the value of keySig to the integer accepted.
-	 * @param key: the new key signature
+	 * @param key the new key signature
 	 */
 	public void setKey(int key)
 	{
@@ -94,7 +93,7 @@ public class ScoreGenerator
 	
 	/**
 	 * Sets the value of tempo to the integer accepted.
-	 * @param tempo: the new tempo
+	 * @param tempo the new tempo
 	 */
 	public void setTempo(int tempo)
 	{
@@ -103,60 +102,60 @@ public class ScoreGenerator
 	
 	/**
 	 * Accepts an integer representing a note value, and increments it a half step.
-	 * @param note: the note to be modified
+	 * @param note the note to be modified
 	 * @return The modified note.
 	 */
-	public int upHalfStep(int note)
+	private int upHalfStep(int note)
 	{
 		return note+1;
 	}
 	
 	/**
 	 * Accepts an integer representing a note value, and decrements it a half step.
-	 * @param note: the note to be modified
+	 * @param note the note to be modified
 	 * @return The modified note.
 	 */
-	public int downHalfStep(int note)
+	private int downHalfStep(int note)
 	{
 		return note-1;
 	}
 	
 	/**
 	 * Accepts an integer representing a note value, and increments it a whole step.
-	 * @param note: the note to be modified
+	 * @param note the note to be modified
 	 * @return The modified note.
 	 */
-	public int upWholeStep(int note)
+	private int upWholeStep(int note)
 	{
 		return note+2;
 	}
 	
 	/**
 	 * Accepts an integer representing a note value, and decrements it a whole step.
-	 * @param note: the note to be modified
+	 * @param note the note to be modified
 	 * @return The modified note.
 	 */
-	public int downWholeStep(int note)
+	private int downWholeStep(int note)
 	{
 		return note-2;
 	}
 	
 	/**
 	 * Accepts an integer representing a note value, and takes it up an octave.
-	 * @param note: the note to be modified
+	 * @param note the note to be modified
 	 * @return The modified note
 	 */
-	public int upOctave(int note)
+	private int upOctave(int note)
 	{
 		return note+12;
 	}
 	
 	/**
 	 * Accepts an integer representing a note value, and decrements it an octave.
-	 * @param note: the note to be modified
+	 * @param note the note to be modified
 	 * @return The modified note.
 	 */
-	public int downOctave(int note)
+	private int downOctave(int note)
 	{
 		return note-12;
 	}
@@ -171,7 +170,7 @@ public class ScoreGenerator
 	
 	/**
 	 * Accepts a string and parses through it to generate a pattern properly formatted for JFugue.
-	 * @param production: the L-System production to be parsed
+	 * @param production the L-System production to be parsed
 	 * @return The music score as a Pattern
 	 */
 	public Pattern genScore(String production)
@@ -236,8 +235,8 @@ public class ScoreGenerator
 	
 	/**
 	 * Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production.
-	 * @param production: the L-System production to be parsed
-	 * @param tonic: the tonic of the current key signature
+	 * @param production the L-System production to be parsed
+	 * @param tonic the tonic of the current key signature
 	 * @return The music score as a string.
 	 */
 	private String generate(String production, int tonic)
@@ -357,8 +356,8 @@ public class ScoreGenerator
 	
 	/**
 	 * Simulates drawing a line with the turtle and maps the action directly onto the music score.
-	 * @param buffer: stores the music score as it is being built
-	 * @param draw: is the note to be treated as a tie
+	 * @param buffer stores the music score as it is being built
+	 * @param draw is the note to be treated as a tie
 	 * @return The StringBuffer with the necessary modifications made.
 	 */
 	private StringBuffer drawLine(StringBuffer buffer, boolean draw)
@@ -442,8 +441,8 @@ public class ScoreGenerator
 	
 	/**
 	 * Uses L-System as a guide instead of mapping the system directly onto the score. Uses a first-order Markov Chain to choose notes as the system progresses.
-	 * @param buffer: stores the music score as it is being built
-	 * @param draw: is the note to be treated as a tie
+	 * @param buffer stores the music score as it is being built
+	 * @param draw is the note to be treated as a tie
 	 * @return The StringBuffer with the necessary modifications made.
 	 */
 	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw)

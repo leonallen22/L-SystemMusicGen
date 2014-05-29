@@ -1,9 +1,9 @@
-/** 
- * Turtle to simulate drawing to be interpreted, producing a musical score to be played
- * @author Harry Allen
- */
 import java.util.Stack;
 
+/** 
+ * Turtle to simulate drawing to be interpreted, producing a musical score to be played.
+ * @author Harry Allen
+ */
 public class Turtle
 {
 	private Stack<Integer> X;				//Turtle's position on the X-axis
@@ -198,7 +198,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current X-axis position.
-	 * @param x: new X-axis position
+	 * @param x new X-axis position
 	 */
 	public void pushX(int x)
 	{
@@ -207,7 +207,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current Y-axis position.
-	 * @param y: new Y-axis position
+	 * @param y new Y-axis position
 	 */
 	public void pushY(int y)
 	{
@@ -216,7 +216,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current Z-axis position.
-	 * @param z: new Z-axis position
+	 * @param z new Z-axis position
 	 */
 	public void pushZ(int z)
 	{
@@ -225,7 +225,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current yaw or heading.
-	 * @param yw: new yaw
+	 * @param yw new yaw
 	 */
 	public void pushYaw(int yw)
 	{
@@ -244,7 +244,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current angle increment/decrement value.
-	 * @param a: new angle
+	 * @param a new angle
 	 */
 	public void pushAngle(int a)
 	{
@@ -253,7 +253,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current draw color.
-	 * @param c: new color
+	 * @param c new color
 	 */
 	public void pushColor(int c)
 	{
@@ -275,7 +275,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current angle increment/decrement value.
-	 * @param h: new hueChange
+	 * @param h new hueChange
 	 */
 	public void pushHueChange(int h)
 	{
@@ -284,7 +284,7 @@ public class Turtle
 	
 	/**
 	 * Pushes the given integer to turtle's current draw thickness.
-	 * @param t: new draw thickness
+	 * @param t new draw thickness
 	 */
 	public void pushThickness(int t)
 	{

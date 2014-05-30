@@ -43,7 +43,7 @@ public class MidiFile
 			System.out.println("L-System:\r\n\tAlphabet: " + bufferA.toString() + "\r\n\tAxiom: " + lsys.getAxiom() + "\r\n\tRules:\r\n" + bufferR.toString() + "\r\n\r\nTempo: " + scoreGen.getTempo() + "\r\nKey Signature: " + scoreGen.getKey());
 			System.out.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Change tempo\r\n8: Exit");
 			
-			while(opt < 1 || opt > 9)
+			while(opt < 1 || opt > 8)
 			{
 				try
 				{
@@ -65,20 +65,19 @@ public class MidiFile
 					
 					else
 					{
-						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n");
+						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n3: Use Markov Chain");
 						String choice = "";
 						
-						while(!choice.equals("1") && !choice.equals("2"))
+						while(!(choice.equals("1") || choice.equals("2") || choice.equals("3")))
 							choice = scan.next();
 						
 						//Iterate a set number of times
 						if(choice.equals("1"))
 						{
 							System.out.println("Iterations: ");
-							boolean replay = true;
 							int iter = 0;
 							
-							while(iter <1)
+							while(iter < 1)
 							{
 								try
 								{
@@ -95,12 +94,11 @@ public class MidiFile
 							String production = lsys.getTree();					//Retrieve the production
 							System.out.println(production);						//Print the raw production on-screen
 							
-							Pattern pattern = scoreGen.genScore(production);	//Convert the production into a suitable format; store in a Pattern
+							Pattern pattern = scoreGen.genScore(production, false);	//Convert the production into a suitable format; store in a Pattern
 							System.out.println(pattern.toString());
-							//Pattern pattern = new Pattern("I80 X[MOD_WHEEL_COARSE]=0 [83]iiiii [72]iiiii [76]iiii [68]iiii [89]iiiii [59]iiii [60]iiiii X[MOD_WHEEL_COARSE]=127 [80]iiii [68]iiii [95]iiiii [83]iiii [72]iii [75]iiii [80]iii [75]iii [86]iiiii");
 							player.play(pattern);
 							
-							while(replay)
+							while(true)
 							{
 								System.out.print("1 to replay, 2 to save as MIDI file, and anything else return to menu: ");
 								
@@ -152,7 +150,7 @@ public class MidiFile
 									System.out.println("\r\nIteration: " + iterations);
 									System.out.println(production);
 									
-									pattern = scoreGen.genScore(production);
+									pattern = scoreGen.genScore(production, false);
 									System.out.println(pattern.toString());
 									player.play(pattern);
 								}
@@ -160,7 +158,7 @@ public class MidiFile
 								//Replay last iteration
 								else if(input.equals("2"))
 								{
-									pattern = scoreGen.genScore(production);
+									pattern = scoreGen.genScore(production, false);
 									player.play(pattern);
 								}
 								
@@ -178,6 +176,63 @@ public class MidiFile
 									catch(IOException e)
 									{
 										System.out.println("Error saving Midi file.");
+									}
+								}
+								
+								else
+									break;
+							}
+						}
+						
+						//Use Markov Chain
+						else if(choice.equals("3"))
+						{	
+							System.out.println("Iterations: ");
+							int iter = 0;
+							
+							while(iter < 1)
+							{
+								try
+								{
+									String iterations = scan.next();
+									iter = Integer.valueOf(iterations);
+								}
+								catch(NumberFormatException e)
+								{
+									iter = 0;
+								}
+							}
+							
+							lsys.iterate(iter);									//Expand the system the given number of times
+							String production = lsys.getTree();					//Retrieve the production
+							System.out.println(production);						//Print the raw production on-screen
+							
+							Pattern pattern = scoreGen.genScore(production, true);	//Convert the production into a suitable format; store in a Pattern
+							System.out.println(pattern.toString());
+							player.play(pattern);
+							
+							while(true)
+							{
+								System.out.print("1 to replay, 2 to save as MIDI file, and anything else return to menu: ");
+								
+								String re = scan.next();
+								
+								if(re.equals("1"))
+									player.play(pattern);
+								
+								else if(re.equals("2"))
+								{
+									System.out.print("\r\nEnter name for MIDI file: ");
+									String file = scan.next();
+									
+									try
+									{
+										player.saveMidi(pattern, new File(file + ".mid"));
+										System.out.println("File saved successfully.\r\n");
+									}
+									catch(IOException e)
+									{
+										System.out.println("Error saving Midi file: returning to menu.");
 									}
 								}
 								
@@ -372,13 +427,7 @@ public class MidiFile
 				//Exit program
 				case 8:
 					exit = true;
-					break;
-					
-				case 9:
-					MusicAnalyzer analyzer = new MusicAnalyzer();
-					analyzer.analyze();
-					break;
-					
+					break;					
 			}
 		}
 		

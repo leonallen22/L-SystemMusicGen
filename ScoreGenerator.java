@@ -532,31 +532,15 @@ public class ScoreGenerator
 				{
 					while(!prevnote.equals(nextnote))
 					{
-						if(degree == 3 || degree == 7)
-						{
-							note = upHalfStep(note);
+						note = upHalfStep(note);
 							
-							if(note > 11)
-								note = 0;
+						if(note > 11)
+							note = 0;
 							
-							prevnote = notes[note];
-							pitch = upHalfStep(pitch);
-							turtle.popY();
-							turtle.pushY(pitch);
-						}
-						
-						else
-						{
-							note = upWholeStep(note);
-							
-							if(note > 11)
-								note = 1;
-							
-							prevnote = notes[note];
-							pitch = upWholeStep(pitch);
-							turtle.popY();
-							turtle.pushY(pitch);
-						}
+						prevnote = notes[note];
+						pitch = upHalfStep(pitch);
+						turtle.popY();
+						turtle.pushY(pitch);
 						
 						++degree;
 						
@@ -578,31 +562,15 @@ public class ScoreGenerator
 				{
 					while(!prevnote.equals(nextnote))
 					{
-						if(degree == 1 || degree == 4)
-						{
-							note = downHalfStep(note);
+						note = downHalfStep(note);
 							
-							if(note < 0)
-								note = 11;
+						if(note < 0)
+							note = 11;
 							
-							prevnote = notes[note];
-							pitch = downHalfStep(pitch);
-							turtle.popY();
-							turtle.pushY(pitch);
-						}
-						
-						else
-						{
-							note = downWholeStep(note);
-							
-							if(note < 0)
-								note = 10;
-							
-							prevnote = notes[note];
-							pitch = downWholeStep(pitch);
-							turtle.popY();
-							turtle.pushY(pitch);
-						}
+						prevnote = notes[note];
+						pitch = downHalfStep(pitch);
+						turtle.popY();
+						turtle.pushY(pitch);
 						
 						--degree;
 						

@@ -13,6 +13,8 @@ public class ScoreGenerator
 	private int tempo;																							//Stores tempo for music to be played
 	private int degree;																							//Represents the degree of the current pitch in the given key signature
 	private int prevmove;																						//Represents the immediately preceding contour of the L-System
+	private int upperNoteB;
+	private int lowerNoteB;
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};			//Stores key signatures
 	private String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};	//Stores all possible notes
 	
@@ -28,6 +30,8 @@ public class ScoreGenerator
 		tempo = 120;
 		degree = 1;
 		prevmove = 0;
+		upperNoteB = 95;
+		lowerNoteB = 36;
 	}
 	
 	/**
@@ -44,6 +48,8 @@ public class ScoreGenerator
 		tempo = 120;
 		degree = 1;
 		prevmove = 0;
+		upperNoteB = 95;
+		lowerNoteB = 36;
 	}
 	
 	/**
@@ -68,6 +74,8 @@ public class ScoreGenerator
 		
 		degree = 1;
 		prevmove = 0;
+		upperNoteB = 95;
+		lowerNoteB = 36;
 	}
 	
 	/**
@@ -416,10 +424,10 @@ public class ScoreGenerator
 			
 			++degree;
 			
-			if(turtle.getY() > 115)
+			if(turtle.getY() > upperNoteB)
 			{
 				pitch = turtle.popY();
-				turtle.pushY(pitch - 60);
+				turtle.pushY(pitch - 24);
 			}
 			
 			if(degree == 8)
@@ -443,10 +451,10 @@ public class ScoreGenerator
 			
 			--degree;
 			
-			if(turtle.getY() < 24)
+			if(turtle.getY() < lowerNoteB)
 			{
 				pitch = turtle.popY();
-				turtle.pushY(pitch + 36);
+				turtle.pushY(pitch + 24);
 			}
 			
 			if(degree == 0)
@@ -544,10 +552,10 @@ public class ScoreGenerator
 						
 						++degree;
 						
-						if(turtle.getY() > 115)
+						if(turtle.getY() > upperNoteB)
 						{
 							pitch = turtle.popY();
-							turtle.pushY(pitch - 60);
+							turtle.pushY(pitch - 24);
 						}
 						
 						if(degree == 8)
@@ -574,10 +582,10 @@ public class ScoreGenerator
 						
 						--degree;
 						
-						if(turtle.getY() < 24)
+						if(turtle.getY() < lowerNoteB)
 						{
 							pitch = turtle.popY();
-							turtle.pushY(pitch + 36);
+							turtle.pushY(pitch + 24);
 						}
 						
 						if(degree == 0)

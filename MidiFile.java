@@ -158,7 +158,7 @@ public class MidiFile
 								//Replay last iteration
 								else if(input.equals("2"))
 								{
-									pattern = scoreGen.genScore(production, false);
+									//pattern = scoreGen.genScore(production, false);
 									player.play(pattern);
 								}
 								
@@ -203,9 +203,9 @@ public class MidiFile
 								}
 							}
 							
-							lsys.iterate(iter);									//Expand the system the given number of times
-							String production = lsys.getTree();					//Retrieve the production
-							System.out.println(production);						//Print the raw production on-screen
+							lsys.iterate(iter);										//Expand the system the given number of times
+							String production = lsys.getTree();						//Retrieve the production
+							System.out.println(production);							//Print the raw production on-screen
 							
 							Pattern pattern = scoreGen.genScore(production, true);	//Convert the production into a suitable format; store in a Pattern
 							System.out.println(pattern.toString());

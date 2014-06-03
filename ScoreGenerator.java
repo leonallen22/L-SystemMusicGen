@@ -15,6 +15,8 @@ public class ScoreGenerator
 	private int prevmove;																						//Represents the immediately preceding contour of the L-System
 	private int upperNoteB;
 	private int lowerNoteB;
+	private char inc;
+	private char dec;
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};			//Stores key signatures
 	private String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};	//Stores all possible notes
 	
@@ -32,6 +34,8 @@ public class ScoreGenerator
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
+		inc = '-';
+		dec = '+';
 	}
 	
 	/**
@@ -50,6 +54,8 @@ public class ScoreGenerator
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
+		inc = '-';
+		dec = '+';
 	}
 	
 	/**
@@ -76,6 +82,8 @@ public class ScoreGenerator
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
+		inc = '-';
+		dec = '+';
 	}
 	
 	/**
@@ -104,6 +112,9 @@ public class ScoreGenerator
 			this.keySig = key;
 		else
 			this.keySig = 1;
+		
+		analyzer.setKey(key);
+		analyzer.analyze();
 	}
 	
 	/**
@@ -113,6 +124,21 @@ public class ScoreGenerator
 	public void setTempo(int tempo)
 	{
 		this.tempo = tempo;
+	}
+	
+	public void switchInc()
+	{
+		if(inc == '-')
+		{
+			inc = '+';
+			dec = '-';
+		}
+		
+		else
+		{
+			inc = '-';
+			dec = '+';
+		}
 	}
 	
 	/**
@@ -274,12 +300,18 @@ public class ScoreGenerator
 			{
 				//Increment turtle's yaw
 				case '-':
-					turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
+					if(inc == '-')
+						turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
+					else
+						turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
 					break;
 				
 				//Decrement turtle's yaw
 				case '+':
-					turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
+					if(dec == '+')
+						turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
+					else
+						turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
 					break;
 				
 				//Turtle draws a line
@@ -426,8 +458,9 @@ public class ScoreGenerator
 			
 			if(turtle.getY() > upperNoteB)
 			{
-				pitch = turtle.popY();
-				turtle.pushY(pitch - 24);
+				switchInc();
+				//pitch = turtle.popY();
+				//turtle.pushY(pitch - 24);
 			}
 			
 			if(degree == 8)
@@ -453,8 +486,9 @@ public class ScoreGenerator
 			
 			if(turtle.getY() < lowerNoteB)
 			{
-				pitch = turtle.popY();
-				turtle.pushY(pitch + 24);
+				switchInc();
+				//pitch = turtle.popY();
+				//turtle.pushY(pitch + 24);
 			}
 			
 			if(degree == 0)
@@ -554,8 +588,9 @@ public class ScoreGenerator
 						
 						if(turtle.getY() > upperNoteB)
 						{
-							pitch = turtle.popY();
-							turtle.pushY(pitch - 24);
+							switchInc();
+							//pitch = turtle.popY();
+							//turtle.pushY(pitch - 24);
 						}
 						
 						if(degree == 8)
@@ -584,8 +619,9 @@ public class ScoreGenerator
 						
 						if(turtle.getY() < lowerNoteB)
 						{
-							pitch = turtle.popY();
-							turtle.pushY(pitch + 24);
+							switchInc();
+							//pitch = turtle.popY();
+							//turtle.pushY(pitch + 24);
 						}
 						
 						if(degree == 0)

@@ -12,21 +12,33 @@ import javax.sound.midi.InvalidMidiDataException;
 public class MusicAnalyzer
 {
 	private ArrayList<ArrayList<Double>> prob;			//Markov chain: stores the probability vector for each note
+	private ArrayList<ArrayList<Double>> secondProb;	//Markov chain: stores the probability vector for each combination of the current note and immediately preceding note
 	private int key;
+	
 	/**
 	 * Default constructor.
 	 */
 	public MusicAnalyzer()
 	{
 		prob = new ArrayList<ArrayList<Double>>();
+		secondProb = new ArrayList<ArrayList<Double>>();
 		key = 1;
 		
 		for(int i=0 ; i < 12 ; ++i)
+		{
 			prob.add(new ArrayList<Double>());
+			secondProb.add(new ArrayList<Double>());
+		}
 		
 		for(ArrayList<Double> list : prob)
 		{
 			for(int i=0 ; i < 12 ; ++i)
+				list.add(0.0);
+		}
+		
+		for(ArrayList<Double> list : secondProb)
+		{
+			for(int i=0 ; i < 144 ; ++i)
 				list.add(0.0);
 		}
 	}
@@ -39,6 +51,11 @@ public class MusicAnalyzer
 	public ArrayList<Double> getProbability(int note)
 	{
 		return prob.get(note);
+	}
+	
+	public ArrayList<Double> getSecondProb(int prevnote, int note)
+	{
+		return secondProb.get(note + 12*prevnote);
 	}
 	
 	/**
@@ -69,8 +86,6 @@ public class MusicAnalyzer
 		ArrayList<Double> note;
 		String musicstring = "";
 		char[] music;
-		double C = 0, Csharp = 0, Dflat = 0, D = 0, Dsharp = 0, Eflat = 0, E = 0, F = 0, Fsharp = 0, 
-			   Gflat = 0, G = 0, Gsharp = 0, Aflat = 0, A = 0, Asharp = 0, Bflat = 0, B = 0;
 		Paths midis = new Paths();
 		
 		switch(key)
@@ -117,22 +132,13 @@ public class MusicAnalyzer
 				{
 					case 'C':
 						if(prevnote == -1)
-						{
-							
 							break;
-						}
 						
 						else if(music[i+1] == '#')
-						{
 							note.set(1, note.get(1)+1);
-							++Csharp;
-						}
 						
 						else
-						{
 							note.set(0, note.get(0)+1);
-							++C;
-						}
 						break;
 						
 					case 'D':
@@ -140,22 +146,14 @@ public class MusicAnalyzer
 							break;
 						
 						else if(music[i+1] == 'b')
-						{
 							note.set(1, note.get(1)+1);
-							++Dflat;
-						}
+
 						
 						else if(music[i+1] == '#')
-						{
 							note.set(3, note.get(3)+1);
-							++Dsharp;
-						}
 						
 						else
-						{
 							note.set(2, note.get(2)+1);
-							++D;
-						}
 						break;
 						
 					case 'E':
@@ -163,16 +161,11 @@ public class MusicAnalyzer
 							break;
 						
 						else if(music[i+1] == 'b')
-						{
 							note.set(3, note.get(3)+1);
-							++Eflat;
-						}
 						
 						else
-						{
 							note.set(4, note.get(4)+1);
-							++E;
-						}
+
 						break;
 						
 					case 'F':
@@ -180,16 +173,12 @@ public class MusicAnalyzer
 							break;
 						
 						else if(music[i+1] == '#')
-						{
 							note.set(6, note.get(6)+1);
-							++Fsharp;
-						}
+
 						
 						else
-						{
 							note.set(5, note.get(5)+1);
-							++F;
-						}
+
 						break;
 						
 					case 'G':
@@ -197,22 +186,13 @@ public class MusicAnalyzer
 							break;
 						
 						else if(music[i+1] == 'b')
-						{
 							note.set(6, note.get(6)+1);
-							++Gflat;
-						}
 						
 						else if(music[i+1] == '#')
-						{
 							note.set(8, note.get(8)+1);
-							++Gsharp;
-						}
 						
 						else
-						{
 							note.set(7, note.get(7)+1);
-							++G;
-						}
 						break;
 						
 					case 'A':
@@ -220,22 +200,13 @@ public class MusicAnalyzer
 							break;
 						
 						else if(music[i+1] == 'b')
-						{
 							note.set(8, note.get(8)+1);
-							++Aflat;
-						}
 						
 						else if(music[i+1] == '#')
-						{
 							note.set(10, note.get(10)+1);
-							++Asharp;
-						}
 						
 						else
-						{
 							note.set(9, note.get(9)+1);
-							++A;
-						}
 						break;
 						
 					case 'B':
@@ -243,16 +214,10 @@ public class MusicAnalyzer
 							break;
 						
 						else if(music[i+1] == 'b')
-						{
 							note.set(10, note.get(10)+1);
-							++Bflat;
-						}
 						
 						else
-						{
 							note.set(11, note.get(11)+1);
-							++B;
-						}
 						break;
 				}
 				

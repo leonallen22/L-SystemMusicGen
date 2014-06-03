@@ -7,17 +7,19 @@ import javax.sound.midi.InvalidMidiDataException;
 
 /**
  * Analyzes a series of MIDI files, producing a first-order Markov Chain of the probability of a note following a given note.
+ * Currently must analyze again every time the key signature is changed.
  */
 public class MusicAnalyzer
 {
 	private ArrayList<ArrayList<Double>> prob;			//Markov chain: stores the probability vector for each note
-	
+	private int key;
 	/**
 	 * Default constructor.
 	 */
 	public MusicAnalyzer()
 	{
 		prob = new ArrayList<ArrayList<Double>>();
+		key = 1;
 		
 		for(int i=0 ; i < 12 ; ++i)
 			prob.add(new ArrayList<Double>());
@@ -27,8 +29,6 @@ public class MusicAnalyzer
 			for(int i=0 ; i < 12 ; ++i)
 				list.add(0.0);
 		}
-		
-		analyze();
 	}
 	
 	/**
@@ -39,6 +39,23 @@ public class MusicAnalyzer
 	public ArrayList<Double> getProbability(int note)
 	{
 		return prob.get(note);
+	}
+	
+	/**
+	 * @return Integer representing key signature
+	 */
+	public int getKey()
+	{
+		return key;
+	}
+	
+	/**
+	 * Sets key signature to the integer passed in.
+	 * @param newkey  new key signature
+	 */
+	public void setKey(int newkey)
+	{
+		key = newkey;
 	}
 	
 	/**
@@ -54,7 +71,14 @@ public class MusicAnalyzer
 		char[] music;
 		double C = 0, Csharp = 0, Dflat = 0, D = 0, Dsharp = 0, Eflat = 0, E = 0, F = 0, Fsharp = 0, 
 			   Gflat = 0, G = 0, Gsharp = 0, Aflat = 0, A = 0, Asharp = 0, Bflat = 0, B = 0;
-		Paths midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs", "*.mid");
+		Paths midis = new Paths();
+		
+		switch(key)
+		{
+			case 1:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
+				break;
+		}
 		
 		//Run analysis on each MIDI file
 		for(File midi : midis.getFiles())

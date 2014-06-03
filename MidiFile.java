@@ -1,8 +1,11 @@
 import org.jfugue.*;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileWriter;
+import javax.sound.midi.InvalidMidiDataException;
 
 /**
  * Generate a production with a context-free L-system,
@@ -41,9 +44,9 @@ public class MidiFile
 				bufferR.append("\t\t" + lsysalpha.get(i) + ": " + lsysrules.get(i) + "\r\n");
 			
 			System.out.println("L-System:\r\n\tAlphabet: " + bufferA.toString() + "\r\n\tAxiom: " + lsys.getAxiom() + "\r\n\tRules:\r\n" + bufferR.toString() + "\r\n\r\nTempo: " + scoreGen.getTempo() + "\r\nKey Signature: " + scoreGen.getKey());
-			System.out.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Change tempo\r\n8: Exit");
+			System.out.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Change tempo\r\n8: Produce MusicXML for a MIDI file\r\n9: Exit");
 			
-			while(opt < 1 || opt > 8)
+			while(opt < 1 || opt > 9)
 			{
 				try
 				{
@@ -100,7 +103,7 @@ public class MidiFile
 							
 							while(true)
 							{
-								System.out.print("1 to replay, 2 to save as MIDI file, and anything else return to menu: ");
+								System.out.print("1 to replay, 2 to save as MIDI file & MusicXML, and anything else return to menu: ");
 								
 								String re = scan.next();
 								
@@ -109,17 +112,26 @@ public class MidiFile
 								
 								else if(re.equals("2"))
 								{
-									System.out.print("\r\nEnter name for MIDI file: ");
+									System.out.print("\r\nEnter name for file: ");
 									String file = scan.next();
+									
+									MusicStringParser parser = new MusicStringParser();
+									MusicXmlRenderer renderer = new MusicXmlRenderer();
+									
+									parser.addParserListener(renderer);
+									parser.parse(pattern);
 									
 									try
 									{
 										player.saveMidi(pattern, new File(file + ".mid"));
-										System.out.println("File saved successfully.\r\n");
+										/*FileWriter filewriter = new FileWriter(new File(file + ".xml"));
+										filewriter.write(renderer.getMusicXMLString());
+										filewriter.close();*/
+										System.out.println("MIDI & MusicXML files saved successfully.\r\n");
 									}
 									catch(IOException e)
 									{
-										System.out.println("Error saving Midi file: returning to menu.");
+										System.out.println("Error saving Midi & MusicXML files: returning to menu.");
 									}
 								}
 								
@@ -168,14 +180,23 @@ public class MidiFile
 									System.out.print("\r\nEnter name for MIDI file: ");
 									String file = scan.next();
 									
+									MusicStringParser parser = new MusicStringParser();
+									MusicXmlRenderer renderer = new MusicXmlRenderer();
+									
+									parser.addParserListener(renderer);
+									parser.parse(pattern);
+									
 									try
 									{
 										player.saveMidi(pattern, new File(file + ".mid"));
-										System.out.println("File saved successfully.\r\n");
+										/*FileWriter filewriter = new FileWriter(new File(file + ".xml"));
+										filewriter.write(renderer.getMusicXMLString());
+										filewriter.close();*/
+										System.out.println("MIDI & MusicXML files saved successfully.\r\n");
 									}
 									catch(IOException e)
 									{
-										System.out.println("Error saving Midi file.");
+										System.out.println("Error saving Midi & MusicXML files: returning to menu.");
 									}
 								}
 								
@@ -225,14 +246,23 @@ public class MidiFile
 									System.out.print("\r\nEnter name for MIDI file: ");
 									String file = scan.next();
 									
+									MusicStringParser parser = new MusicStringParser();
+									MusicXmlRenderer renderer = new MusicXmlRenderer();
+									
+									parser.addParserListener(renderer);
+									parser.parse(pattern);
+									
 									try
 									{
 										player.saveMidi(pattern, new File(file + ".mid"));
-										System.out.println("File saved successfully.\r\n");
+										FileWriter filewriter = new FileWriter(new File(file + ".xml"));
+										filewriter.write(renderer.getMusicXMLString());
+										filewriter.close();
+										System.out.println("MIDI & MusicXML files saved successfully.\r\n");
 									}
 									catch(IOException e)
 									{
-										System.out.println("Error saving Midi file: returning to menu.");
+										System.out.println("Error saving Midi & MusicXML files: returning to menu.");
 									}
 								}
 								
@@ -424,10 +454,39 @@ public class MidiFile
 					scoreGen.setTempo(t);
 					break;
 					
-				//Exit program
+				//Produce MusicXML from MIDI file
 				case 8:
+					System.out.print("Enter name of MIDI file: ");
+					String midi = scan.next();
+					
+					try
+					{
+						Pattern pat = player.loadMidi(new File(midi + ".mid"));
+						MidiParser parser = new MidiParser();
+						MusicXmlRenderer renderer = new MusicXmlRenderer();
+						
+						parser.addParserListener(renderer);
+						parser.parse(player.getSequence(pat));
+						
+						/*FileWriter writer = new FileWriter(midi + ".xml");
+						writer.write(renderer.getMusicXMLString());
+						writer.close();*/
+					}
+					catch(InvalidMidiDataException e)
+					{
+						System.out.println(e.toString());
+					}
+					catch(IOException e)
+					{
+						System.out.println(e.toString());
+					}
+
+					break;	
+					
+				//Exit program
+				case 9:
 					exit = true;
-					break;					
+					break;
 			}
 		}
 		

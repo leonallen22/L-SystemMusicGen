@@ -7,16 +7,16 @@ import java.util.ArrayList;
  */
 public class ScoreGenerator
 {
-	private Turtle turtle;																						//Turtle to keep track of "drawing" actions
-	private MusicAnalyzer analyzer;																				//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
-	private int keySig;																							//Stores current key signature
-	private int tempo;																							//Stores tempo for music to be played
-	private int degree;																							//Represents the degree of the current pitch in the given key signature
-	private int prevDegree;
-	private int upperNoteB;
-	private int lowerNoteB;
-	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};			//Stores key signatures
-	private String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};	//Stores all possible notes
+	private Turtle turtle;																								//Turtle to keep track of "drawing" actions
+	private MusicAnalyzer analyzer;																						//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
+	private int keySig;																									//Stores current key signature
+	private int tempo;																									//Stores tempo for music to be played
+	private int degree;																									//Represents the degree of the current pitch in the current key signature
+	private int prevDegree;																								//Represents the degree of the previous pitch in the current key signature
+	private int upperNoteB;																								//The upper bound of the pitch
+	private int lowerNoteB;																								//The lower bound of the pitch
+	private static String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};				//Stores key signatures
+	private static String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};	//Stores all possible notes
 
 	/**
 	 * Default Constructor.
@@ -79,7 +79,7 @@ public class ScoreGenerator
 	 */
 	public String getKey()
 	{
-		return this.keySigs[this.keySig-1];
+		return keySigs[this.keySig-1];
 	}
 
 	/**

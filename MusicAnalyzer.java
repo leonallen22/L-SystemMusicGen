@@ -12,7 +12,7 @@ import javax.sound.midi.InvalidMidiDataException;
 public class MusicAnalyzer
 {
 	private ArrayList<ArrayList<Double>> prob;			//Markov chain: stores the probability vector for each note
-	private ArrayList<ArrayList<Double>> secondProb;	//Markov chain: stores the probability vector for each combination of the current note and immediately preceding note
+	private ArrayList<ArrayList<ArrayList<Double>>> secondProb;	//Markov chain: stores the probability vector for each combination of the current note and immediately preceding note
 	private int key;
 	
 	/**
@@ -21,13 +21,19 @@ public class MusicAnalyzer
 	public MusicAnalyzer()
 	{
 		prob = new ArrayList<ArrayList<Double>>();
-		secondProb = new ArrayList<ArrayList<Double>>();
+		secondProb = new ArrayList<ArrayList<ArrayList<Double>>>();
 		key = 1;
 		
 		for(int i=0 ; i < 12 ; ++i)
 		{
 			prob.add(new ArrayList<Double>());
-			secondProb.add(new ArrayList<Double>());
+			secondProb.add(new ArrayList<ArrayList<Double>>());
+		}
+		
+		for(ArrayList<ArrayList<Double>> list : secondProb)
+		{
+			for(int i=0 ; i < 12 ; ++i)
+				list.add(new ArrayList<Double>());
 		}
 		
 		for(ArrayList<Double> list : prob)
@@ -36,10 +42,13 @@ public class MusicAnalyzer
 				list.add(0.0);
 		}
 		
-		for(ArrayList<Double> list : secondProb)
+		for(ArrayList<ArrayList<Double>> list : secondProb)
 		{
-			for(int i=0 ; i < 144 ; ++i)
-				list.add(0.0);
+			for(ArrayList<Double> x : list)
+			{
+				for(int i=0 ; i < 12 ; ++i)
+					x.add(0.0);
+			}
 		}
 	}
 	
@@ -55,7 +64,7 @@ public class MusicAnalyzer
 	
 	public ArrayList<Double> getSecondProb(int prevnote, int note)
 	{
-		return secondProb.get(note + 12*prevnote);
+		return secondProb.get(note).get(prevnote);
 	}
 	
 	/**
@@ -358,6 +367,315 @@ public class MusicAnalyzer
 				x = list.get(l);
 				list.set(l, (x/sum));
 			}
+		}
+	}
+	
+	/**
+	 * Performs an analysis of the MIDI files in the MIDIs folder. Based on the given MIDI files
+	 * the method will generate a second-order Markov Chain which will give the likelihood of a note being
+	 * chosen based on the previous two notes.
+	 */
+	public void analyzeSecondOrder()
+	{
+		Player player = new Player();
+		ArrayList<Double> note;				//Temporarily stores musical data to calculate probabilities
+		int[] prevnotes = {-1, -1};
+		String musicstring = "";
+		char[] music;						//Stores music from MIDI files
+		Paths midis = new Paths();			//Used to get all MIDIs from a directory
+		
+		switch(key)
+		{
+			case 1:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
+				break;
+		}
+		
+		//Run analysis on each MIDI file
+		for(File midi : midis.getFiles())
+		{
+			try
+			{
+				Pattern pat = player.loadMidi(midi);
+				musicstring = pat.getMusicString();
+			}
+			catch(InvalidMidiDataException e)
+			{
+				System.out.println(e.toString());
+			}
+			catch(IOException e)
+			{
+				System.out.println(e.toString());
+			}
+			
+			music = musicstring.toCharArray();
+			
+			for(int i=0 ; i < music.length ; ++i)
+			{
+				if(prevnotes[0] != -1 && prevnotes[1] != -1)
+					note = secondProb.get(prevnotes[1]).get(prevnotes[0]);
+				
+				else
+				{
+					note = new ArrayList<Double>();
+					
+					for(int j=0 ; j < 12 ; ++j)
+						note.add(0.0);
+				}
+				
+				switch(music[i])
+				{
+					case 'C':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == '#')
+							note.set(1, note.get(1)+1);
+						
+						else
+							note.set(0, note.get(0)+1);
+						break;
+						
+					case 'D':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == 'b')
+							note.set(1, note.get(1)+1);
+
+						
+						else if(music[i+1] == '#')
+							note.set(3, note.get(3)+1);
+						
+						else
+							note.set(2, note.get(2)+1);
+						break;
+						
+					case 'E':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == 'b')
+							note.set(3, note.get(3)+1);
+						
+						else
+							note.set(4, note.get(4)+1);
+
+						break;
+						
+					case 'F':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == '#')
+							note.set(6, note.get(6)+1);
+
+						
+						else
+							note.set(5, note.get(5)+1);
+
+						break;
+						
+					case 'G':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == 'b')
+							note.set(6, note.get(6)+1);
+						
+						else if(music[i+1] == '#')
+							note.set(8, note.get(8)+1);
+						
+						else
+							note.set(7, note.get(7)+1);
+						break;
+						
+					case 'A':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == 'b')
+							note.set(8, note.get(8)+1);
+						
+						else if(music[i+1] == '#')
+							note.set(10, note.get(10)+1);
+						
+						else
+							note.set(9, note.get(9)+1);
+						break;
+						
+					case 'B':
+						if(prevnotes[0] == -1 || prevnotes[1] == -1)
+							break;
+						
+						else if(music[i+1] == 'b')
+							note.set(10, note.get(10)+1);
+						
+						else
+							note.set(11, note.get(11)+1);
+						break;
+				}
+				
+				switch(music[i])
+				{
+					case 'C':
+						if(music[i+1] == '#')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 1;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 0;
+							++i;
+						}
+						break;
+						
+					case 'D':
+						if(music[i+1] == 'b')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 1;
+							i = i + 2;
+						}
+						
+						else if(music[i+1] == '#')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 3;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 2;
+							++i;
+						}
+						break;
+						
+					case 'E':
+						if(music[i+1] == 'b')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 3;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 4;
+							++i;
+						}
+						break;
+						
+					case 'F':
+						if(music[i+1] == '#')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 6;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 5;
+							++i;
+						}
+						break;
+						
+					case 'G':
+						if(music[i+1] == 'b')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 6;
+							i = i + 2;
+						}
+						
+						else if(music[i+1] == '#')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 8;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 7;
+							++i;
+						}
+						break;
+						
+					case 'A':
+						if(music[i+1] == 'b')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 8;
+							i = i + 2;
+						}
+						
+						else if(music[i+1] == '#')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 10;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 9;
+							++i;
+						}
+						break;
+						
+					case 'B':
+						if(music[i+1] == 'b')
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 10;
+							i = i + 2;
+						}
+						
+						else
+						{
+							prevnotes[1] = prevnotes[0];
+							prevnotes[0] = 11;
+							++i;
+						}
+						break;
+				}
+					
+			}
+		}
+		
+		//Iterate through each note's probability vector and calculate the probability of a given note being chosen
+		for(int k=0 ; k < 12 ; ++k)
+		{
+			for(int l=0 ; l < 12 ; ++l)
+			{
+				ArrayList<Double> list = secondProb.get(k).get(l);
+				double x = 0.0;
+				double sum = 0.0;
+							
+				for(Double y : list)
+					sum += y;
+				
+				for(int m=0 ; m < list.size() ; ++m)
+				{
+					x = list.get(m);
+					list.set(m, (x/sum));
+					System.out.print(list.get(m) + " ");
+				}
+				System.out.println();
+			}
+			System.out.println("\r\n");
 		}
 	}
 }

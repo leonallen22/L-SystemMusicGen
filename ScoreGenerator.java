@@ -15,18 +15,15 @@ public class ScoreGenerator
 	private int prevmove;																						//Represents the immediately preceding contour of the L-System
 	private int upperNoteB;
 	private int lowerNoteB;
-	private char inc;
-	private char dec;
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};			//Stores key signatures
 	private String[] notes = {"C", "C#/Db", "D", "D#/Eb", "E", "F", "F#/Gb", "G", "G#/Ab", "A", "A#/Bb", "B"};	//Stores all possible notes
-	
+
 	/**
 	 * Default Constructor.
 	 */
 	public ScoreGenerator()
 	{
 		analyzer = new MusicAnalyzer();
-		analyzer.analyze();
 		turtle = new Turtle();
 		keySig = 1;
 		tempo = 120;
@@ -34,10 +31,8 @@ public class ScoreGenerator
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
-		inc = '-';
-		dec = '+';
 	}
-	
+
 	/**
 	 * Constructor.
 	 * @param angle the angle at which the turtle should start
@@ -45,7 +40,6 @@ public class ScoreGenerator
 	public ScoreGenerator(int angle)
 	{
 		analyzer = new MusicAnalyzer();
-		analyzer.analyze();
 		turtle = new Turtle();
 		turtle.pushAngle(angle);
 		keySig = 1;
@@ -54,10 +48,8 @@ public class ScoreGenerator
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
-		inc = '-';
-		dec = '+';
 	}
-	
+
 	/**
 	 * Constructor.
 	 * @param angle the angle at which the turtle should start
@@ -67,25 +59,22 @@ public class ScoreGenerator
 	public ScoreGenerator(int angle, int key, int tempo)
 	{
 		analyzer = new MusicAnalyzer();
-		analyzer.analyze();
 		turtle = new Turtle();
 		turtle.pushAngle(angle);
-		
+
 		if(key >= 1 && key <= 15)
 			this.keySig = key;
 		else
 			this.keySig = 1;
-		
+
 		this.tempo = tempo;
-		
+
 		degree = 1;
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
-		inc = '-';
-		dec = '+';
 	}
-	
+
 	/**
 	 * @return Value of the key signature
 	 */
@@ -93,7 +82,7 @@ public class ScoreGenerator
 	{
 		return this.keySigs[this.keySig-1];
 	}
-	
+
 	/**
 	 * @return Returns value of tempo
 	 */
@@ -101,7 +90,7 @@ public class ScoreGenerator
 	{
 		return this.tempo;
 	}
-	
+
 	/**
 	 * Sets the value of keySig to the integer accepted.
 	 * @param key the new key signature
@@ -109,14 +98,19 @@ public class ScoreGenerator
 	public void setKey(int key)
 	{
 		if(key >= 1 && key <=12)
-			this.keySig = key;
+		{
+			if(key != this.keySig)
+			{
+				this.keySig = key;
+				analyzer.setKey(key);
+			}
+		}
 		else
+		{
 			this.keySig = 1;
-		
-		analyzer.setKey(key);
-		analyzer.analyze();
+		}
 	}
-	
+
 	/**
 	 * Sets the value of tempo to the integer accepted.
 	 * @param tempo the new tempo
@@ -125,22 +119,7 @@ public class ScoreGenerator
 	{
 		this.tempo = tempo;
 	}
-	
-	public void switchInc()
-	{
-		if(inc == '-')
-		{
-			inc = '+';
-			dec = '-';
-		}
-		
-		else
-		{
-			inc = '-';
-			dec = '+';
-		}
-	}
-	
+
 	/**
 	 * Accepts an integer representing a note value, and increments it a half step.
 	 * @param note the note to be modified
@@ -150,7 +129,7 @@ public class ScoreGenerator
 	{
 		return note+1;
 	}
-	
+
 	/**
 	 * Accepts an integer representing a note value, and decrements it a half step.
 	 * @param note the note to be modified
@@ -160,7 +139,7 @@ public class ScoreGenerator
 	{
 		return note-1;
 	}
-	
+
 	/**
 	 * Accepts an integer representing a note value, and increments it a whole step.
 	 * @param note the note to be modified
@@ -170,7 +149,7 @@ public class ScoreGenerator
 	{
 		return note+2;
 	}
-	
+
 	/**
 	 * Accepts an integer representing a note value, and decrements it a whole step.
 	 * @param note the note to be modified
@@ -180,7 +159,7 @@ public class ScoreGenerator
 	{
 		return note-2;
 	}
-	
+
 	/**
 	 * Accepts an integer representing a note value, and takes it up an octave.
 	 * @param note the note to be modified
@@ -190,7 +169,7 @@ public class ScoreGenerator
 	{
 		return note+12;
 	}
-	
+
 	/**
 	 * Accepts an integer representing a note value, and decrements it an octave.
 	 * @param note the note to be modified
@@ -200,7 +179,7 @@ public class ScoreGenerator
 	{
 		return note-12;
 	}
-	
+
 	/**
 	 * Resets turtle to defaults between consecutive iterations.
 	 */
@@ -208,7 +187,7 @@ public class ScoreGenerator
 	{
 		turtle.reset();
 	}
-	
+
 	/**
 	 * Accepts a string and parses through it to generate a pattern properly formatted for JFugue.
 	 * @param production the L-System production to be parsed
@@ -218,63 +197,63 @@ public class ScoreGenerator
 	public Pattern genScore(String production, boolean markov)
 	{
 		String pat = "";
-		
+
 		switch(this.keySig)
 		{
 			case 1:
 				pat = generate(production, 48, markov);
 				break;
-			
+
 			case 2:
 				pat = generate(production, 55, markov);
 				break;
-			
+
 			case 3:
 				pat = generate(production, 50, markov);
 				break;
-			
+
 			case 4:
 				pat = generate(production, 57, markov);
 				break;
-			
+
 			case 5:
 				pat = generate(production, 52, markov);
 				break;
-			
+
 			case 6:
 				pat = generate(production, 59, markov);
 				break;
-			
+
 			case 7:
 				pat = generate(production, 54, markov);
 				break;
-			
+
 			case 8:
 				pat = generate(production, 49, markov);
 				break;
-			
+
 			case 9:
 				pat = generate(production, 56, markov);
 				break;
-			
+
 			case 10:
 				pat = generate(production, 51, markov);
 				break;
-			
+
 			case 11:
 				pat = generate(production, 58, markov);
 				break;
-			
+
 			case 12:
 				pat = generate(production, 53, markov);
 				break;
 		}
-		
+
 		Pattern pattern = new Pattern(pat);
-		
+
 		return pattern;
 	}
-	
+
 	/**
 	 * Accepts a production string and 4 integers which indicate where half steps should be made to keep music in key; generates music from the production.
 	 * @param production the L-System production to be parsed
@@ -292,7 +271,7 @@ public class ScoreGenerator
 		char[] prod = production.toCharArray();								//Array of characters from the production
 		turtle.popY();
 		turtle.pushY(tonic);
-		
+
 		//Step through each symbol in production
 		for(int i=0 ; i < prod.length ; ++i)
 		{
@@ -300,55 +279,49 @@ public class ScoreGenerator
 			{
 				//Increment turtle's yaw
 				case '-':
-					if(inc == '-')
-						turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
-					else
-						turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
+					turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
 					break;
-				
+
 				//Decrement turtle's yaw
 				case '+':
-					if(dec == '+')
-						turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
-					else
-						turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
+					turtle.pushYaw(turtle.popYaw() - turtle.getAngle());
 					break;
-				
+
 				//Turtle draws a line
 				case 'g':
 					if(!markov)
 						buffer = drawLine(buffer, true);
-					
+
 					else
 						buffer = drawMarkov(buffer, true);
 					break;
-				
+
 				//Turtle moves without drawing
 				case 'f':
 					if(!markov)
 						buffer = drawLine(buffer, false);
-					
+
 					else
 						buffer = drawMarkov(buffer, false);
 					break;
-					
+
 				case 'r':
 					int direction = turtle.getDirection();
-					
+
 					//If turtle is horizontal, record line as a rest
 					if(direction == 1 || direction == 3)
 					{
 						String str = buffer.toString();
 						String regex = ".*Rs+";
-						
+
 						if(str.matches(regex))
 							buffer.append("s");
-						
+
 						else
 							buffer.append(" Rs");
 					}
 					break;
-					
+
 				case '[':
 					if(voices < 16)
 					{
@@ -358,7 +331,7 @@ public class ScoreGenerator
 							buffer.append(" L" + layers + " I80 ");
 							++layers;
 						}
-						
+
 						else
 						{
 							turtle.saveState();
@@ -368,7 +341,7 @@ public class ScoreGenerator
 						}
 					}
 					break;
-					
+
 				case ']':
 					if(voices >= 1)
 					{
@@ -378,7 +351,7 @@ public class ScoreGenerator
 							--layers;
 							buffer.append(" L" + (layers-1) + " ");
 						}
-						
+
 						else if(voices > 1)
 						{
 							turtle.restoreState();
@@ -388,21 +361,21 @@ public class ScoreGenerator
 						}
 					}
 					break;
-					
+
 				case '#':
 					color = turtle.popColor();
 					int hueChange = turtle.getHueChange();
 					turtle.pushColor(color + hueChange);
-					
+
 					if(prod[i+2] != '#' && prod[i+2] != '@')
 						buffer.append(" X1=" + (750-turtle.getColor())/3);
 					break;
-					
+
 				case '@':
 					color = turtle.popColor();
 					int hueC = turtle.getHueChange();
 					turtle.pushColor(color - hueC);
-					
+
 					if(prod[i+2] != '#' && prod[i+2] != '@')
 						buffer.append(" X1=" + (750-turtle.getColor())/3);
 					break;
@@ -410,7 +383,7 @@ public class ScoreGenerator
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Simulates drawing a line with the turtle and maps the action directly onto the music score.
 	 * @param buffer stores the music score as it is being built
@@ -421,24 +394,24 @@ public class ScoreGenerator
 	{
 		int pitch = turtle.getY();
 		int direction = turtle.getDirection();
-		
+
 		//If turtle is horizontal, record line as a note
 		if((direction == 1 || direction == 3) && draw)
 		{
 			String str = buffer.toString();
 			String regex = ".*\\[" + pitch + "\\]s+";
-			
+
 			if(str.matches(regex))
 				buffer.append("s");
-			
+
 			else
 				buffer.append(" [" + pitch + "]s");
 		}
-		
-		
+
+
 		else if(direction == 1 || direction == 3)
 			buffer.append(" [" + pitch + "]s");
-		
+
 		//If turtle facing upward, record line as a change up in pitch
 		else if(direction == 2)
 		{
@@ -447,26 +420,25 @@ public class ScoreGenerator
 				turtle.popY();
 				turtle.pushY(upHalfStep(pitch));
 			}
-			
+
 			else
 			{
 				turtle.popY();
 				turtle.pushY(upWholeStep(pitch));
 			}
-			
+
 			++degree;
-			
+
 			if(turtle.getY() > upperNoteB)
 			{
-				switchInc();
-				//pitch = turtle.popY();
-				//turtle.pushY(pitch - 24);
+				pitch = turtle.popY();
+				turtle.pushY(pitch - 24);
 			}
-			
+
 			if(degree == 8)
 				degree = 1;
 		}
-		
+
 		//If turtle facing downward, record line as a change down in pitch
 		else if(direction == 4)
 		{
@@ -475,29 +447,28 @@ public class ScoreGenerator
 				turtle.popY();
 				turtle.pushY(downHalfStep(pitch));
 			}
-			
+
 			else
 			{
 				turtle.popY();
 				turtle.pushY(downWholeStep(pitch));
 			}
-			
+
 			--degree;
-			
+
 			if(turtle.getY() < lowerNoteB)
 			{
-				switchInc();
-				//pitch = turtle.popY();
-				//turtle.pushY(pitch + 24);
+				pitch = turtle.popY();
+				turtle.pushY(pitch + 24);
 			}
-			
+
 			if(degree == 0)
 				degree = 7;
 		}
-		
+
 		return buffer;
 	}
-	
+
 	/**
 	 * Uses L-System as a guide instead of mapping the system directly onto the score. Uses a first-order Markov Chain to choose notes as the system progresses.
 	 * @param buffer stores the music score as it is being built
@@ -516,7 +487,7 @@ public class ScoreGenerator
 		String key = this.getKey();
 		int note = -1;
 		int noteDegree = 0;
-		
+
 		//Find the tonic of the current key in list of notes and store its integer representation
 		for(int l=0 ; l < notes.length ; ++l)
 		{
@@ -527,118 +498,116 @@ public class ScoreGenerator
 				break;
 			}
 		}
-		
+
 		//Find the note corresponding to the current degree
 		while(noteDegree != degree)
 		{
 			if(noteDegree == 3 || noteDegree == 7)
 				note = upHalfStep(note);
-			
+
 			else
 				note = upWholeStep(note);
-			
+
 			++noteDegree;
 		}
-		
+
 		list = analyzer.getProbability(note);
-		
+
 		for(int l=0 ; l < list.size() ; ++l)
 		{
 			range += list.get(l);
-			
+
 			if(rand <= range)
 			{
 				String prevnote = notes[note];
 				String nextnote = notes[l];
-				
+
 				//If turtle is horizontal, no note change occurs
 				if((direction == 1 || direction == 3) && draw)
 				{
 					String str = buffer.toString();
 					String regex = ".*\\[" + pitch + "\\]s+";
-					
+
 					if(str.matches(regex))
 						buffer.append("s");
-					
+
 					else
 						buffer.append(" [" + pitch + "]s");
-					
+
 					return buffer;
 				}
-				
+
 				else if(direction == 1 || direction == 3)
 					buffer.append(" [" + pitch + "]s");
-								
+
 				//If turtle facing upward, record line as a change up in pitch
 				else if(direction == 2)
 				{
 					while(!prevnote.equals(nextnote))
 					{
 						note = upHalfStep(note);
-							
+
 						if(note > 11)
 							note = 0;
-							
+
 						prevnote = notes[note];
 						pitch = upHalfStep(pitch);
 						turtle.popY();
 						turtle.pushY(pitch);
-						
+
 						++degree;
-						
+
 						if(turtle.getY() > upperNoteB)
 						{
-							switchInc();
-							//pitch = turtle.popY();
-							//turtle.pushY(pitch - 24);
+							pitch = turtle.popY();
+							turtle.pushY(pitch - 24);
 						}
-						
+
 						if(degree == 8)
 							degree = 1;
 					}
-					
+
 					buffer.append(" [" + pitch + "]s");
 				}
-				
+
 				//If turtle facing downward, record line as a change down in pitch
 				else if(direction == 4)
 				{
 					while(!prevnote.equals(nextnote))
 					{
 						note = downHalfStep(note);
-							
+
 						if(note < 0)
 							note = 11;
-							
+
 						prevnote = notes[note];
 						pitch = downHalfStep(pitch);
 						turtle.popY();
 						turtle.pushY(pitch);
-						
+
 						--degree;
-						
+
 						if(turtle.getY() < lowerNoteB)
 						{
-							switchInc();
-							//pitch = turtle.popY();
-							//turtle.pushY(pitch + 24);
+							pitch = turtle.popY();
+							turtle.pushY(pitch + 24);
 						}
-						
+
 						if(degree == 0)
 							degree = 7;
 					}
-					
+
 					buffer.append(" [" + pitch + "]s");
 				}
-				
+
 				chosen = true;
 				break;
 			}
-			
+
 			else if(l == list.size() && !chosen)
 				buffer.append(" [" + pitch + "]s");
 		}
-		
+
 		return buffer;
 	}
 }

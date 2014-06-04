@@ -24,32 +24,9 @@ public class MusicAnalyzer
 		secondProb = new ArrayList<ArrayList<ArrayList<Double>>>();
 		key = 1;
 		
-		for(int i=0 ; i < 12 ; ++i)
-		{
-			prob.add(new ArrayList<Double>());
-			secondProb.add(new ArrayList<ArrayList<Double>>());
-		}
-		
-		for(ArrayList<ArrayList<Double>> list : secondProb)
-		{
-			for(int i=0 ; i < 12 ; ++i)
-				list.add(new ArrayList<Double>());
-		}
-		
-		for(ArrayList<Double> list : prob)
-		{
-			for(int i=0 ; i < 12 ; ++i)
-				list.add(0.0);
-		}
-		
-		for(ArrayList<ArrayList<Double>> list : secondProb)
-		{
-			for(ArrayList<Double> x : list)
-			{
-				for(int i=0 ; i < 12 ; ++i)
-					x.add(0.0);
-			}
-		}
+		resetProbabilities();
+		analyze();
+		analyzeSecondOrder();
 	}
 	
 	/**
@@ -81,7 +58,51 @@ public class MusicAnalyzer
 	 */
 	public void setKey(int newkey)
 	{
-		key = newkey;
+		if(newkey != key)
+		{
+			if(newkey >= 1 && newkey <= 12)
+				key = newkey;
+			
+			else
+				key = 1;
+			
+			resetProbabilities();
+			analyze();
+			analyzeSecondOrder();
+		}
+	}
+	
+	public void resetProbabilities()
+	{
+		prob.clear();
+		secondProb.clear();
+		
+		for(int i=0 ; i < 12 ; ++i)
+		{
+			prob.add(new ArrayList<Double>());
+			secondProb.add(new ArrayList<ArrayList<Double>>());
+		}
+		
+		for(ArrayList<Double> list : prob)
+		{
+			for(int i=0 ; i < 12 ; ++i)
+				list.add(0.0);
+		}
+		
+		for(ArrayList<ArrayList<Double>> list : secondProb)
+		{
+			for(int i=0 ; i < 12 ; ++i)
+				list.add(new ArrayList<Double>());
+		}
+		
+		for(ArrayList<ArrayList<Double>> list : secondProb)
+		{
+			for(ArrayList<Double> x : list)
+			{
+				for(int i=0 ; i < 12 ; ++i)
+					x.add(0.0);
+			}
+		}
 	}
 	
 	/**
@@ -102,6 +123,51 @@ public class MusicAnalyzer
 			case 1:
 				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
 				break;
+				
+			case 2:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");
+				break;
+				
+			case 3:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DMajor", "*.mid");
+				break;
+				
+			case 4:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AMajor", "*.mid");
+				break;
+				
+			case 5:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EMajor", "*.mid");
+				break;
+				
+			case 6:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BMajor", "*.mid");
+				break;
+				
+			case 7:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/F#Major", "*.mid");
+				break;
+				
+			case 8:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DbMajor", "*.mid");
+				break;
+				
+			case 9:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AbMajor", "*.mid");
+				break;
+				
+			case 10:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EbMajor", "*.mid");
+				break;
+				
+			case 11:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BbMajor", "*.mid");
+				break;
+				
+			case 12:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/FMajor", "*.mid");
+				break;
+				
 		}
 		
 		//Run analysis on each MIDI file
@@ -365,7 +431,9 @@ public class MusicAnalyzer
 			for(int l=0 ; l < list.size() ; ++l)
 			{
 				x = list.get(l);
-				list.set(l, (x/sum));
+				
+				if(sum != 0)
+					list.set(l, (x/sum));
 			}
 		}
 	}
@@ -388,6 +456,50 @@ public class MusicAnalyzer
 		{
 			case 1:
 				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
+				break;
+				
+			case 2:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");
+				break;
+				
+			case 3:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DMajor", "*.mid");
+				break;
+				
+			case 4:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AMajor", "*.mid");
+				break;
+				
+			case 5:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EMajor", "*.mid");
+				break;
+				
+			case 6:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BMajor", "*.mid");
+				break;
+				
+			case 7:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/F#Major", "*.mid");
+				break;
+				
+			case 8:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DbMajor", "*.mid");
+				break;
+				
+			case 9:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AbMajor", "*.mid");
+				break;
+				
+			case 10:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EbMajor", "*.mid");
+				break;
+				
+			case 11:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BbMajor", "*.mid");
+				break;
+				
+			case 12:
+				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/FMajor", "*.mid");
 				break;
 		}
 		
@@ -670,12 +782,11 @@ public class MusicAnalyzer
 				for(int m=0 ; m < list.size() ; ++m)
 				{
 					x = list.get(m);
-					list.set(m, (x/sum));
-					System.out.print(list.get(m) + " ");
+					
+					if(sum != 0)
+						list.set(m, (x/sum));
 				}
-				System.out.println();
 			}
-			System.out.println("\r\n");
 		}
 	}
 }

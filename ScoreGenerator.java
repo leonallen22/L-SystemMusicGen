@@ -13,7 +13,6 @@ public class ScoreGenerator
 	private int tempo;																							//Stores tempo for music to be played
 	private int degree;																							//Represents the degree of the current pitch in the given key signature
 	private int prevDegree;
-	private int prevmove;																						//Represents the immediately preceding contour of the L-System
 	private int upperNoteB;
 	private int lowerNoteB;
 	private String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};			//Stores key signatures
@@ -30,7 +29,6 @@ public class ScoreGenerator
 		tempo = 120;
 		degree = 1;
 		prevDegree = -1;
-		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
 	}
@@ -48,7 +46,6 @@ public class ScoreGenerator
 		tempo = 120;
 		degree = 1;
 		prevDegree = -1;
-		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
 	}
@@ -73,7 +70,6 @@ public class ScoreGenerator
 		this.tempo = tempo;
 
 		degree = 1;
-		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
 	}

@@ -122,59 +122,7 @@ public class MusicAnalyzer
 		ArrayList<Double> note;
 		String musicstring = "";
 		char[] music;
-		Paths midis = new Paths();
-		
-		switch(key)
-		{
-			case 1:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
-				break;
-				
-			case 2:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");
-				break;
-				
-			case 3:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DMajor", "*.mid");
-				break;
-				
-			case 4:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AMajor", "*.mid");
-				break;
-				
-			case 5:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EMajor", "*.mid");
-				break;
-				
-			case 6:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BMajor", "*.mid");
-				break;
-				
-			case 7:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/F#Major", "*.mid");
-				break;
-				
-			case 8:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DbMajor", "*.mid");
-				break;
-				
-			case 9:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AbMajor", "*.mid");
-				break;
-				
-			case 10:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EbMajor", "*.mid");
-				break;
-				
-			case 11:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BbMajor", "*.mid");
-				break;
-				
-			case 12:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/FMajor", "*.mid");
-				break;
-				
-		}
+		Paths midis = getPath();
 		
 		//Run analysis on each MIDI file
 		for(File midi : midis.getFiles())
@@ -456,58 +404,7 @@ public class MusicAnalyzer
 		int[] prevnotes = {-1, -1};
 		String musicstring = "";
 		char[] music;						//Stores music from MIDI files
-		Paths midis = new Paths();			//Used to get all MIDIs from a directory
-		
-		switch(key)
-		{
-			case 1:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
-				break;
-				
-			case 2:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");
-				break;
-				
-			case 3:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DMajor", "*.mid");
-				break;
-				
-			case 4:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AMajor", "*.mid");
-				break;
-				
-			case 5:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EMajor", "*.mid");
-				break;
-				
-			case 6:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BMajor", "*.mid");
-				break;
-				
-			case 7:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/F#Major", "*.mid");
-				break;
-				
-			case 8:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DbMajor", "*.mid");
-				break;
-				
-			case 9:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AbMajor", "*.mid");
-				break;
-				
-			case 10:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EbMajor", "*.mid");
-				break;
-				
-			case 11:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BbMajor", "*.mid");
-				break;
-				
-			case 12:
-				midis = new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/FMajor", "*.mid");
-				break;
-		}
+		Paths midis = getPath();
 		
 		//Run analysis on each MIDI file
 		for(File midi : midis.getFiles())
@@ -793,6 +690,51 @@ public class MusicAnalyzer
 						list.set(m, (x/sum));
 				}
 			}
+		}
+	}
+	
+	public Paths getPath()
+	{
+		switch(key)
+		{
+			case 1:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
+				
+			case 2:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");
+				
+			case 3:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DMajor", "*.mid");
+				
+			case 4:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AMajor", "*.mid");
+				
+			case 5:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EMajor", "*.mid");
+				
+			case 6:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BMajor", "*.mid");
+				
+			case 7:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/F#Major", "*.mid");
+				
+			case 8:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/DbMajor", "*.mid");
+
+			case 9:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/AbMajor", "*.mid");
+				
+			case 10:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/EbMajor", "*.mid");
+				
+			case 11:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/BbMajor", "*.mid");
+				
+			case 12:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/FMajor", "*.mid");	
+				
+			default:
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
 		}
 	}
 }

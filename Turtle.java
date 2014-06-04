@@ -1,7 +1,7 @@
 import java.util.Stack;
 
 /** 
- * Turtle to simulate drawing to be interpreted, producing a musical score to be played.
+ * Simulates drawing to be interpreted by the ScoreGenerator, producing a musical score.
  * @author Harry Allen
  */
 public class Turtle

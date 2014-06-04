@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * Generate a production with a context-free L-system.
+ * Generates a production with a context-free L-system.
  * @author		Harry Allen
  */
 public class LSystem {

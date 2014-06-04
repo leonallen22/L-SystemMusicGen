@@ -2,7 +2,7 @@ import org.jfugue.Pattern;
 import java.util.ArrayList;
 
 /**
- * Generate a properly formatted score for use in JFugue from an L-system production.
+ * Generates a properly formatted score for use in JFugue from an L-system production.
  * @author		Harry Allen
  */
 public class ScoreGenerator

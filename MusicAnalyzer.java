@@ -6,12 +6,11 @@ import com.esotericsoftware.wildcard.*;
 import javax.sound.midi.InvalidMidiDataException;
 
 /**
- * Analyzes a series of MIDI files, producing a first-order Markov Chain of the probability of a note following a given note.
- * Currently must analyze again every time the key signature is changed.
+ * Analyzes a series of MIDI files, producing first-order and second-order Markov Chains which represent the probability of one note following another and one note following a sequence of two notes, respectively.
  */
 public class MusicAnalyzer
 {
-	private ArrayList<ArrayList<Double>> prob;			//Markov chain: stores the probability vector for each note
+	private ArrayList<ArrayList<Double>> prob;					//Markov chain: stores the probability vector for each note
 	private ArrayList<ArrayList<ArrayList<Double>>> secondProb;	//Markov chain: stores the probability vector for each combination of the current note and immediately preceding note
 	private int key;
 	
@@ -30,7 +29,6 @@ public class MusicAnalyzer
 	}
 	
 	/**
-	 * Returns the probability vector for the note passed as parameter.
 	 * @param note note of the probability vector to return
 	 * @return The probability vector for the note accepted as the parameter
 	 */

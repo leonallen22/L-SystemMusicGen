@@ -39,6 +39,11 @@ public class MusicAnalyzer
 		return prob.get(note);
 	}
 	
+	/**
+	 * @param prevnote  second to last note recorded in the score
+	 * @param note  last note recorded in the score
+	 * @return the probability vector based on the previous two notes recorded
+	 */
 	public ArrayList<Double> getSecondProb(int prevnote, int note)
 	{
 		return secondProb.get(note).get(prevnote);
@@ -53,7 +58,7 @@ public class MusicAnalyzer
 	}
 	
 	/**
-	 * Sets key signature to the integer passed in.
+	 * Sets key signature to the integer passed in, resets the probabilities, and analyzes MIDI files in the new key.
 	 * @param newkey  new key signature
 	 */
 	public void setKey(int newkey)
@@ -72,6 +77,9 @@ public class MusicAnalyzer
 		}
 	}
 	
+	/**
+	 * Resets all probability vectors to 0.0 in preparation for another call to analyze() and analyzeSecondOrder().
+	 */
 	public void resetProbabilities()
 	{
 		prob.clear();

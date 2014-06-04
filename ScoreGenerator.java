@@ -12,6 +12,7 @@ public class ScoreGenerator
 	private int keySig;																							//Stores current key signature
 	private int tempo;																							//Stores tempo for music to be played
 	private int degree;																							//Represents the degree of the current pitch in the given key signature
+	private int prevDegree;
 	private int prevmove;																						//Represents the immediately preceding contour of the L-System
 	private int upperNoteB;
 	private int lowerNoteB;
@@ -28,6 +29,7 @@ public class ScoreGenerator
 		keySig = 1;
 		tempo = 120;
 		degree = 1;
+		prevDegree = -1;
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
@@ -45,6 +47,7 @@ public class ScoreGenerator
 		keySig = 1;
 		tempo = 120;
 		degree = 1;
+		prevDegree = -1;
 		prevmove = 0;
 		upperNoteB = 95;
 		lowerNoteB = 36;
@@ -92,7 +95,7 @@ public class ScoreGenerator
 	}
 
 	/**
-	 * Sets the value of keySig to the integer accepted.
+	 * Sets the value of keySig and the key of the analyzer to the integer accepted. This forces the analyzer to reset and analyze MIDI files in the new key.
 	 * @param key the new key signature
 	 */
 	public void setKey(int key)
@@ -473,19 +476,15 @@ public class ScoreGenerator
 	 * Uses L-System as a guide instead of mapping the system directly onto the score. Uses a first-order Markov Chain to choose notes as the system progresses.
 	 * @param buffer stores the music score as it is being built
 	 * @param draw is the note to be treated as a tie
-	 * @param prevmove a basic representation of the contour of the L-System where a positive integer is an upward movement, a negative integer is a downward movement, and zero is a straight line
 	 * @return The StringBuffer with the necessary modifications made.
 	 */
 	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw)
 	{
 		int pitch = turtle.getY();
 		int direction = turtle.getDirection();
-		double range = 0.0;
-		double rand = Math.random();
-		boolean chosen = false;
-		ArrayList<Double> list;
 		String key = this.getKey();
 		int note = -1;
+		int nextnote = -1;
 		int noteDegree = 0;
 
 		//Find the tonic of the current key in list of notes and store its integer representation
@@ -511,103 +510,123 @@ public class ScoreGenerator
 			++noteDegree;
 		}
 
-		list = analyzer.getProbability(note);
+		//If turtle is horizontal, no note change occurs
+		if((direction == 1 || direction == 3) && draw)
+		{
+			String str = buffer.toString();
+			String regex = ".*\\[" + pitch + "\\]s+";
+
+			if(str.matches(regex))
+				buffer.append("s");
+
+			else
+				buffer.append(" [" + pitch + "]s");
+
+			return buffer;
+		}
+
+		else if(direction == 1 || direction == 3)
+			buffer.append(" [" + pitch + "]s");
+
+		//If turtle facing upward, record line as a change up in pitch
+		else if(direction == 2)
+		{
+			nextnote = getFirstOrderNote(note);
+			
+			if(nextnote != -1)
+			{
+				prevDegree = degree;
+					
+				while(note != nextnote)
+				{
+					note = upHalfStep(note);
+	
+					if(note > 11)
+						note = 0;
+	
+					pitch = upHalfStep(pitch);
+					turtle.popY();
+					turtle.pushY(pitch);
+	
+					++degree;
+	
+					if(turtle.getY() > upperNoteB)
+					{
+						pitch = turtle.popY();
+						turtle.pushY(pitch - 24);
+					}
+						
+					if(degree == 8)
+						degree = 1;
+				}
+			}
+
+			buffer.append(" [" + pitch + "]s");
+		}
+
+		//If turtle facing downward, record line as a change down in pitch
+		else if(direction == 4)
+		{
+			nextnote = getFirstOrderNote(note);
+			
+			if(nextnote != -1)
+			{
+				prevDegree = degree;
+					
+				while(note != nextnote)
+				{
+					note = downHalfStep(note);
+	
+					if(note < 0)
+						note = 11;
+	
+					pitch = downHalfStep(pitch);
+					turtle.popY();
+					turtle.pushY(pitch);
+	
+					--degree;
+					
+					if(turtle.getY() < lowerNoteB)
+					{
+						pitch = turtle.popY();
+						turtle.pushY(pitch + 24);
+					}
+	
+					if(degree == 0)
+						degree = 7;
+				}
+			}
+				
+			buffer.append(" [" + pitch + "]s");
+		}
+
+		return buffer;
+	}
+	
+	/**
+	 * Randomly chooses a note based on the probabilities provided by MusicAnalyzer
+	 * @param note  the last note in the score
+	 * @return The next note to be recorded represented as an integer
+	 */
+	private int getFirstOrderNote(int note)
+	{
+		ArrayList<Double> list = analyzer.getProbability(note);
+		double range = 0.0;
+		double rand = Math.random();
 
 		for(int l=0 ; l < list.size() ; ++l)
 		{
 			range += list.get(l);
 
 			if(rand <= range)
-			{
-				String prevnote = notes[note];
-				String nextnote = notes[l];
-
-				//If turtle is horizontal, no note change occurs
-				if((direction == 1 || direction == 3) && draw)
-				{
-					String str = buffer.toString();
-					String regex = ".*\\[" + pitch + "\\]s+";
-
-					if(str.matches(regex))
-						buffer.append("s");
-
-					else
-						buffer.append(" [" + pitch + "]s");
-
-					return buffer;
-				}
-
-				else if(direction == 1 || direction == 3)
-					buffer.append(" [" + pitch + "]s");
-
-				//If turtle facing upward, record line as a change up in pitch
-				else if(direction == 2)
-				{
-					while(!prevnote.equals(nextnote))
-					{
-						note = upHalfStep(note);
-
-						if(note > 11)
-							note = 0;
-
-						prevnote = notes[note];
-						pitch = upHalfStep(pitch);
-						turtle.popY();
-						turtle.pushY(pitch);
-
-						++degree;
-
-						if(turtle.getY() > upperNoteB)
-						{
-							pitch = turtle.popY();
-							turtle.pushY(pitch - 24);
-						}
-
-						if(degree == 8)
-							degree = 1;
-					}
-
-					buffer.append(" [" + pitch + "]s");
-				}
-
-				//If turtle facing downward, record line as a change down in pitch
-				else if(direction == 4)
-				{
-					while(!prevnote.equals(nextnote))
-					{
-						note = downHalfStep(note);
-
-						if(note < 0)
-							note = 11;
-
-						prevnote = notes[note];
-						pitch = downHalfStep(pitch);
-						turtle.popY();
-						turtle.pushY(pitch);
-
-						--degree;
-
-						if(turtle.getY() < lowerNoteB)
-						{
-							pitch = turtle.popY();
-							turtle.pushY(pitch + 24);
-						}
-
-						if(degree == 0)
-							degree = 7;
-					}
-
-					buffer.append(" [" + pitch + "]s");
-				}
-
-				chosen = true;
-				break;
-			}
-
-			else if(l == list.size() && !chosen)
-				buffer.append(" [" + pitch + "]s");
+				return l;
 		}
-
-		return buffer;
+		
+		return -1;
 	}
+	
+	/*private int getSecondOrderNote(int prevnote, int note)
+	{
+		
+	}*/
 }

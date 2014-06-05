@@ -69,10 +69,10 @@ public class MidiFile
 					
 					else
 					{
-						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n3: Use Markov Chain");
+						System.out.println("1: Quick run\r\n2: Iterate step-by-step\r\n3: Use First-order Markov chain\r\n4: Use Second-order Markov chain");
 						String choice = "";
 						
-						while(!(choice.equals("1") || choice.equals("2") || choice.equals("3")))
+						while(!(choice.equals("1") || choice.equals("2") || choice.equals("3") || choice.equals("4")))
 							choice = scan.next();
 						
 						//Iterate a set number of times
@@ -98,7 +98,7 @@ public class MidiFile
 							String production = lsys.getTree();					//Retrieve the production
 							System.out.println(production);						//Print the raw production on-screen
 							
-							Pattern pattern = scoreGen.genScore(production, false);	//Convert the production into a suitable format; store in a Pattern
+							Pattern pattern = scoreGen.genScore(production, false, 0);	//Convert the production into a suitable format; store in a Pattern
 							System.out.println(pattern.toString());
 							player.play(pattern);
 							
@@ -163,7 +163,7 @@ public class MidiFile
 									System.out.println("\r\nIteration: " + iterations);
 									System.out.println(production);
 									
-									pattern = scoreGen.genScore(production, false);
+									pattern = scoreGen.genScore(production, false, 0);
 									System.out.println(pattern.toString());
 									player.play(pattern);
 								}
@@ -206,9 +206,9 @@ public class MidiFile
 							}
 						}
 						
-						//Use Markov Chain
+						//Use First-order Markov chain
 						else if(choice.equals("3"))
-						{	
+						{
 							System.out.println("Iterations: ");
 							int iter = 0;
 							
@@ -229,7 +229,73 @@ public class MidiFile
 							String production = lsys.getTree();						//Retrieve the production
 							System.out.println(production);							//Print the raw production on-screen
 							
-							Pattern pattern = scoreGen.genScore(production, true);	//Convert the production into a suitable format; store in a Pattern
+							Pattern pattern = scoreGen.genScore(production, true, 1);	//Convert the production into a suitable format; store in a Pattern
+							System.out.println(pattern.toString());
+							player.play(pattern);
+							
+							while(true)
+							{
+								System.out.print("1 to replay, 2 to save as MIDI file, and anything else return to menu: ");
+								
+								String re = scan.next();
+								
+								if(re.equals("1"))
+									player.play(pattern);
+								
+								else if(re.equals("2"))
+								{
+									System.out.print("\r\nEnter name for MIDI file: ");
+									String file = scan.next();
+									
+									MusicStringParser parser = new MusicStringParser();
+									MusicXmlRenderer renderer = new MusicXmlRenderer();
+									
+									parser.addParserListener(renderer);
+									parser.parse(pattern);
+									
+									try
+									{
+										player.saveMidi(pattern, new File(file + ".mid"));
+										FileWriter filewriter = new FileWriter(new File(file + ".xml"));
+										filewriter.write(renderer.getMusicXMLString());
+										filewriter.close();
+										System.out.println("MIDI & MusicXML files saved successfully.\r\n");
+									}
+									catch(IOException e)
+									{
+										System.out.println("Error saving Midi & MusicXML files: returning to menu.");
+									}
+								}
+								
+								else
+									break;
+							}
+						}
+						
+						//Use Second-order Markov chain
+						else
+						{
+							System.out.println("Iterations: ");
+							int iter = 0;
+							
+							while(iter < 1)
+							{
+								try
+								{
+									String iterations = scan.next();
+									iter = Integer.valueOf(iterations);
+								}
+								catch(NumberFormatException e)
+								{
+									iter = 0;
+								}
+							}
+							
+							lsys.iterate(iter);										//Expand the system the given number of times
+							String production = lsys.getTree();						//Retrieve the production
+							System.out.println(production);							//Print the raw production on-screen
+							
+							Pattern pattern = scoreGen.genScore(production, true, 2);	//Convert the production into a suitable format; store in a Pattern
 							System.out.println(pattern.toString());
 							player.play(pattern);
 							

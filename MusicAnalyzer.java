@@ -40,11 +40,15 @@ public class MusicAnalyzer
 	/**
 	 * @param prevnote  second to last note recorded in the score
 	 * @param note  last note recorded in the score
-	 * @return the probability vector based on the previous two notes recorded
+	 * @return the probability vector based on the previous two notes recorded. If no prevnote has been recorded, will default to first order prob.
 	 */
 	public ArrayList<Double> getSecondProb(int prevnote, int note)
 	{
-		return secondProb.get(note).get(prevnote);
+		if(prevnote != -1)
+			return secondProb.get(note).get(prevnote);
+		
+		else
+			return prob.get(note);
 	}
 	
 	/**

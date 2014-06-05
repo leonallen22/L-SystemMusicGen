@@ -12,7 +12,8 @@ public class ScoreGenerator
 	private int keySig;																									//Stores current key signature
 	private int tempo;																									//Stores tempo for music to be played
 	private int degree;																									//Represents the degree of the current pitch in the current key signature
-	private int prevDegree;																								//Represents the degree of the previous pitch in the current key signature
+	private int note;
+	private int prevnote;
 	private int upperNoteB;																								//The upper bound of the pitch
 	private int lowerNoteB;																								//The lower bound of the pitch
 	private static String[] keySigs = {"C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F"};				//Stores key signatures
@@ -28,7 +29,8 @@ public class ScoreGenerator
 		keySig = 1;
 		tempo = 120;
 		degree = 1;
-		prevDegree = -1;
+		note = -1;
+		prevnote = -1;
 		upperNoteB = 95;
 		lowerNoteB = 36;
 	}
@@ -45,7 +47,8 @@ public class ScoreGenerator
 		keySig = 1;
 		tempo = 120;
 		degree = 1;
-		prevDegree = -1;
+		note = -1;
+		prevnote = -1;
 		upperNoteB = 95;
 		lowerNoteB = 36;
 	}
@@ -70,6 +73,8 @@ public class ScoreGenerator
 		this.tempo = tempo;
 
 		degree = 1;
+		note = -1;
+		prevnote = -1;
 		upperNoteB = 95;
 		lowerNoteB = 36;
 	}
@@ -193,58 +198,58 @@ public class ScoreGenerator
 	 * @param markov indicates whether to use the Markov chain method
 	 * @return The music score as a Pattern
 	 */
-	public Pattern genScore(String production, boolean markov)
+	public Pattern genScore(String production, boolean markov, int order)
 	{
 		String pat = "";
 
 		switch(this.keySig)
 		{
 			case 1:
-				pat = generate(production, 48, markov);
+				pat = generate(production, 48, markov, order);
 				break;
 
 			case 2:
-				pat = generate(production, 55, markov);
+				pat = generate(production, 55, markov, order);
 				break;
 
 			case 3:
-				pat = generate(production, 50, markov);
+				pat = generate(production, 50, markov, order);
 				break;
 
 			case 4:
-				pat = generate(production, 57, markov);
+				pat = generate(production, 57, markov, order);
 				break;
 
 			case 5:
-				pat = generate(production, 52, markov);
+				pat = generate(production, 52, markov, order);
 				break;
 
 			case 6:
-				pat = generate(production, 59, markov);
+				pat = generate(production, 59, markov, order);
 				break;
 
 			case 7:
-				pat = generate(production, 54, markov);
+				pat = generate(production, 54, markov, order);
 				break;
 
 			case 8:
-				pat = generate(production, 49, markov);
+				pat = generate(production, 49, markov, order);
 				break;
 
 			case 9:
-				pat = generate(production, 56, markov);
+				pat = generate(production, 56, markov, order);
 				break;
 
 			case 10:
-				pat = generate(production, 51, markov);
+				pat = generate(production, 51, markov, order);
 				break;
 
 			case 11:
-				pat = generate(production, 58, markov);
+				pat = generate(production, 58, markov, order);
 				break;
 
 			case 12:
-				pat = generate(production, 53, markov);
+				pat = generate(production, 53, markov, order);
 				break;
 		}
 
@@ -260,7 +265,7 @@ public class ScoreGenerator
 	 * @param markov indicates whether to use the Markov chain method
 	 * @return The music score as a string.
 	 */
-	private String generate(String production, int tonic, boolean markov)
+	private String generate(String production, int tonic, boolean markov, int order)
 	{
 		StringBuffer buffer = new StringBuffer("T" + tempo + " V0 I80 ");	//Stores the score string that will be returned
 		int voices = 1;														//Represents the number of voices currently active in the score
@@ -292,7 +297,7 @@ public class ScoreGenerator
 						buffer = drawLine(buffer, true);
 
 					else
-						buffer = drawMarkov(buffer, true);
+						buffer = drawMarkov(buffer, true, order);
 					break;
 
 				//Turtle moves without drawing
@@ -301,7 +306,7 @@ public class ScoreGenerator
 						buffer = drawLine(buffer, false);
 
 					else
-						buffer = drawMarkov(buffer, false);
+						buffer = drawMarkov(buffer, false, order);
 					break;
 
 				case 'r':
@@ -474,37 +479,11 @@ public class ScoreGenerator
 	 * @param draw is the note to be treated as a tie
 	 * @return The StringBuffer with the necessary modifications made.
 	 */
-	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw)
+	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw, int order)
 	{
 		int pitch = turtle.getY();
 		int direction = turtle.getDirection();
-		String key = this.getKey();
-		int note = -1;
 		int nextnote = -1;
-		int noteDegree = 0;
-
-		//Find the tonic of the current key in list of notes and store its integer representation
-		for(int l=0 ; l < notes.length ; ++l)
-		{
-			if(key.equals(notes[l]))
-			{
-				note = l;
-				noteDegree = 1;
-				break;
-			}
-		}
-
-		//Find the note corresponding to the current degree
-		while(noteDegree != degree)
-		{
-			if(noteDegree == 3 || noteDegree == 7)
-				note = upHalfStep(note);
-
-			else
-				note = upWholeStep(note);
-
-			++noteDegree;
-		}
 
 		//If turtle is horizontal, no note change occurs
 		if((direction == 1 || direction == 3) && draw)
@@ -516,22 +495,39 @@ public class ScoreGenerator
 				buffer.append("s");
 
 			else
+			{
 				buffer.append(" [" + pitch + "]s");
-
-			return buffer;
+				prevnote = note;
+				
+				if(note == -1)
+					note = getNote(pitch);
+			}
 		}
 
 		else if(direction == 1 || direction == 3)
+		{
 			buffer.append(" [" + pitch + "]s");
+			prevnote = note;
+			
+			if(note == -1)
+				note = getNote(pitch);
+		}
 
 		//If turtle facing upward, record line as a change up in pitch
 		else if(direction == 2)
-		{
-			nextnote = getFirstOrderNote(note);
+		{	
+			if(note == -1)
+				note = getNote(pitch);
+			
+			if(order == 1)
+				nextnote = getFirstOrderNote(note);
+			
+			else
+				nextnote = getSecondOrderNote(prevnote, note);
 			
 			if(nextnote != -1)
 			{
-				prevDegree = degree;
+				prevnote = note;
 					
 				while(note != nextnote)
 				{
@@ -541,20 +537,13 @@ public class ScoreGenerator
 						note = 0;
 	
 					pitch = upHalfStep(pitch);
-					turtle.popY();
-					turtle.pushY(pitch);
 	
-					++degree;
-	
-					if(turtle.getY() > upperNoteB)
-					{
-						pitch = turtle.popY();
-						turtle.pushY(pitch - 24);
-					}
-						
-					if(degree == 8)
-						degree = 1;
+					if(pitch > upperNoteB)
+						pitch -= 24;
 				}
+				
+				turtle.popY();
+				turtle.pushY(pitch);
 			}
 
 			buffer.append(" [" + pitch + "]s");
@@ -563,11 +552,18 @@ public class ScoreGenerator
 		//If turtle facing downward, record line as a change down in pitch
 		else if(direction == 4)
 		{
-			nextnote = getFirstOrderNote(note);
+			if(note == -1)
+				note = getNote(pitch);
+			
+			if(order == 1)
+				nextnote = getFirstOrderNote(note);
+			
+			else
+				nextnote = getSecondOrderNote(prevnote, note);
 			
 			if(nextnote != -1)
 			{
-				prevDegree = degree;
+				prevnote = note;
 					
 				while(note != nextnote)
 				{
@@ -577,20 +573,13 @@ public class ScoreGenerator
 						note = 11;
 	
 					pitch = downHalfStep(pitch);
-					turtle.popY();
-					turtle.pushY(pitch);
-	
-					--degree;
-					
-					if(turtle.getY() < lowerNoteB)
-					{
-						pitch = turtle.popY();
-						turtle.pushY(pitch + 24);
-					}
-	
-					if(degree == 0)
-						degree = 7;
+
+					if(pitch < lowerNoteB)
+						pitch += 24;
 				}
+				
+				turtle.popY();
+				turtle.pushY(pitch);
 			}
 				
 			buffer.append(" [" + pitch + "]s");
@@ -600,9 +589,9 @@ public class ScoreGenerator
 	}
 	
 	/**
-	 * Randomly chooses a note based on the probabilities provided by MusicAnalyzer
+	 * Randomly chooses a note based on the first-order probabilities provided by MusicAnalyzer.
 	 * @param note  the last note in the score
-	 * @return The next note to be recorded represented as an integer
+	 * @return The next note to be recorded represented as an integer.
 	 */
 	private int getFirstOrderNote(int note)
 	{
@@ -621,8 +610,77 @@ public class ScoreGenerator
 		return -1;
 	}
 	
-	/*private int getSecondOrderNote(int prevnote, int note)
+	/**
+	 * Randomly chooses a note based on the second-order probabilities provided by MusicAnalyzer.
+	 * @param prevnote  the second to last note in the score
+	 * @param note  the last note in the score
+	 * @return The next note to be recorded represented as an integer.
+	 */
+	private int getSecondOrderNote(int prevnote, int note)
 	{
+		ArrayList<Double> list = analyzer.getSecondProb(prevnote, note);
+		double range = 0.0;
+		double rand = Math.random();
 		
-	}*/
+		for(int l=0 ; l < list.size() ; ++l)
+		{
+			range += list.get(l);
+
+			if(rand <= range)
+				return l;
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * @param noteDegree  the degree of the note to be returned
+	 * @return The note corresponding to the passed in degree based on the current key signature.
+	 */
+	private int getNote(int pitch)
+	{
+		pitch = pitch % 12;
+		
+		switch(pitch)
+		{
+			case 0:
+				return 0;
+				
+			case 1:
+				return 1;
+				
+			case 2:
+				return 2;
+				
+			case 3:
+				return 3;
+				
+			case 4:
+				return 4;
+				
+			case 5:
+				return 5;
+				
+			case 6:
+				return 6;
+				
+			case 7:
+				return 7;
+				
+			case 8:
+				return 8;
+				
+			case 9:
+				return 9;
+				
+			case 10:
+				return 10;
+				
+			case 11:
+				return 11;
+				
+			default:
+				return 0;
+		}
+	}
 }

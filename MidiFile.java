@@ -12,6 +12,11 @@ import javax.sound.midi.InvalidMidiDataException;
  * 
  * @author Harry Allen
  * @version 1.0
+ * 
+ * To do:
+ * Improve rhythm of melody generation
+ * Improve coherence of melody generation (perhaps by adding harmonic progression as a restriction?)
+ * Add accompaniment
  */
 public class MidiFile
 {
@@ -48,7 +53,7 @@ public class MidiFile
 			System.out
 					.println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Change tempo\r\n8: Produce MusicXML for a MIDI file\r\n9: Exit");
 
-			while (opt < 1 || opt > 9)
+			while (opt < 1 || opt > 10)
 			{
 				try
 				{
@@ -99,7 +104,8 @@ public class MidiFile
 							String production = lsys.getTree();					//Retrieve the production
 							System.out.println(production);						//Print the raw production on-screen
 
-							Pattern pattern = scoreGen.genScore(production, false, 0);	//Convert the production into a suitable format; store in a Pattern
+							scoreGen.genScore(production, false, 0);			//Convert the production into a suitable format; store in a Pattern
+							Pattern pattern = scoreGen.getScore();
 							System.out.println(pattern.toString());
 							player.play(pattern);
 
@@ -164,7 +170,8 @@ public class MidiFile
 									System.out.println("\r\nIteration: " + iterations);
 									System.out.println(production);
 
-									pattern = scoreGen.genScore(production, false, 0);
+									scoreGen.genScore(production, false, 0);
+									pattern = scoreGen.getScore();
 									System.out.println(pattern.toString());
 									player.play(pattern);
 								}
@@ -230,7 +237,8 @@ public class MidiFile
 							String production = lsys.getTree();							//Retrieve the production
 							System.out.println(production);								//Print the raw production on-screen
 
-							Pattern pattern = scoreGen.genScore(production, true, 1);	//Convert the production into a suitable format; store in a Pattern
+							scoreGen.genScore(production, true, 1);						//Convert the production into a suitable format; store in a Pattern
+							Pattern pattern = scoreGen.getScore();
 							System.out.println(pattern.toString());
 							player.play(pattern);
 
@@ -296,7 +304,8 @@ public class MidiFile
 							String production = lsys.getTree();							//Retrieve the production
 							System.out.println(production);								//Print the raw production on-screen
 
-							Pattern pattern = scoreGen.genScore(production, true, 2);	//Convert the production into a suitable format; store in a Pattern
+							scoreGen.genScore(production, true, 2);						//Convert the production into a suitable format; store in a Pattern
+							Pattern pattern = scoreGen.getScore();
 							System.out.println(pattern.toString());
 							player.play(pattern);
 
@@ -555,6 +564,27 @@ public class MidiFile
 				//Exit program
 				case 9:
 					exit = true;
+					break;
+					
+				case 10:
+					String music = "";
+					Bjorklund rhythm = new Bjorklund(4, 8);
+					ArrayList<Boolean> r = rhythm.getRhythm();
+					rhythm.print();
+					String score = scoreGen.getScore().getMusicString();
+					while(score.length() > music.length())
+					{
+						for(Boolean x : r)
+						{
+							if(x == true)
+								music += "C2i ";
+							
+							else
+								music += "Ri ";
+						}
+					}
+					scoreGen.addVoice(music);
+					player.play(scoreGen.getScore());
 					break;
 			}
 		}

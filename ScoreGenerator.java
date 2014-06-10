@@ -11,6 +11,7 @@ public class ScoreGenerator
 
 	private Turtle			turtle;															//Turtle to keep track of "drawing" actions
 	private MusicAnalyzer	analyzer;														//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
+	private Pattern			score;
 	private int				keySig;															//Stores current key signature
 	private int				tempo;															//Stores tempo for music to be played
 	private int				degree;															//Represents the degree of the current pitch in the current key signature
@@ -30,6 +31,7 @@ public class ScoreGenerator
 	{
 		analyzer = new MusicAnalyzer();
 		turtle = new Turtle();
+		score = new Pattern();
 		keySig = 1;
 		tempo = 120;
 		degree = 1;
@@ -48,6 +50,7 @@ public class ScoreGenerator
 	{
 		analyzer = new MusicAnalyzer();
 		turtle = new Turtle();
+		score = new Pattern();
 		turtle.pushAngle(angle);
 		keySig = 1;
 		tempo = 120;
@@ -69,6 +72,7 @@ public class ScoreGenerator
 	{
 		analyzer = new MusicAnalyzer();
 		turtle = new Turtle();
+		score = new Pattern();
 		turtle.pushAngle(angle);
 
 		if (key >= 1 && key <= 15)
@@ -99,6 +103,14 @@ public class ScoreGenerator
 	public int getTempo()
 	{
 		return this.tempo;
+	}
+	
+	/**
+	 * @return The generated score
+	 */
+	public Pattern getScore()
+	{
+		return score;
 	}
 
 	/**
@@ -214,7 +226,7 @@ public class ScoreGenerator
 	 * @param markov indicates whether to use the Markov chain method
 	 * @return The music score as a Pattern
 	 */
-	public Pattern genScore(String production, boolean markov, int order)
+	public void genScore(String production, boolean markov, int order)
 	{
 		String pat = "";
 
@@ -271,7 +283,7 @@ public class ScoreGenerator
 
 		Pattern pattern = new Pattern(pat);
 
-		return pattern;
+		score = pattern;
 	}
 
 	/**
@@ -285,7 +297,7 @@ public class ScoreGenerator
 	 */
 	private String generate(String production, int tonic, boolean markov, int order)
 	{
-		StringBuffer buffer = new StringBuffer("T" + tempo + " V0 I109 ");	//Stores the score string that will be returned
+		StringBuffer buffer = new StringBuffer("T" + tempo + " V0 I80 ");	//Stores the score string that will be returned
 		int voices = 1;														//Represents the number of voices currently active in the score
 		degree = 1;
 		int layers = 1;														//Represents the number of layers currently active in a voice
@@ -704,5 +716,10 @@ public class ScoreGenerator
 			default:
 				return 0;
 		}
+	}
+	
+	public void addVoice(String voice)
+	{
+		score = new Pattern(score.toString() + " V1 I87 " + voice + " ");
 	}
 }

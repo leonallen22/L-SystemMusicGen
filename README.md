@@ -1,4 +1,4 @@
 L-SystemMusicGen
 ================
 
-Utilizes L-Systems to generate music. Meant to assist in reasearch regarding generating music using L-Systems.
+Utilizes L-Systems and Markov chains to generate music. Meant to assist in reasearch and experimentation regarding algorithmic music.

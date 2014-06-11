@@ -2,7 +2,7 @@ import java.util.*;
 
 /**
  *  @author         Kristopher W. Reese <http://kreese.net>
- *  @contrib        Douglas Ferguson <>
+ *  @contributor    Douglas Ferguson <>
  *
  *  This is a class used for maximizing the distance between pulses
  *  using Boolean values.  In this class, a truth is a pulse, a false

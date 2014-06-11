@@ -8,6 +8,8 @@ import javax.sound.midi.InvalidMidiDataException;
 /**
  * Analyzes a series of MIDI files, producing first-order and second-order Markov Chains which represent the probability of one note following another
  * and one note following a sequence of two notes, respectively.
+ * 
+ * @author Harry Allen
  */
 public class MusicAnalyzer
 {
@@ -699,7 +701,7 @@ public class MusicAnalyzer
 		switch (key)
 		{
 			case 1:
-				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/Lilt", "*.mid");
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
 
 			case 2:
 				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");

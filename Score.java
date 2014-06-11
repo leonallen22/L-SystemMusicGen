@@ -1,7 +1,10 @@
 import org.jfugue.Pattern;
 
-
-
+/**
+ * Handles musical details; stores the music score.
+ * 
+ * @author Harry Allen
+ */
 public class Score
 {
 	private Pattern			score;
@@ -181,8 +184,7 @@ public class Score
 	}
 
 	/**
-	 * @param noteDegree the degree of the note to be returned
-	 * @return The note corresponding to the passed in degree based on the current key signature.
+	 * @param pitch  the pitch of the note to be set
 	 */
 	public void setNotePitch(int pitch)
 	{
@@ -234,6 +236,7 @@ public class Score
 	
 	/**
 	 * Set score to the parameter.
+	 * 
 	 * @param pattern  new score
 	 */
 	public void setScore(Pattern pattern)
@@ -241,6 +244,11 @@ public class Score
 		score = pattern;
 	}
 	
+	/**
+	 * Appends a voice to the score.
+	 * 
+	 * @param newvoice  voice to be appended
+	 */
 	public void appendVoice(String newvoice)
 	{
 		score = new Pattern(score.toString() + " V1 I87 " + newvoice + " ");

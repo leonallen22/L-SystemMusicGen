@@ -110,9 +110,9 @@ public class ScoreGenerator
 	/**
 	 * Accepts a string and parses through it to generate a pattern properly formatted for JFugue.
 	 * 
-	 * @param production the L-System production to be parsed
-	 * @param markov indicates whether to use the Markov chain method
-	 * @return The music score as a Pattern
+	 * @param production  the L-System production to be parsed
+	 * @param markov  indicates whether to use the Markov chain method
+	 * @param order  indicates which order markov chain to utilize
 	 */
 	public void genScore(String production, boolean markov, int order)
 	{

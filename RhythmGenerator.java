@@ -1,5 +1,9 @@
 
-
+/**
+ * Generates rhythms for use in melody.
+ * 
+ * @author Harry Allen
+ */
 public class RhythmGenerator
 {
 	private int density;

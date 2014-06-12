@@ -186,7 +186,7 @@ public class ScoreGenerator
 	 */
 	private String generate(String production, int tonic, boolean markov, int order)
 	{
-		StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 I80 ");	//Stores the score string that will be returned
+		StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 I29 ");	//Stores the score string that will be returned
 		int color = turtle.getColor();
 		char[] prod = production.toCharArray();											//Array of characters from the production
 		turtle.popY();
@@ -407,7 +407,7 @@ public class ScoreGenerator
 	 * progresses.
 	 * 
 	 * @param buffer stores the music score as it is being built
-	 * @param draw is the note to be treated as a tie
+	 * @param draw whether the note is to be treated as a tie
 	 * @return The StringBuffer with the necessary modifications made.
 	 */
 	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw, int order)
@@ -428,21 +428,27 @@ public class ScoreGenerator
 
 			else
 			{
+				if (note == -1)
+				{
+					score.setNotePitch(pitch);
+					note = score.getNote();
+				}
+				
 				buffer.append(" [" + pitch + "]s");
 				score.setNote(note);
-
-				if (note == -1)
-					score.setNotePitch(pitch);
 			}
 		}
 
 		else if (direction == 1 || direction == 3)
 		{
+			if (note == -1)
+			{
+				score.setNotePitch(pitch);
+				note = score.getNote();
+			}
+			
 			buffer.append(" [" + pitch + "]s");
 			score.setNote(note);
-
-			if (note == -1)
-				score.setNotePitch(pitch);
 		}
 
 		//If turtle facing upward, record line as a change up in pitch

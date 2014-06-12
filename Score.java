@@ -10,11 +10,11 @@ public class Score
 	private Pattern			score;
 	private int				keySig;															//Stores current key signature
 	private int				tempo;															//Stores tempo for music to be played
-	private int				degree;															//Represents the degree of the current pitch in the current key signature
+	private double			degree;															//Represents the degree of the current pitch in the current key signature
 	private int				note;
 	private int				prevNote;
-	private int 			voices;														//Represents the number of voices currently active in the score
-	private int 			layers;														//Represents the number of layers currently active in a voice
+	private int 			voices;															//Represents the number of voices currently active in the score
+	private int 			layers;															//Represents the number of layers currently active in a voice
 	private int				beat;
 	private static String[]	keySigs	= 														//Stores key signatures
 		{ "C", "G", "D", "A", "E", "B", "Gb/F#", "Db", "Ab", "Eb", "Bb", "F" };
@@ -109,7 +109,7 @@ public class Score
 	/**
 	 * @return The degree of the current note
 	 */
-	public int getDegree()
+	public double getDegree()
 	{
 		return degree;
 	}
@@ -173,7 +173,8 @@ public class Score
 	}
 	
 	/**
-	 * Sets the current note to the parameter; the previous note is recorded as prevNote.
+	 * Sets the current note to the parameter and the previous note is recorded as prevNote.
+	 * Scale degree is recorded, with accidentals represented as numbers between integer scale degrees.
 	 * 
 	 * @param newnote  next note recorded
 	 */
@@ -181,57 +182,263 @@ public class Score
 	{
 		prevNote = note;
 		note = newnote;
+		degree = 1.0;
+		int tonic = 0;
+		
+		while(notes[tonic] != keySigs[keySig])
+			tonic = upHalfStep(tonic);
+		
+		while(tonic != note)
+		{
+			if(degree == 1.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 1.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 2.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 2.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 3.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 1.0;
+			}
+				
+			else if(degree == 4.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 4.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 5.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 5.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 6.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 6.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 7.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 1.0;
+			}
+			
+			else
+			{
+				tonic = upHalfStep(tonic);
+				degree = 1.5;
+			}
+			
+			if(tonic == 12)
+				tonic = 0;
+		}
+		
+		if(tonic == 12)
+			tonic = 0;
+		
+		if(degree == 8.0)
+			degree = 1.0;
 	}
 
 	/**
+	 * Sets the current note to the parameter and the previous note is recorded as prevNote.
+	 * Scale degree is recorded, with accidentals represented as numbers between integer scale degrees.
+	 * 
 	 * @param pitch  the pitch of the note to be set
 	 */
 	public void setNotePitch(int pitch)
 	{
+		int tonic = 0;
 		pitch = pitch % 12;
 		prevNote = note;
+		degree = 1;
 		
 		switch (pitch)
 		{
 			case 0:
 				note = 0;
-
+				break;
+				
 			case 1:
 				note = 1;
+				break;
 
 			case 2:
 				note = 2;
+				break;
 
 			case 3:
 				note = 3;
+				break;
 
 			case 4:
 				note = 4;
+				break;
 
 			case 5:
 				note = 5;
+				break;
 
 			case 6:
 				note = 6;
+				break;
 
 			case 7:
 				note = 7;
+				break;
 
 			case 8:
 				note = 8;
+				break;
 
 			case 9:
 				note = 9;
+				break;
 
 			case 10:
 				note = 10;
+				break;
 
 			case 11:
 				note = 11;
+				break;
 
 			default:
 				note = 0;
+				break;
 		}
+		
+		while(!notes[tonic].equals(keySigs[keySig-1]))
+			tonic = upHalfStep(tonic);
+		
+		while(tonic != pitch)
+		{
+			if(degree == 1.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 1.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 2.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 2.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 3.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 1.0;
+			}
+				
+			else if(degree == 4.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 4.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 5.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 5.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 6.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+			
+			else if(degree == 6.5)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 0.5;
+			}
+				
+			else if(degree == 7.0)
+			{
+				tonic = upHalfStep(tonic);
+				degree += 1.0;
+			}
+			
+			else
+			{
+				tonic = upHalfStep(tonic);
+				degree = 1.5;
+			}
+			
+			if(tonic == 12)
+				tonic = 0;
+		}
+		
+		if(tonic == 12)
+			tonic = 0;
+		
+		if(degree == 8.0)
+			degree = 1.0;
 	}
 	
 	/**

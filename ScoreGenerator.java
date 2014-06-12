@@ -342,58 +342,61 @@ public class ScoreGenerator
 		//If turtle facing upward, record line as a change up in pitch
 		else if (direction == 2)
 		{
-			int degree = score.getDegree();
-			if (degree == 3 || degree == 7)
+			double degree = score.getDegree();
+			int newnote = -1;
+			
+			if (degree == 3 || degree == 7 || degree % 1.0 == 0.5)
 			{
+				newnote = score.upHalfStep(pitch);
+				score.setNotePitch(newnote);
 				turtle.popY();
-				turtle.pushY(score.upHalfStep(pitch));
+				turtle.pushY(newnote);
 			}
 
 			else
 			{
+				newnote = score.upWholeStep(pitch);
+				score.setNotePitch(newnote);
 				turtle.popY();
-				turtle.pushY(score.upWholeStep(pitch));
+				turtle.pushY(newnote);
 			}
 
-			++degree;
-
-			if (turtle.getY() > upperBound)
+			if (newnote > upperBound)
 			{
-				pitch = turtle.popY();
-				turtle.pushY(pitch - 24);
+				turtle.popY();
+				turtle.pushY(newnote - 24);
+				score.setNotePitch(newnote - 24);
 			}
-
-			if (degree == 8)
-				degree = 1;
 		}
 
 		//If turtle facing downward, record line as a change down in pitch
 		else if (direction == 4)
 		{
-			int degree = score.getDegree();
+			double degree = score.getDegree();
+			int newnote = -1;
 			
-			if (degree == 1 || degree == 4)
+			if (degree == 1 || degree == 4 || degree % 1.0 == 0.5)
 			{
+				newnote = score.downHalfStep(pitch);
+				score.setNotePitch(newnote);
 				turtle.popY();
-				turtle.pushY(score.downHalfStep(pitch));
+				turtle.pushY(newnote);
 			}
 
 			else
 			{
+				newnote = score.downWholeStep(pitch);
+				score.setNotePitch(newnote);
 				turtle.popY();
-				turtle.pushY(score.downWholeStep(pitch));
+				turtle.pushY(newnote);
 			}
 
-			--degree;
-
-			if (turtle.getY() < lowerBound)
+			if (newnote < lowerBound)
 			{
-				pitch = turtle.popY();
-				turtle.pushY(pitch + 24);
+				turtle.popY();
+				turtle.pushY(newnote + 24);
+				score.setNotePitch(newnote + 24);
 			}
-
-			if (degree == 0)
-				degree = 7;
 		}
 
 		return buffer;
@@ -446,7 +449,10 @@ public class ScoreGenerator
 		else if (direction == 2)
 		{
 			if (note == -1)
+			{
 				score.setNotePitch(pitch);
+				note = score.getNote();
+			}
 
 			if (order == 1)
 				nextnote = getFirstOrderNote(note);
@@ -481,7 +487,10 @@ public class ScoreGenerator
 		else if (direction == 4)
 		{
 			if (note == -1)
+			{
 				score.setNotePitch(pitch);
+				note = score.getNote();
+			}
 
 			if (order == 1)
 				nextnote = getFirstOrderNote(note);

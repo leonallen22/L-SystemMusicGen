@@ -107,9 +107,9 @@ public class ScoreGenerator
 		turtle.reset();
 	}
 	
-	public char[] genRhythm()
+	public char[] genRhythm(int pulses, int steps)
 	{
-		Bjorklund gen = new Bjorklund(9, 16);
+		Bjorklund gen = new Bjorklund(pulses, steps);
 		ArrayList<Boolean> r = gen.getRhythm();
 		ArrayList<Integer> durations = new ArrayList<Integer>();
 		char[] d = {'s', 'i', 'q', 'h', 'w'};
@@ -224,7 +224,7 @@ public class ScoreGenerator
 		char[] prod = production.toCharArray();											//Array of characters from the production
 		turtle.popY();
 		turtle.pushY(tonic);
-		char[] rhythm = genRhythm();
+		char[] rhythm = genRhythm(9, 16);
 		int r = 0;
 
 		//Step through each symbol in production
@@ -461,9 +461,7 @@ public class ScoreGenerator
 
 		//If turtle is horizontal, no note change occurs
 		if ((direction == 1 || direction == 3) && draw)
-		{
-			String str = buffer.toString();
-			
+		{			
 			if (note == -1)
 			{
 				score.setNotePitch(pitch);
@@ -687,8 +685,8 @@ public class ScoreGenerator
 		return -1;
 	}
 	
-	public void addVoice(String voice)
+	public void addPart(String voice)
 	{
-		score.appendVoice(voice);
+		score.appendPart(voice);
 	}
 }

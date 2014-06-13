@@ -568,23 +568,23 @@ public class MidiFile
 					
 				case 10:
 					String music = "";
-					Bjorklund rhythm = new Bjorklund(4, 8);
+					Bjorklund rhythm = new Bjorklund(9, 16);
 					ArrayList<Boolean> r = rhythm.getRhythm();
 					rhythm.print();
-					String score = scoreGen.getScore().getMusicString();
+					/*String score = scoreGen.getScore().getMusicString();
 					while(score.length() > music.length())
 					{
 						for(Boolean x : r)
 						{
 							if(x == true)
-								music += "C2i ";
+								music += "C5i ";
 							
 							else
 								music += "Ri ";
 						}
 					}
 					scoreGen.addVoice(music);
-					player.play(scoreGen.getScore());
+					player.play(scoreGen.getScore());*/
 					break;
 			}
 		}

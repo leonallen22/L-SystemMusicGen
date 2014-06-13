@@ -106,6 +106,39 @@ public class ScoreGenerator
 	{
 		turtle.reset();
 	}
+	
+	public char[] genRhythm()
+	{
+		Bjorklund gen = new Bjorklund(9, 16);
+		ArrayList<Boolean> r = gen.getRhythm();
+		ArrayList<Integer> durations = new ArrayList<Integer>();
+		char[] d = {'s', 'i', 'q', 'h', 'w'};
+		String rhythm = "";
+		int duration = 0;
+		
+		for(int i = 0 ; i < r.size() ; ++i)
+		{
+			duration = duration % d.length;
+			
+			if(i != 0 && r.get(i-1) == true && r.get(i) == true)
+				++duration;
+			
+			else if(r.get(i) == true)
+				duration = 0;
+			
+			else
+			{
+				durations.add(duration);
+				duration = 0;
+			}
+		}
+		
+		for(Integer dur : durations)
+			rhythm += d[dur];
+		
+		System.out.println(rhythm);
+		return rhythm.toCharArray();
+	}
 
 	/**
 	 * Accepts a string and parses through it to generate a pattern properly formatted for JFugue.
@@ -191,10 +224,14 @@ public class ScoreGenerator
 		char[] prod = production.toCharArray();											//Array of characters from the production
 		turtle.popY();
 		turtle.pushY(tonic);
+		char[] rhythm = genRhythm();
+		int r = 0;
 
 		//Step through each symbol in production
 		for (int i = 0; i < prod.length; ++i)
-		{
+		{	
+			r = r % rhythm.length;
+			
 			switch (prod[i])
 			{
 			//Increment turtle's yaw
@@ -213,7 +250,9 @@ public class ScoreGenerator
 						buffer = drawLine(buffer, true);
 
 					else
-						buffer = drawMarkov(buffer, true, order);
+						buffer = drawMarkov(buffer, true, order, rhythm[r]);
+					
+					++r;
 					break;
 
 				//Turtle moves without drawing
@@ -222,7 +261,9 @@ public class ScoreGenerator
 						buffer = drawLine(buffer, false);
 
 					else
-						buffer = drawMarkov(buffer, false, order);
+						buffer = drawMarkov(buffer, false, order, rhythm[r]);
+					
+					++r;
 					break;
 
 				case 'r':
@@ -410,33 +451,103 @@ public class ScoreGenerator
 	 * @param draw whether the note is to be treated as a tie
 	 * @return The StringBuffer with the necessary modifications made.
 	 */
-	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw, int order)
+	private StringBuffer drawMarkov(StringBuffer buffer, boolean draw, int order, char duration)
 	{
 		int pitch = turtle.getY();
 		int direction = turtle.getDirection();
-		int note = score.getNote();
+		int originalnote = score.getNote();
+		int note = originalnote;
 		int nextnote = -1;
 
 		//If turtle is horizontal, no note change occurs
 		if ((direction == 1 || direction == 3) && draw)
 		{
 			String str = buffer.toString();
-			String regex = ".*\\[" + pitch + "\\]s+";
-
-			if (str.matches(regex))
-				buffer.append("s");
+			
+			if (note == -1)
+			{
+				score.setNotePitch(pitch);
+				originalnote = score.getNote();
+				note = originalnote;
+			}
+			
+			if (order == 1)
+				nextnote = getFirstOrderNote(note);
 
 			else
+				nextnote = getSecondOrderNote(score.getPrevNote(), note);
+
+			if (nextnote != -1)
 			{
-				if (note == -1)
+				int distance = 0;
+				int distance2 = 0;
+				
+				while (note != nextnote)
 				{
-					score.setNotePitch(pitch);
-					note = score.getNote();
+					note = score.downHalfStep(note);
+
+					if (note < 0)
+						note = 11;
+					
+					++distance;
+				}
+
+				note = originalnote;
+				
+				while (note != nextnote)
+				{
+					note = score.upHalfStep(note);
+
+					if (note > 11)
+						note = 0;
+					
+					++distance2;
 				}
 				
-				buffer.append(" [" + pitch + "]s");
-				score.setNote(note);
+				note = originalnote;
+				
+				if(distance < distance2)
+				{
+					while(distance != 0)
+					{
+						note = score.downHalfStep(note);
+
+						if (note < 0)
+							note = 11;
+						
+						pitch = score.downHalfStep(pitch);
+	
+						if (pitch < lowerBound)
+							pitch += 24;
+						
+						--distance;
+					}
+				}
+				
+				else
+				{
+					while(distance2 != 0)
+					{
+						note = score.upHalfStep(note);
+
+						if (note > 11)
+							note = 0;
+						
+						pitch = score.upHalfStep(pitch);
+
+						if (pitch > upperBound)
+							pitch -= 24;
+						
+						--distance2;
+					}
+				}
+
+				turtle.popY();
+				turtle.pushY(pitch);
 			}
+			
+			buffer.append(" [" + pitch + "]" + duration);
+			score.setNote(note);
 		}
 
 		else if (direction == 1 || direction == 3)
@@ -447,7 +558,7 @@ public class ScoreGenerator
 				note = score.getNote();
 			}
 			
-			buffer.append(" [" + pitch + "]s");
+			buffer.append(" [" + pitch + "]" + duration);
 			score.setNote(note);
 		}
 
@@ -486,7 +597,7 @@ public class ScoreGenerator
 				turtle.pushY(pitch);
 			}
 
-			buffer.append(" [" + pitch + "]s");
+			buffer.append(" [" + pitch + "]" + duration);
 		}
 
 		//If turtle facing downward, record line as a change down in pitch
@@ -523,7 +634,7 @@ public class ScoreGenerator
 				turtle.pushY(pitch);
 			}
 
-			buffer.append(" [" + pitch + "]s");
+			buffer.append(" [" + pitch + "]" + duration);
 		}
 
 		return buffer;

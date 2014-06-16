@@ -15,6 +15,7 @@ import javax.sound.midi.InvalidMidiDataException;
  * 
  * To do:
  * Improve rhythm of melody generation
+ * 		-Fix problem with rhythm generation (excessive rests sometimes put into score)
  * Improve coherence of melody generation (perhaps by adding harmonic progression as a restriction?)
  * Add accompaniment
  */
@@ -568,23 +569,23 @@ public class MidiFile
 					
 				case 10:
 					String music = "";
-					Bjorklund rhythm = new Bjorklund(9, 16);
+					Bjorklund rhythm = new Bjorklund(15 ,15);
 					ArrayList<Boolean> r = rhythm.getRhythm();
 					rhythm.print();
-					/*String score = scoreGen.getScore().getMusicString();
+					String score = scoreGen.getScore().getMusicString();
 					while(score.length() > music.length())
 					{
 						for(Boolean x : r)
 						{
 							if(x == true)
-								music += "C5i ";
+								music += "C5s ";
 							
 							else
-								music += "Ri ";
+								music += "Rs ";
 						}
 					}
-					scoreGen.addVoice(music);
-					player.play(scoreGen.getScore());*/
+					scoreGen.addPart(music, 80);
+					player.play(scoreGen.getScore());
 					break;
 			}
 		}

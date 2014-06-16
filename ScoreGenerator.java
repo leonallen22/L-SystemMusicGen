@@ -12,6 +12,7 @@ public class ScoreGenerator
 	private Turtle			turtle;															//Turtle to keep track of "drawing" actions
 	private MusicAnalyzer	analyzer;														//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
 	private Score			score;
+	private double			beat;
 	private int				lowerBound;
 	private int				upperBound;
 
@@ -23,6 +24,7 @@ public class ScoreGenerator
 		analyzer = new MusicAnalyzer();
 		turtle = new Turtle();
 		score = new Score();
+		beat = 1.0;
 		upperBound = 95;
 		lowerBound = 36;
 	}
@@ -38,6 +40,7 @@ public class ScoreGenerator
 		turtle = new Turtle();
 		score = new Score();
 		turtle.pushAngle(angle);
+		beat = 1.0;
 		upperBound = 95;
 		lowerBound = 36;
 	}
@@ -107,16 +110,79 @@ public class ScoreGenerator
 		turtle.reset();
 	}
 	
-	public char[] genRhythm(int pulses, int steps)
+	public char[] genRhythm()
 	{
-		Bjorklund gen = new Bjorklund(pulses, steps);
-		ArrayList<Boolean> r = gen.getRhythm();
 		ArrayList<Integer> durations = new ArrayList<Integer>();
 		char[] d = {'s', 'i', 'q', 'h', 'w'};
+		double pulse = Math.random()*1000;
+		double step = Math.random()*1000;
 		String rhythm = "";
 		int duration = 0;
+		int pulses = 0;
+		int steps = 0;
 		
-		for(int i = 0 ; i < r.size() ; ++i)
+		if(step <= 333)
+		{
+			steps = 4;
+			duration = 2;
+			
+			if(pulse <= 250)
+				pulses = 1;
+			
+			else if(pulse <= 500)
+				pulses = 2;
+			
+			else if(pulse <= 750)
+				pulses = 3;
+			
+			else
+				pulses = 3;
+		}
+		
+		else if(step <= 666)
+		{
+			int count = 4;
+			steps = 16;
+			duration = 1;
+			
+			for(int i=125 ; i <= 1000 ; i = i += 125)
+			{
+				if(pulse <= i)
+				{
+					pulses = count;
+					break;
+				}
+				
+				++count;
+			}
+			
+			if(pulses == 0)
+				pulses = count-2;
+		}
+		
+		else
+		{
+			int count = 20;
+			steps = 64;
+			
+			for(int i=25 ; i <= 1000 ; i = i += 25)
+			{
+				if(pulse <= i)
+				{
+					pulses = count;
+					break;
+				}
+				
+				++count;
+			}
+			
+			if(pulses == 0)
+				pulses = count-2;
+		}
+		Bjorklund gen = new Bjorklund(pulses, steps);
+		ArrayList<Boolean> r = gen.getRhythm();
+		
+		/*for(int i=0 ; i < r.size() ; ++i)
 		{
 			duration = duration % d.length;
 			
@@ -131,10 +197,39 @@ public class ScoreGenerator
 				durations.add(duration);
 				duration = 0;
 			}
+		}*/
+		
+		for(int i=0 ; i < r.size() ; ++i)
+		{			
+			if(r.get(i) == true)
+				rhythm += d[duration];
+			
+			else
+			{
+				switch(duration)
+				{
+					case 0:
+						rhythm += '0';
+						break;
+						
+					case 1:
+						rhythm += '1';
+						break;
+						
+					case 2:
+						rhythm += '2';
+						
+					case 3:
+						rhythm += '3';
+						
+					case 4:
+						rhythm += '4';
+				}
+			}
 		}
 		
-		for(Integer dur : durations)
-			rhythm += d[dur];
+		/*for(Integer dur : durations)
+			rhythm += d[dur];*/
 		
 		System.out.println(rhythm);
 		return rhythm.toCharArray();
@@ -219,22 +314,25 @@ public class ScoreGenerator
 	 */
 	private String generate(String production, int tonic, boolean markov, int order)
 	{
-		StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 I29 ");	//Stores the score string that will be returned
+		StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 I80 ");	//Stores the score string that will be returned
 		int color = turtle.getColor();
 		char[] prod = production.toCharArray();											//Array of characters from the production
 		turtle.popY();
 		turtle.pushY(tonic);
-		char[] rhythm = genRhythm(9, 16);
+		char[] rhythm = {'0'};
 		int r = 0;
 
 		//Step through each symbol in production
 		for (int i = 0; i < prod.length; ++i)
 		{	
+			if(beat % 4.0 == 1.0)
+				rhythm = genRhythm();
+			
 			r = r % rhythm.length;
 			
 			switch (prod[i])
 			{
-			//Increment turtle's yaw
+				//Increment turtle's yaw
 				case '-':
 					turtle.pushYaw(turtle.popYaw() + turtle.getAngle());
 					break;
@@ -458,6 +556,34 @@ public class ScoreGenerator
 		int originalnote = score.getNote();
 		int note = originalnote;
 		int nextnote = -1;
+		
+		switch(duration)
+		{
+			case '0':
+				buffer.append(" Rs");
+				beat += 0.0625;
+				return buffer;
+				
+			case '1':
+				buffer.append(" Ri");
+				beat += 0.25;
+				return buffer;
+				
+			case '2':
+				buffer.append(" Rq");
+				beat += 1.0;
+				return buffer;
+				
+			case '3':
+				buffer.append(" Rh");
+				beat += 2.0;
+				return buffer;
+				
+			case '4':
+				buffer.append(" Rw");
+				beat += 4.0;
+				return buffer;
+		}
 
 		//If turtle is horizontal, no note change occurs
 		if ((direction == 1 || direction == 3) && draw)
@@ -634,6 +760,29 @@ public class ScoreGenerator
 
 			buffer.append(" [" + pitch + "]" + duration);
 		}
+		
+		switch(duration)
+		{
+			case 's':
+				beat += 0.0625;
+				break;
+				
+			case 'i':
+				beat += 0.25;
+				break;
+				
+			case 'q':
+				beat += 1.0;
+				break;
+				
+			case 'h':
+				beat += 2.0;
+				break;
+				
+			case 'w':
+				beat += 4.0;
+				break;
+		}
 
 		return buffer;
 	}
@@ -685,8 +834,8 @@ public class ScoreGenerator
 		return -1;
 	}
 	
-	public void addPart(String voice)
+	public void addPart(String voice, int instrument)
 	{
-		score.appendPart(voice);
+		score.appendPart(voice, instrument);
 	}
 }

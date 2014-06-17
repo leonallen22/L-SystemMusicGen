@@ -69,6 +69,7 @@ public class RhythmGenerator
 		int duration = 3;
 		int pulses = 0;
 		int steps = 0;
+		double beats = 0.0;
 		
 		if(step <= 333)
 		{
@@ -90,11 +91,11 @@ public class RhythmGenerator
 		
 		else if(step <= 666)
 		{
-			int count = 4;
-			steps = 16;
+			int count = 3;
+			steps = 8;
 			duration = 4;
 			
-			for(int i=125 ; i <= 1000 ; i = i += 125)
+			for(int i=200 ; i <= 1000 ; i = i += 200)
 			{
 				if(pulse <= i)
 				{
@@ -111,10 +112,10 @@ public class RhythmGenerator
 		
 		else
 		{
-			int count = 20;
-			steps = 64;
+			int count = 6;
+			steps = 16;
 			
-			for(int i=25 ; i <= 1000 ; i = i += 25)
+			for(int i=100 ; i <= 1000 ; i = i += 100)
 			{
 				if(pulse <= i)
 				{
@@ -148,15 +149,32 @@ public class RhythmGenerator
 			}
 		}*/
 		
+		char dur = durations[duration];
+		
 		for(int i=0 ; i < r.size() ; ++i)
-		{			
+		{
+			if(beats >= 4.0)
+				break;
+			
 			if(r.get(i) == true)
-				rhythm += durations[duration];
+				rhythm += dur;
 			
 			else
 			{
 				switch(duration)
 				{
+					case 0:
+						rhythm += '0';
+						break;
+						
+					case 1:
+						rhythm += '1';
+						break;
+						
+					case 2:
+						rhythm += '2';
+						break;
+						
 					case 3:
 						rhythm += '3';
 						break;
@@ -167,13 +185,51 @@ public class RhythmGenerator
 						
 					case 5:
 						rhythm += '5';
+						break;
 						
 					case 6:
 						rhythm += '6';
+						break;
 						
 					case 7:
 						rhythm += '7';
+						break;
 				}
+			}
+			
+			switch(duration)
+			{
+				case 0:
+					beats += 0.03125;
+					break;
+					
+				case 1:
+					beats += 0.0625;
+					break;
+					
+				case 2:
+					beats += 0.125;
+					break;
+					
+				case 3:
+					beats += 0.25;
+					break;
+					
+				case 4:
+					beats += 0.5;
+					break;
+					
+				case 5:
+					beats += 1.0;
+					break;
+					
+				case 6:
+					beats += 2.0;
+					break;
+					
+				case 7:
+					beats += 4.0;
+					break;
 			}
 		}
 		

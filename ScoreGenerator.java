@@ -198,19 +198,21 @@ public class ScoreGenerator
 		char[] prod = production.toCharArray();											//Array of characters from the production
 		turtle.popY();
 		turtle.pushY(tonic);
-		char[] rhythm = {'0'};
+		char[] rhythm = rhythmGen.genRhythm();
 		int r = 0;
 
 		//Step through each symbol in production
 		for (int i = 0; i < prod.length; ++i)
 		{	
-			if(beat % 4.0 == 1.0)
+			if(beat % 4.0 == 1.0 && r != 0)
 			{
-				System.out.println("---New Rhythm---");
+				buffer.append(" |");
+				System.out.println("---New Rhythm---\r\n");
 				rhythm = rhythmGen.genRhythm();
+				r = 0;
 			}
 			
-			r = r % rhythm.length;
+			//r = r % rhythm.length;
 			
 			switch (prod[i])
 			{
@@ -441,14 +443,29 @@ public class ScoreGenerator
 		
 		switch(duration)
 		{
+			case '0':
+				buffer.append(" Ro");
+				beat += 0.03125;
+				return buffer;
+				
+			case '1':
+				buffer.append(" Rx");
+				beat += 0.0625;
+				return buffer;
+				
+			case '2':
+				buffer.append(" Rt");
+				beat += 0.125;
+				return buffer;
+				
 			case '3':
 				buffer.append(" Rs");
-				beat += 0.0625;
+				beat += 0.25;
 				return buffer;
 				
 			case '4':
 				buffer.append(" Ri");
-				beat += 0.25;
+				beat += 0.5;
 				return buffer;
 				
 			case '5':
@@ -645,12 +662,24 @@ public class ScoreGenerator
 		
 		switch(duration)
 		{
-			case 's':
+			case 'o':
+				beat += 0.03125;
+				break;
+				
+			case 'x':
 				beat += 0.0625;
 				break;
 				
-			case 'i':
+			case 't':
+				beat += 0.125;
+				break;
+				
+			case 's':
 				beat += 0.25;
+				break;
+				
+			case 'i':
+				beat += 0.5;
 				break;
 				
 			case 'q':

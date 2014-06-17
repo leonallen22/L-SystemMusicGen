@@ -441,27 +441,27 @@ public class ScoreGenerator
 		
 		switch(duration)
 		{
-			case '0':
+			case '3':
 				buffer.append(" Rs");
 				beat += 0.0625;
 				return buffer;
 				
-			case '1':
+			case '4':
 				buffer.append(" Ri");
 				beat += 0.25;
 				return buffer;
 				
-			case '2':
+			case '5':
 				buffer.append(" Rq");
 				beat += 1.0;
 				return buffer;
 				
-			case '3':
+			case '6':
 				buffer.append(" Rh");
 				beat += 2.0;
 				return buffer;
 				
-			case '4':
+			case '7':
 				buffer.append(" Rw");
 				beat += 4.0;
 				return buffer;

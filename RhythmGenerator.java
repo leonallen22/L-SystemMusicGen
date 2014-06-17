@@ -62,18 +62,18 @@ public class RhythmGenerator
 	public char[] genRhythm()
 	{
 		//ArrayList<Integer> durations = new ArrayList<Integer>();
-		char[] d = {'s', 'i', 'q', 'h', 'w'};
+		//char[] d = {'s', 'i', 'q', 'h', 'w'};
 		double pulse = Math.random()*1000;
 		double step = Math.random()*1000;
 		String rhythm = "";
-		int duration = 0;
+		int duration = 3;
 		int pulses = 0;
 		int steps = 0;
 		
 		if(step <= 333)
 		{
 			steps = 4;
-			duration = 2;
+			duration = 5;
 			
 			if(pulse <= 250)
 				pulses = 1;
@@ -92,7 +92,7 @@ public class RhythmGenerator
 		{
 			int count = 4;
 			steps = 16;
-			duration = 1;
+			duration = 4;
 			
 			for(int i=125 ; i <= 1000 ; i = i += 125)
 			{
@@ -151,28 +151,28 @@ public class RhythmGenerator
 		for(int i=0 ; i < r.size() ; ++i)
 		{			
 			if(r.get(i) == true)
-				rhythm += d[duration];
+				rhythm += durations[duration];
 			
 			else
 			{
 				switch(duration)
 				{
-					case 0:
-						rhythm += '0';
-						break;
-						
-					case 1:
-						rhythm += '1';
-						break;
-						
-					case 2:
-						rhythm += '2';
-						
 					case 3:
 						rhythm += '3';
+						break;
 						
 					case 4:
 						rhythm += '4';
+						break;
+						
+					case 5:
+						rhythm += '5';
+						
+					case 6:
+						rhythm += '6';
+						
+					case 7:
+						rhythm += '7';
 				}
 			}
 		}

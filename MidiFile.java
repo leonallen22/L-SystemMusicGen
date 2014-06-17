@@ -7,15 +7,15 @@ import java.io.FileWriter;
 import javax.sound.midi.InvalidMidiDataException;
 
 /**
- * Generates a production with a context-free L-system, convert the production either directly into a score properly formatted for JFugue or use a
- * Markov chain for non-determinacy and convert into a score, then play the generated score using JFugue.
+ * Generates a production with a context-free L-system, convert the production either directly into a score or use 
+ * a Markov chain for non-determinacy and convert into a score properly formatted for JFugue, then play the generated score using JFugue.
+ * Uses the Bjorklund algorithm by Kristopher W. Reese to generate rhythms for melodies and accompaniment.
  * 
  * @author Harry Allen
  * @version 1.0
  * 
  * To do:
  * Improve rhythm of melody generation
- * 		-Fix problem with rhythm generation (excessive rests sometimes put into score)
  * Improve coherence of melody generation (perhaps by adding harmonic progression as a restriction?)
  * Add accompaniment
  */
@@ -567,9 +567,10 @@ public class MidiFile
 					exit = true;
 					break;
 					
+				//Test rhythm generation
 				case 10:
 					String music = "";
-					Bjorklund rhythm = new Bjorklund(15 ,15);
+					Bjorklund rhythm = new Bjorklund(20 ,64);
 					ArrayList<Boolean> r = rhythm.getRhythm();
 					rhythm.print();
 					String score = scoreGen.getScore().getMusicString();

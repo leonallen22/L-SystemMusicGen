@@ -3,6 +3,58 @@ import java.util.ArrayList;
 
 /**
  * Generates rhythms for use in melody and accompaniment.
+ * Rhythms are represented as a sequence characters which represent durations:
+ * 
+ * <table border="1">
+ * 	<tr>
+ * 		<td>Whole note</td>
+ * 		<td>w</td>
+ * 		<td>Whole rest</td>
+ * 		<td>7</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>Half note</td>
+ * 		<td>h</td>
+ * 		<td>Half rest</td>
+ * 		<td>6</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>Quarter note</td>
+ * 		<td>q</td>
+ * 		<td>Quarter rest</td>
+ * 		<td>5</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>Eighth note</td>
+ * 		<td>i</td>
+ * 		<td>Eighth rest</td>
+ * 		<td>4</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>Sixteenth note</td>
+ * 		<td>s</td>
+ * 		<td>Sixteenth rest</td>
+ * 		<td>3</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>Thirty-second note</td>
+ * 		<td>t</td>
+ * 		<td>Thirty-second rest</td>
+ *		<td>2</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>Sixty-fourth note</td>
+ * 		<td>x</td>
+ * 		<td>Sixty-fourth rest</td>
+ * 		<td>1</td>
+ * 	</tr>
+ * 	<tr>
+ * 		<td>One-twenty-eighth note</td>
+ * 		<td>o</td>
+ * 		<td>One-twenty-eighth rest</td>
+ * 		<td>0</td>
+ * 	</tr>
+ * </table>
  * 
  * @author Harry Allen
  */
@@ -40,6 +92,14 @@ public class RhythmGenerator
 	}
 	
 	/**
+	 * @return rhythm as a char array.
+	 */
+	public char[] getRhythm()
+	{
+		return rhythm;
+	}
+	
+	/**
 	 * @param newdensity  the new probability that subdivision will occur
 	 */
 	public void setDensity(int newdensity)
@@ -56,7 +116,8 @@ public class RhythmGenerator
 	}
 	
 	/**
-	 * Uses Bjorklund to generate rhythms to be implemented into the music.
+	 * Uses Bjorklund to generate rhythms one 4/4 measure at a time 
+	 * to be implemented into the music.
 	 * @return char array with the durations and rests to be used.
 	 */
 	public char[] genRhythm()

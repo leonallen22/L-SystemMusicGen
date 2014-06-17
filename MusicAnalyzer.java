@@ -6,8 +6,8 @@ import com.esotericsoftware.wildcard.*;
 import javax.sound.midi.InvalidMidiDataException;
 
 /**
- * Analyzes a series of MIDI files, producing first-order and second-order Markov Chains which represent the probability of one note following another
- * and one note following a sequence of two notes, respectively.
+ * Analyzes a series of MIDI files, producing first-order and second-order Markov Chains which represent <br>
+ * the probability of one note following another and one note following a sequence of two notes, respectively.
  * 
  * @author Harry Allen
  */
@@ -16,7 +16,7 @@ public class MusicAnalyzer
 
 	private ArrayList<ArrayList<Double>>			prob;		// Markov chain: stores the probability vector for each note
 	private ArrayList<ArrayList<ArrayList<Double>>>	secondProb;	// Markov chain: stores the probability vector for each combination of the current note and immediately preceding note
-	private int										key;
+	private int										key;        //Current key signature
 
 	/**
 	 * Default constructor.
@@ -701,7 +701,7 @@ public class MusicAnalyzer
 		switch (key)
 		{
 			case 1:
-				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
+				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/Rock", "*.mid");
 
 			case 2:
 				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/GMajor", "*.mid");
@@ -738,6 +738,6 @@ public class MusicAnalyzer
 
 			default:
 				return new Paths("C:/EclipseWorkspace/L-SystemMusic/MIDIs/CMajor", "*.mid");
-		}
-	}
+        }
+    }
 }

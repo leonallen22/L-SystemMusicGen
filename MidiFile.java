@@ -8,16 +8,18 @@ import javax.sound.midi.InvalidMidiDataException;
 
 /**
  * Generates a production with a context-free L-system, convert the production either directly into a score or use 
- * a Markov chain for non-determinacy and convert into a score properly formatted for JFugue, then play the generated score using JFugue.
- * Uses the Bjorklund algorithm by Kristopher W. Reese to generate rhythms for melodies and accompaniment.
+ * a Markov chain for non-determinacy and convert into a score properly formatted for JFugue, then play the generated score using JFugue.<br>
+ * Uses the Bjorklund algorithm by Kristopher W. Reese to generate rhythms for melodies and accompaniment.<br><br>
+ * 
+ * To do:
+ * <ul>
+ *  <li>Improve rhythm of melody generation</li>
+ *  <li>Improve coherence of melody generation (perhaps by adding harmonic progression as a restriction?)</li>
+ *  <li>Add accompaniment</li>
+ * <ul>
  * 
  * @author Harry Allen
  * @version 1.0
- * 
- * To do:
- * Improve rhythm of melody generation
- * Improve coherence of melody generation (perhaps by adding harmonic progression as a restriction?)
- * Add accompaniment
  */
 public class MidiFile
 {
@@ -593,6 +595,6 @@ public class MidiFile
 
 		scan.close();
 
-		return;
-	}
+        return;
+    }
 }

@@ -9,13 +9,13 @@ import java.util.ArrayList;
 public class ScoreGenerator
 {
 
-	private Turtle			turtle;															//Turtle to keep track of "drawing" actions
-	private MusicAnalyzer	analyzer;														//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
-	private Score			score;
-	private RhythmGenerator	rhythmGen;
-	private double			beat;
-	private int				lowerBound;
-	private int				upperBound;
+	private Turtle			turtle;										//Turtle to keep track of "drawing" actions
+	private MusicAnalyzer	analyzer;									//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
+	private Score			score;                                      //Stores the music score and related information
+	private RhythmGenerator	rhythmGen;                                  //Generates rhythms to be implemented into the melody or accompaniment
+	private double			beat;                                       //Keeps track of the beat to determine when to place measure marker and generate a new rhythm
+	private int				lowerBound;                                 //Lower bound of note pitch
+	private int				upperBound;                                 //Upper boudn of note pitch
 
 	/**
 	 * Default Constructor.
@@ -747,6 +747,6 @@ public class ScoreGenerator
 	
 	public void addPart(String voice, int instrument)
 	{
-		score.appendPart(voice, instrument);
-	}
+        score.appendPart(voice, instrument);
+    }
 }

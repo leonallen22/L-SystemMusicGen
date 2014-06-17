@@ -1,6 +1,8 @@
+import java.util.ArrayList;
+
 
 /**
- * Generates rhythms for use in melody.
+ * Generates rhythms for use in melody and accompaniment.
  * 
  * @author Harry Allen
  */
@@ -53,8 +55,133 @@ public class RhythmGenerator
 		minDuration = newMinDuration;
 	}
 	
-	/*public char[] generateRhythm()
+	/**
+	 * Uses Bjorklund to generate rhythms to be implemented into the music.
+	 * @return char array with the durations and rests to be used.
+	 */
+	public char[] genRhythm()
 	{
+		//ArrayList<Integer> durations = new ArrayList<Integer>();
+		char[] d = {'s', 'i', 'q', 'h', 'w'};
+		double pulse = Math.random()*1000;
+		double step = Math.random()*1000;
+		String rhythm = "";
+		int duration = 0;
+		int pulses = 0;
+		int steps = 0;
 		
-	}*/
+		if(step <= 333)
+		{
+			steps = 4;
+			duration = 2;
+			
+			if(pulse <= 250)
+				pulses = 1;
+			
+			else if(pulse <= 500)
+				pulses = 2;
+			
+			else if(pulse <= 750)
+				pulses = 3;
+			
+			else
+				pulses = 3;
+		}
+		
+		else if(step <= 666)
+		{
+			int count = 4;
+			steps = 16;
+			duration = 1;
+			
+			for(int i=125 ; i <= 1000 ; i = i += 125)
+			{
+				if(pulse <= i)
+				{
+					pulses = count;
+					break;
+				}
+				
+				++count;
+			}
+			
+			if(pulses == 0)
+				pulses = count-2;
+		}
+		
+		else
+		{
+			int count = 20;
+			steps = 64;
+			
+			for(int i=25 ; i <= 1000 ; i = i += 25)
+			{
+				if(pulse <= i)
+				{
+					pulses = count;
+					break;
+				}
+				
+				++count;
+			}
+			
+			if(pulses == 0)
+				pulses = count-2;
+		}
+		Bjorklund gen = new Bjorklund(pulses, steps);
+		ArrayList<Boolean> r = gen.getRhythm();
+		
+		/*for(int i=0 ; i < r.size() ; ++i)
+		{
+			duration = duration % d.length;
+			
+			if(i != 0 && r.get(i-1) == true && r.get(i) == true)
+				++duration;
+			
+			else if(r.get(i) == true)
+				duration = 0;
+			
+			else
+			{
+				durations.add(duration);
+				duration = 0;
+			}
+		}*/
+		
+		for(int i=0 ; i < r.size() ; ++i)
+		{			
+			if(r.get(i) == true)
+				rhythm += d[duration];
+			
+			else
+			{
+				switch(duration)
+				{
+					case 0:
+						rhythm += '0';
+						break;
+						
+					case 1:
+						rhythm += '1';
+						break;
+						
+					case 2:
+						rhythm += '2';
+						
+					case 3:
+						rhythm += '3';
+						
+					case 4:
+						rhythm += '4';
+				}
+			}
+		}
+		
+		/*for(Integer dur : durations)
+			rhythm += d[dur];*/
+		
+		System.out.println(rhythm);
+		this.rhythm = rhythm.toCharArray();
+		return this.rhythm;
+	}
 }

@@ -12,6 +12,7 @@ public class ScoreGenerator
 	private Turtle			turtle;															//Turtle to keep track of "drawing" actions
 	private MusicAnalyzer	analyzer;														//Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
 	private Score			score;
+	private RhythmGenerator	rhythmGen;
 	private double			beat;
 	private int				lowerBound;
 	private int				upperBound;
@@ -24,6 +25,7 @@ public class ScoreGenerator
 		analyzer = new MusicAnalyzer();
 		turtle = new Turtle();
 		score = new Score();
+		rhythmGen = new RhythmGenerator();
 		beat = 1.0;
 		upperBound = 95;
 		lowerBound = 36;
@@ -39,6 +41,7 @@ public class ScoreGenerator
 		analyzer = new MusicAnalyzer();
 		turtle = new Turtle();
 		score = new Score();
+		rhythmGen = new RhythmGenerator();
 		turtle.pushAngle(angle);
 		beat = 1.0;
 		upperBound = 95;
@@ -109,131 +112,6 @@ public class ScoreGenerator
 	{
 		turtle.reset();
 	}
-	
-	public char[] genRhythm()
-	{
-		ArrayList<Integer> durations = new ArrayList<Integer>();
-		char[] d = {'s', 'i', 'q', 'h', 'w'};
-		double pulse = Math.random()*1000;
-		double step = Math.random()*1000;
-		String rhythm = "";
-		int duration = 0;
-		int pulses = 0;
-		int steps = 0;
-		
-		if(step <= 333)
-		{
-			steps = 4;
-			duration = 2;
-			
-			if(pulse <= 250)
-				pulses = 1;
-			
-			else if(pulse <= 500)
-				pulses = 2;
-			
-			else if(pulse <= 750)
-				pulses = 3;
-			
-			else
-				pulses = 3;
-		}
-		
-		else if(step <= 666)
-		{
-			int count = 4;
-			steps = 16;
-			duration = 1;
-			
-			for(int i=125 ; i <= 1000 ; i = i += 125)
-			{
-				if(pulse <= i)
-				{
-					pulses = count;
-					break;
-				}
-				
-				++count;
-			}
-			
-			if(pulses == 0)
-				pulses = count-2;
-		}
-		
-		else
-		{
-			int count = 20;
-			steps = 64;
-			
-			for(int i=25 ; i <= 1000 ; i = i += 25)
-			{
-				if(pulse <= i)
-				{
-					pulses = count;
-					break;
-				}
-				
-				++count;
-			}
-			
-			if(pulses == 0)
-				pulses = count-2;
-		}
-		Bjorklund gen = new Bjorklund(pulses, steps);
-		ArrayList<Boolean> r = gen.getRhythm();
-		
-		/*for(int i=0 ; i < r.size() ; ++i)
-		{
-			duration = duration % d.length;
-			
-			if(i != 0 && r.get(i-1) == true && r.get(i) == true)
-				++duration;
-			
-			else if(r.get(i) == true)
-				duration = 0;
-			
-			else
-			{
-				durations.add(duration);
-				duration = 0;
-			}
-		}*/
-		
-		for(int i=0 ; i < r.size() ; ++i)
-		{			
-			if(r.get(i) == true)
-				rhythm += d[duration];
-			
-			else
-			{
-				switch(duration)
-				{
-					case 0:
-						rhythm += '0';
-						break;
-						
-					case 1:
-						rhythm += '1';
-						break;
-						
-					case 2:
-						rhythm += '2';
-						
-					case 3:
-						rhythm += '3';
-						
-					case 4:
-						rhythm += '4';
-				}
-			}
-		}
-		
-		/*for(Integer dur : durations)
-			rhythm += d[dur];*/
-		
-		System.out.println(rhythm);
-		return rhythm.toCharArray();
-	}
 
 	/**
 	 * Accepts a string and parses through it to generate a pattern properly formatted for JFugue.
@@ -246,6 +124,7 @@ public class ScoreGenerator
 	{
 		score.resetScore();
 		String pat = "";
+		beat = 1;
 
 		switch (score.getKeyInt())
 		{
@@ -326,7 +205,10 @@ public class ScoreGenerator
 		for (int i = 0; i < prod.length; ++i)
 		{	
 			if(beat % 4.0 == 1.0)
-				rhythm = genRhythm();
+			{
+				System.out.println("---New Rhythm---");
+				rhythm = rhythmGen.genRhythm();
+			}
 			
 			r = r % rhythm.length;
 			

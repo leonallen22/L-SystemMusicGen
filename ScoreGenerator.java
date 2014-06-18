@@ -2,20 +2,90 @@ import org.jfugue.Pattern;
 import java.util.ArrayList;
 
 /**
- * Generates a properly formatted score for use in JFugue from an L-system production.
+ * Generates a properly formatted score for use in JFugue from an L-system production.<br>
+ * Probabilities of transition from one chord to another in a chord progression.<br>
+ * Only the most common chords for Major key progressions are included:
+ * <table border="1">
+ *  <thead>
+ *      <td></td>
+ *      <td><strong>I</strong></td>
+ *      <td><strong>V</strong></td>
+ *      <td><strong>IV</strong></td>
+ *      <td><strong>vi</strong></td>
+ *      <td><strong>iii</strong></td>
+ *      <td><strong>ii</strong></td>
+ *  </thead>
+ *  <tbody>
+ *      <tr>
+ *          <td><strong>I</strong></td>
+ *          <td>16.67</td>
+ *          <td>16.67</td>
+ *          <td>16.67</td>
+ *          <td>16.67</td>
+ *          <td>16.67</td>
+ *          <td>16.67</td>
+ *      </tr>
+ *      <tr>
+ *          <td><strong>V</strong></td>
+ *          <td>33.33</td>
+ *          <td>33.33</td>
+ *          <td>00.00</td>
+ *          <td>33.33</td>
+ *          <td>00.00</td>
+ *          <td>00.00</td>
+ *      </tr>
+ *      <tr>
+ *          <td><strong>IV</strong></td>
+ *          <td>20.00</td>
+ *          <td>20.00</td>
+ *          <td>20.00</td>
+ *          <td>00.00</td>
+ *          <td>20.00</td>
+ *          <td>20.00</td>
+ *      </tr>
+ *      <tr>
+ *          <td><strong>vi</strong></td>
+ *          <td>00.00</td>
+ *          <td>25.00</td>
+ *          <td>25.00</td>
+ *          <td>25.00</td>
+ *          <td>00.00</td>
+ *          <td>25.00</td>
+ *      </tr>
+ *      <tr>
+ *          <td><strong>iii</strong></td>
+ *          <td>00.00</td>
+ *          <td>00.00</td>
+ *          <td>25.00</td>
+ *          <td>25.00</td>
+ *          <td>25.00</td>
+ *          <td>25.00</td>
+ *      </tr>
+ *      <tr>
+ *          <td><strong>ii</strong></td>
+ *          <td>00.00</td>
+ *          <td>33.33</td>
+ *          <td>00.00</td>
+ *          <td>00.00</td>
+ *          <td>33.33</td>
+ *          <td>33.33</td>
+ *      </tr>
+ *  </tbody>
+ * </table>
  * 
  * @author Harry Allen
  */
 public class ScoreGenerator
 {
 
-    private Turtle          turtle;           // Turtle to keep track of "drawing" actions
-    private MusicAnalyzer   analyzer;         // Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
-    private Score           score;            // Stores the music score and related information
-    private RhythmGenerator rhythmGen;        // Generates rhythms to be implemented into the melody or accompaniment
-    private double          beat;             // Keeps track of the beat to determine when to place measure marker and generate a new rhythm
-    private int             lowerBound;       // Lower bound of note pitch
-    private int             upperBound;       // Upper bound of note pitch
+    private Turtle                        turtle;       // Turtle to keep track of "drawing" actions
+    private MusicAnalyzer                 analyzer;     // Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
+    private Score                         score;        // Stores the music score and related information
+    private RhythmGenerator               rhythmGen;    // Generates rhythms to be implemented into the melody or accompaniment
+    private ArrayList<ArrayList<Integer>> chordProb;    // Stores the chords and the likelihood of their transition to other chords
+    private double                        beat;         // Keeps track of the beat to determine when to place measure marker and generate a new rhythm
+    private int                           lowerBound;   // Lower bound of note pitch
+    private int                           upperBound;   // Upper bound of note pitch
 
     /**
      * Default Constructor.
@@ -26,6 +96,7 @@ public class ScoreGenerator
         turtle = new Turtle();
         score = new Score();
         rhythmGen = new RhythmGenerator();
+        initChordProb();
         beat = 1.0;
         upperBound = 95;
         lowerBound = 36;
@@ -42,10 +113,97 @@ public class ScoreGenerator
         turtle = new Turtle();
         score = new Score();
         rhythmGen = new RhythmGenerator();
+        initChordProb();
         turtle.pushAngle(angle);
         beat = 1.0;
         upperBound = 95;
-        lowerBound = 36;
+        lowerBound = 36;    
+    }
+    
+    private void initChordProb()
+    {
+        chordProb = new ArrayList<ArrayList<Integer>>();
+        
+        for(int i=0 ; i < 7 ; ++i)
+        {
+            chordProb.add(new ArrayList<Integer>());
+        }
+        
+        for(int i=0 ; i < chordProb.size() ; ++i)
+        {
+            ArrayList<Integer> list = chordProb.get(i);
+            switch(i)
+            {
+                case 0:
+                    for(int j=0 ; j < 6 ; ++j)
+                        list.add(1667);
+                    break;
+                    
+                case 1:
+                    for(int j=0 ; j < 6 ; ++j)
+                    {
+                        if(j == 0 || j == 1 || j == 3)
+                            list.add(3333);
+                        
+                        else
+                            list.add(0);
+                    }
+                    break;
+                    
+                case 2:
+                    for(int j=0 ; j < 6 ; ++j)
+                    {
+                        if(j == 3)
+                            list.add(0);
+                        
+                        else
+                            list.add(2000);
+                    }
+                    break;
+                    
+                case 3:
+                    for(int j=0 ; j < 6 ; ++j)
+                    {
+                        if(j == 0 || j == 4)
+                            list.add(0);
+                        
+                        else
+                            list.add(2500);
+                    }
+                    break;
+                    
+                case 4:
+                    for(int j=0 ; j < 6 ; ++j)
+                    {
+                        if(j == 0 || j == 1)
+                            list.add(0);
+                        
+                        else
+                        {
+                            list.add(2500);
+                        }
+                    }
+                    break;
+                    
+                case 5:
+                    for(int j=0 ; j < 6 ; ++j)
+                    {
+                        if(j == 0 || j == 2 || j == 3)
+                            list.add(0);
+                        
+                        else
+                            list.add(3333);
+                    }
+                    break;
+            }
+        }
+        System.out.println("I    V    IV    vi    iii    i");
+        for(ArrayList<Integer> list : chordProb)
+        {
+            for(Integer x : list)
+                System.out.print(x + " ");
+            System.out.println();
+        }
     }
 
     /**
@@ -218,9 +376,9 @@ public class ScoreGenerator
                 case 'g':
                     if (!markov)
                     {
-                        if(beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
+                        if (beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
                             buffer.append(" |");
-                        
+
                         buffer = drawLine(buffer, true);
                     }
 
@@ -233,7 +391,7 @@ public class ScoreGenerator
                             rhythm = rhythmGen.genRhythm();
                             r = 0;
                         }
-                        
+
                         buffer = drawMarkov(buffer, true, order, rhythm[r]);
                         ++r;
                     }
@@ -243,9 +401,9 @@ public class ScoreGenerator
                 case 'f':
                     if (!markov)
                     {
-                        if(beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
+                        if (beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
                             buffer.append(" |");
-                        
+
                         buffer = drawLine(buffer, false);
                     }
 
@@ -258,7 +416,7 @@ public class ScoreGenerator
                             rhythm = rhythmGen.genRhythm();
                             r = 0;
                         }
-                        
+
                         buffer = drawMarkov(buffer, false, order, rhythm[r]);
                         ++r;
                     }
@@ -373,7 +531,7 @@ public class ScoreGenerator
 
             else
                 buffer.append(" [" + pitch + "]s");
-            
+
             beat += 0.25;
         }
 
@@ -716,6 +874,26 @@ public class ScoreGenerator
     }
 
     /**
+     * Generates chord progressions for Major scales for use in the underlying harmonic structure of the composition.
+     * @return an ArrayList of Integers which represent the sequence of chords to be used
+     */
+    public ArrayList<Integer> genChordProgression()
+    {
+        ArrayList<Integer> chordProg = new ArrayList<Integer>();
+        boolean complete = false;
+        int chord = 0;
+        int rand = 0;
+        
+        while(!complete)
+        {
+            rand = (int)Math.floor(Math.random() * 10000);
+            
+        }
+        
+        return chordProg;
+    }
+
+    /**
      * Randomly chooses a note based on the first-order probabilities provided by MusicAnalyzer.
      * 
      * @param note the last note in the score
@@ -762,8 +940,15 @@ public class ScoreGenerator
         return -1;
     }
 
+    /**
+     * Adds the string passed as a separate part for the passed instrument in the composition.
+     * 
+     * @param voice Part to add
+     * @param instrument Instrument that will play the part
+     */
     public void addPart(String voice, int instrument)
     {
         score.appendPart(voice, instrument);
     }
+
 }

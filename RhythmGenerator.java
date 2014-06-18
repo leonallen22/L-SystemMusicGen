@@ -114,22 +114,21 @@ public class RhythmGenerator
     }
 
     /**
-     * Uses Bjorklund to generate rhythms one 4/4 measure at a time to be implemented into the music.
+     * Uses Bjorklund to generate rhythms one 4/4 measure at a time to be implemented into the music.<br>
+     * Rhythms are subdivided either into quarter, eighth, or sixteenth notes.
      * 
      * @return char array with the durations and rests to be used.
      */
     public char[] genRhythm()
     {
-        // ArrayList<Integer> durations = new ArrayList<Integer>();
-        // char[] d = {'s', 'i', 'q', 'h', 'w'};
         double pulse = Math.random() * 1000;
         double step = Math.random() * 1000;
         String rhythm = "";
         int duration = 3;
         int pulses = 0;
         int steps = 0;
-        double beats = 0.0;
 
+        //Rhythm will have 4 steps composed of quarter notes/rests
         if (step <= 333)
         {
             steps = 4;
@@ -148,6 +147,7 @@ public class RhythmGenerator
                 pulses = 3;
         }
 
+        //Rhythm will have 8 steps composed of eighth notes/rests
         else if (step <= 666)
         {
             int count = 3;
@@ -169,6 +169,7 @@ public class RhythmGenerator
                 pulses = count - 2;
         }
 
+        //Rhythm will have 16 steps composed of sixteenth notes/rests
         else
         {
             int count = 6;
@@ -188,36 +189,124 @@ public class RhythmGenerator
             if (pulses == 0)
                 pulses = count - 2;
         }
+
+        rhythm = genRhythmString(pulses, steps, duration);
+        System.out.println(rhythm);
+        this.rhythm = rhythm.toCharArray();
+        return this.rhythm;
+    }
+    
+    /**
+     * Generates a rhythm with 4 steps composed of quarter notes/rests.
+     * @return a char array representing the rhythm generated
+     */
+    public char[] genQuarterRhythm()
+    {
+        double pulse = Math.random() * 1000;
+        String rhythm = "";
+        int pulses = 0;
+
+        if (pulse <= 250)
+            pulses = 1;
+
+        else if (pulse <= 500)
+            pulses = 2;
+
+        else if (pulse <= 750)
+            pulses = 3;
+
+        else
+            pulses = 3;
+        
+        rhythm = genRhythmString(pulses, 4, 5);
+        return rhythm.toCharArray();
+    }
+    
+    /**
+     * Generates a rhythm with 8 steps composed of eighth notes/rests.
+     * @return a char array representing the rhythm generated
+     */
+    public char[] genEighthRhythm()
+    {
+        double pulse = Math.random() * 1000;
+        String rhythm = "";
+        int pulses = 0;
+        int count = 3;
+
+        for (int i = 200; i <= 1000; i = i += 200)
+        {
+            if (pulse <= i)
+            {
+                pulses = count;
+                break;
+            }
+
+            ++count;
+        }
+
+        if (pulses == 0)
+            pulses = count - 2;
+        
+        rhythm = genRhythmString(pulses, 8, 4);
+        return rhythm.toCharArray();
+    }
+    
+    /**
+     * Generates a rhythm with 16 steps composed of sixteenth notes/rests.
+     * @return a char array representing the rhythm generated
+     */
+    public char[] genSixteenthRhythm()
+    {
+        double pulse = Math.random() * 1000;
+        String rhythm = "";
+        int pulses = 0;
+        int count = 6;
+
+        for (int i = 100; i <= 1000; i = i += 100)
+        {
+            if (pulse <= i)
+            {
+                pulses = count;
+                break;
+            }
+
+            ++count;
+        }
+
+        if (pulses == 0)
+            pulses = count - 2;
+        
+        rhythm = genRhythmString(pulses, 16, 3);
+        return rhythm.toCharArray();
+    }
+    
+    /**
+     * Generates a string representation of the Bjorklund rhythm produced with the pulses and steps passed as parameters.
+     * @param pulses  Number of notes for the rhythm
+     * @param steps  Total number of steps for the rhythm
+     * @param duration  duration of the notes/rests for this rhythm
+     * @return The string representation of the Bjorklund rhythm produced
+     */
+    private String genRhythmString(int pulses, int steps, int duration)
+    {
         Bjorklund gen = new Bjorklund(pulses, steps);
         ArrayList<Boolean> r = gen.getRhythm();
-
-        /*for(int i=0 ; i < r.size() ; ++i)
-        {
-        	duration = duration % d.length;
-        	
-        	if(i != 0 && r.get(i-1) == true && r.get(i) == true)
-        		++duration;
-        	
-        	else if(r.get(i) == true)
-        		duration = 0;
-        	
-        	else
-        	{
-        		durations.add(duration);
-        		duration = 0;
-        	}
-        }*/
+        String rhythm = "";
+        double beats = 0.0;
 
         char dur = durations[duration];
 
         for (int i = 0; i < r.size(); ++i)
         {
+            //Quit producing rhythm if the measure has been filled
             if (beats >= 4.0)
                 break;
 
+            //Record note
             if (r.get(i) == true)
                 rhythm += dur;
 
+            //Record rest
             else
             {
                 switch (duration)
@@ -255,7 +344,7 @@ public class RhythmGenerator
                         break;
                 }
             }
-
+            
             switch (duration)
             {
                 case 0:
@@ -291,12 +380,7 @@ public class RhythmGenerator
                     break;
             }
         }
-
-        /*for(Integer dur : durations)
-        	rhythm += d[dur];*/
-
-        System.out.println(rhythm);
-        this.rhythm = rhythm.toCharArray();
-        return this.rhythm;
+        
+        return rhythm;
     }
 }

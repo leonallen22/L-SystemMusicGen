@@ -202,16 +202,6 @@ public class ScoreGenerator
         // Step through each symbol in production
         for (int i = 0; i < prod.length; ++i)
         {
-            if (beat % 4.0 == 1.0 && r != 0)
-            {
-                buffer.append(" |");
-                System.out.println("---New Rhythm---\r\n");
-                rhythm = rhythmGen.genRhythm();
-                r = 0;
-            }
-
-            // r = r % rhythm.length;
-
             switch (prod[i])
             {
             // Increment turtle's yaw
@@ -227,23 +217,51 @@ public class ScoreGenerator
                 // Turtle draws a line
                 case 'g':
                     if (!markov)
+                    {
+                        if(beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
+                            buffer.append(" |");
+                        
                         buffer = drawLine(buffer, true);
+                    }
 
                     else
+                    {
+                        if (beat % 4.0 == 1.0 && r != 0)
+                        {
+                            buffer.append(" |");
+                            System.out.println("---New Rhythm---\r\n");
+                            rhythm = rhythmGen.genRhythm();
+                            r = 0;
+                        }
+                        
                         buffer = drawMarkov(buffer, true, order, rhythm[r]);
-
-                    ++r;
+                        ++r;
+                    }
                     break;
 
                 // Turtle moves without drawing
                 case 'f':
                     if (!markov)
+                    {
+                        if(beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
+                            buffer.append(" |");
+                        
                         buffer = drawLine(buffer, false);
+                    }
 
                     else
+                    {
+                        if (beat % 4.0 == 1.0 && r != 0)
+                        {
+                            buffer.append(" |");
+                            System.out.println("---New Rhythm---\r\n");
+                            rhythm = rhythmGen.genRhythm();
+                            r = 0;
+                        }
+                        
                         buffer = drawMarkov(buffer, false, order, rhythm[r]);
-
-                    ++r;
+                        ++r;
+                    }
                     break;
 
                 case 'r':
@@ -355,6 +373,8 @@ public class ScoreGenerator
 
             else
                 buffer.append(" [" + pitch + "]s");
+            
+            beat += 0.25;
         }
 
         else if (direction == 1 || direction == 3)

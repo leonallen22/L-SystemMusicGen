@@ -880,14 +880,150 @@ public class ScoreGenerator
     public ArrayList<Integer> genChordProgression()
     {
         ArrayList<Integer> chordProg = new ArrayList<Integer>();
+        chordProg.add(0);
         boolean complete = false;
         int chord = 0;
         int rand = 0;
         
         while(!complete)
         {
+            int count = 0;
             rand = (int)Math.floor(Math.random() * 10000);
             
+            switch(chord)
+            {
+                // I Chord
+                case 0:
+                    for(int i=1667 ; i <= 10002 ; i += 1667)
+                    {
+                        if(rand <= i)
+                        {
+                            chordProg.add(count);
+                            break;
+                        }
+                        
+                        ++count;
+                    }
+                    break;
+                    
+                // V Chord
+                case 1:
+                    for(int i=3333 ; i <= 9999 ; i += 3333)
+                    {
+                        if(rand <= i)
+                        {
+                            chordProg.add(count);
+                            break;
+                        }
+                        
+                        if(count == 1)
+                            count += 2;
+                        
+                        else
+                            ++count;
+                    }
+                    
+                    if(rand > 9999)
+                    {
+                        int last = chordProg.size()-1;
+                        chordProg.add(last);
+                    }
+                    
+                    break;
+
+                // IV Chord
+                case 2:
+                    for(int i=2000 ; i <= 10000 ; i += 2000)
+                    {
+                        if(rand <= i)
+                        {
+                            chordProg.add(count);
+                            break;
+                        }
+                        
+                        if(count == 2)
+                            count += 2;
+                    }
+                    break;
+                
+                // vi Chord
+                case 3:
+                    count = 1;
+                    
+                    for(int i=2500 ; i <= 10000 ; i += 2500)
+                    {
+                        if(rand <= i)
+                        {
+                            chordProg.add(count);
+                            break;
+                        }
+                        
+                        if(count == 3)
+                            count += 2;
+                    }
+                    break;
+                    
+                // iii Chord
+                case 4:
+                    count = 2;
+                    
+                    for(int i=2500 ; i <= 10000 ; i += 2500)
+                    {
+                        if(rand <= i)
+                        {
+                            chordProg.add(count);
+                            break;
+                        }
+                        
+                        ++count;
+                    }
+                    break;
+                    
+                // ii Chord
+                case 5:
+                    count = 1;
+                    
+                    for(int i=3333 ; i <= 9999 ; i += 3333)
+                    {
+                        if(rand <= i)
+                        {
+                            chordProg.add(count);
+                            break;
+                        }
+                        
+                        if(count == 1)
+                            count += 3;
+                    }
+                    
+                    if(rand > 9999)
+                    {
+                        int last = chordProg.size()-1;
+                        chordProg.add(last);
+                    }
+                    
+                    break;
+            }
+            
+            // If Last chord was the I chord or size of the chord progression is >= 10, progression may be finished
+            if(chordProg.lastIndexOf(0) == chordProg.size()-1 || chordProg.size() >= 10)
+            {
+                int last = chordProg.size()-1;
+                
+                if(chordProg.get(last) != 0)
+                {
+                    chordProg.add(0);
+                    complete = true;
+                }
+                
+                else
+                {
+                    for(int i=1 ; i < 6 ; ++i)
+                    {
+                        if(chordProg.contains(i))
+                            complete = true;
+                    }
+                }
+            }
         }
         
         return chordProg;

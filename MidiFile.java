@@ -56,7 +56,7 @@ public class MidiFile
             System.out
                     .println("\r\n***Each symbol should be separated with a space***\r\n1: Generate music\r\n2: Build new L-System\r\n3: Change alphabet\r\n4: Change axiom\r\n5: Change rules\r\n6: Change key\r\n7: Change tempo\r\n8: Produce MusicXML for a MIDI file\r\n9: Exit");
 
-            while (opt < 1 || opt > 10)
+            while (opt < 1 || opt > 11)
             {
                 try
                 {
@@ -590,6 +590,10 @@ public class MidiFile
                     scoreGen.addPart(music, 80);
                     player.play(scoreGen.getScore());
                     break;
+                    
+                case 11:
+                    for(int i=0 ; i < 50 ; ++i)
+                        System.out.println(scoreGen.genChordProgression().toString());
             }
         }
 

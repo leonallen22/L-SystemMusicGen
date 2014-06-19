@@ -82,6 +82,7 @@ public class ScoreGenerator
     private MusicAnalyzer                 analyzer;     // Analyzes MIDI files and generates a first-order Markov chain for all notes on the Western Scale
     private Score                         score;        // Stores the music score and related information
     private RhythmGenerator               rhythmGen;    // Generates rhythms to be implemented into the melody or accompaniment
+    private int[]                         chords;       // Chord progression to be implemented into composition
     private ArrayList<ArrayList<Integer>> chordProb;    // Stores the chords and the likelihood of their transition to other chords
     private double                        beat;         // Keeps track of the beat to determine when to place measure marker and generate a new rhythm
     private int                           lowerBound;   // Lower bound of note pitch
@@ -228,6 +229,14 @@ public class ScoreGenerator
     public Pattern getScore()
     {
         return score.getScore();
+    }
+    
+    /**
+     * @return The current chord progression represented as an array of ints
+     */
+    public int[] getChordProgression()
+    {
+        return chords;
     }
 
     /**
@@ -547,7 +556,7 @@ public class ScoreGenerator
             if (degree == 3 || degree == 7 || degree % 1.0 == 0.5)
             {
                 newnote = score.upHalfStep(pitch);
-                score.setNotePitch(newnote);
+                score.setNotePitch(newnote, 2);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -555,7 +564,7 @@ public class ScoreGenerator
             else
             {
                 newnote = score.upWholeStep(pitch);
-                score.setNotePitch(newnote);
+                score.setNotePitch(newnote, 2);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -564,7 +573,7 @@ public class ScoreGenerator
             {
                 turtle.popY();
                 turtle.pushY(newnote - 24);
-                score.setNotePitch(newnote - 24);
+                score.setNotePitch(newnote - 24, 2);
             }
         }
 
@@ -577,7 +586,7 @@ public class ScoreGenerator
             if (degree == 1 || degree == 4 || degree % 1.0 == 0.5)
             {
                 newnote = score.downHalfStep(pitch);
-                score.setNotePitch(newnote);
+                score.setNotePitch(newnote, 0);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -585,7 +594,7 @@ public class ScoreGenerator
             else
             {
                 newnote = score.downWholeStep(pitch);
-                score.setNotePitch(newnote);
+                score.setNotePitch(newnote, 0);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -594,7 +603,7 @@ public class ScoreGenerator
             {
                 turtle.popY();
                 turtle.pushY(newnote + 24);
-                score.setNotePitch(newnote + 24);
+                score.setNotePitch(newnote + 24, 0);
             }
         }
 
@@ -664,7 +673,7 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch);
+                score.setNotePitch(pitch, 1);
                 originalnote = score.getNote();
                 note = originalnote;
             }
@@ -752,7 +761,7 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch);
+                score.setNotePitch(pitch, 1);
                 note = score.getNote();
             }
 
@@ -765,7 +774,7 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch);
+                score.setNotePitch(pitch, 2);
                 note = score.getNote();
             }
 
@@ -803,7 +812,7 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch);
+                score.setNotePitch(pitch, 0);
                 note = score.getNote();
             }
 
@@ -877,7 +886,7 @@ public class ScoreGenerator
      * Generates chord progressions for Major scales for use in the underlying harmonic structure of the composition.
      * @return an ArrayList of Integers which represent the sequence of chords to be used
      */
-    public ArrayList<Integer> genChordProgression()
+    public void genChordProgression()
     {
         ArrayList<Integer> chordProg = new ArrayList<Integer>();
         chordProg.add(0);
@@ -1026,8 +1035,16 @@ public class ScoreGenerator
             }
         }
         
-        return chordProg;
+        chords = new int[chordProg.size()];
+        
+        for(int i=0 ; i < chordProg.size(); ++i)
+            chords[i] = chordProg.get(i);
     }
+    
+    /*public getChord()
+    {
+        
+    }/*
 
     /**
      * Randomly chooses a note based on the first-order probabilities provided by MusicAnalyzer.

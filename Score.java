@@ -284,7 +284,7 @@ public class Score
      * 
      * @param pitch the pitch of the note to be set
      */
-    public void setNotePitch(int pitch)
+    public void setNotePitch(int pitch, int direction)
     {
         int tonic = 0;
         pitch = pitch % 12;
@@ -346,98 +346,196 @@ public class Score
                 break;
         }
 
-        while (!notes[tonic].equals(keySigs[keySig - 1]))
-            tonic = upHalfStep(tonic);
-
-        while (tonic != pitch)
+        if(direction == 2)
         {
-            if (degree == 1.0)
-            {
+            while (!notes[tonic].equals(keySigs[keySig - 1]))
                 tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 1.5)
+    
+            while (tonic != pitch)
             {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
+                if (degree == 1.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 1.5)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 2.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 2.5)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 3.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 1.0;
+                }
+    
+                else if (degree == 4.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 4.5)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 5.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 5.5)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 6.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 6.5)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 0.5;
+                }
+    
+                else if (degree == 7.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree += 1.0;
+                }
+    
+                else
+                {
+                    tonic = upHalfStep(tonic);
+                    degree = 1.5;
+                }
+    
+                if (tonic == 12)
+                    tonic = 0;
             }
-
-            else if (degree == 2.0)
+        }
+        
+        else if(direction == 0)
+        {        
+            while (!notes[tonic].equals(keySigs[keySig - 1]))
+                tonic = upHalfStep(tonic);
+    
+            while (tonic != pitch)
             {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
+                if (degree == 1.0)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 1.0;
+                }
+    
+                else if (degree == 1.5)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 2.0)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 2.5)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 3.0)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 4.0)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 1.0;
+                }
+    
+                else if (degree == 4.5)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 5.0)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 5.5)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 6.0)
+                {
+                    tonic = upHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 6.5)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else if (degree == 7.0)
+                {
+                    tonic = downHalfStep(tonic);
+                    degree -= 0.5;
+                }
+    
+                else
+                {
+                    tonic = downHalfStep(tonic);
+                    degree = 7.5;
+                }
+    
+                if (tonic == -1)
+                    tonic = 11;
             }
-
-            else if (degree == 2.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 3.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 1.0;
-            }
-
-            else if (degree == 4.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 4.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 5.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 5.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 6.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 6.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 7.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 1.0;
-            }
-
-            else
-            {
-                tonic = upHalfStep(tonic);
-                degree = 1.5;
-            }
-
-            if (tonic == 12)
-                tonic = 0;
+        }
+        
+        else
+        {
+            
         }
 
-        if (tonic == 12)
-            tonic = 0;
+        if (tonic == -1)
+            tonic = 11;
 
-        if (degree == 8.0)
-            degree = 1.0;
+        if (degree == 0.0)
+            degree = 7.0;
     }
 
     /**

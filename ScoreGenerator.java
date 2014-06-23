@@ -556,7 +556,7 @@ public class ScoreGenerator
             if (degree == 3 || degree == 7 || degree % 1.0 == 0.5)
             {
                 newnote = score.upHalfStep(pitch);
-                score.setNotePitch(newnote, 2);
+                score.setNotePitch(newnote);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -564,7 +564,7 @@ public class ScoreGenerator
             else
             {
                 newnote = score.upWholeStep(pitch);
-                score.setNotePitch(newnote, 2);
+                score.setNotePitch(newnote);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -573,7 +573,7 @@ public class ScoreGenerator
             {
                 turtle.popY();
                 turtle.pushY(newnote - 24);
-                score.setNotePitch(newnote - 24, 2);
+                score.setNotePitch(newnote - 24);
             }
         }
 
@@ -586,7 +586,7 @@ public class ScoreGenerator
             if (degree == 1 || degree == 4 || degree % 1.0 == 0.5)
             {
                 newnote = score.downHalfStep(pitch);
-                score.setNotePitch(newnote, 0);
+                score.setNotePitch(newnote);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -594,7 +594,7 @@ public class ScoreGenerator
             else
             {
                 newnote = score.downWholeStep(pitch);
-                score.setNotePitch(newnote, 0);
+                score.setNotePitch(newnote);
                 turtle.popY();
                 turtle.pushY(newnote);
             }
@@ -603,7 +603,7 @@ public class ScoreGenerator
             {
                 turtle.popY();
                 turtle.pushY(newnote + 24);
-                score.setNotePitch(newnote + 24, 0);
+                score.setNotePitch(newnote + 24);
             }
         }
 
@@ -668,12 +668,12 @@ public class ScoreGenerator
                 return buffer;
         }
 
-        // If turtle is horizontal, no note change occurs
+        // If turtle is horizontal, go in direction that minimizes the distance between the previous note and new note.
         if ((direction == 1 || direction == 3) && draw)
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch, 1);
+                score.setNotePitch(pitch);
                 originalnote = score.getNote();
                 note = originalnote;
             }
@@ -715,7 +715,7 @@ public class ScoreGenerator
 
                 if (distance < distance2)
                 {
-                    while (distance != 0)
+                    while (distance > 0)
                     {
                         note = score.downHalfStep(note);
 
@@ -733,7 +733,7 @@ public class ScoreGenerator
 
                 else
                 {
-                    while (distance2 != 0)
+                    while (distance2 > 0)
                     {
                         note = score.upHalfStep(note);
 
@@ -761,8 +761,83 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch, 1);
+                score.setNotePitch(pitch);
                 note = score.getNote();
+            }
+            
+            if (order == 1)
+                nextnote = getFirstOrderNote(note);
+
+            else
+                nextnote = getSecondOrderNote(score.getPrevNote(), note);
+
+            if (nextnote != -1)
+            {
+                int distance = 0;
+                int distance2 = 0;
+
+                while (note != nextnote)
+                {
+                    note = score.downHalfStep(note);
+
+                    if (note < 0)
+                        note = 11;
+
+                    ++distance;
+                }
+
+                note = originalnote;
+
+                while (note != nextnote)
+                {
+                    note = score.upHalfStep(note);
+
+                    if (note > 11)
+                        note = 0;
+
+                    ++distance2;
+                }
+
+                note = originalnote;
+
+                if (distance < distance2)
+                {
+                    while (distance > 0)
+                    {
+                        note = score.downHalfStep(note);
+
+                        if (note < 0)
+                            note = 11;
+
+                        pitch = score.downHalfStep(pitch);
+
+                        if (pitch < lowerBound)
+                            pitch += 24;
+
+                        --distance;
+                    }
+                }
+
+                else
+                {
+                    while (distance2 > 0)
+                    {
+                        note = score.upHalfStep(note);
+
+                        if (note > 11)
+                            note = 0;
+
+                        pitch = score.upHalfStep(pitch);
+
+                        if (pitch > upperBound)
+                            pitch -= 24;
+
+                        --distance2;
+                    }
+                }
+
+                turtle.popY();
+                turtle.pushY(pitch);
             }
 
             buffer.append(" [" + pitch + "]" + duration);
@@ -774,7 +849,7 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch, 2);
+                score.setNotePitch(pitch);
                 note = score.getNote();
             }
 
@@ -812,7 +887,7 @@ public class ScoreGenerator
         {
             if (note == -1)
             {
-                score.setNotePitch(pitch, 0);
+                score.setNotePitch(pitch);
                 note = score.getNote();
             }
 

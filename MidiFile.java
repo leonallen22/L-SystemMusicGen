@@ -592,8 +592,10 @@ public class MidiFile
                     break;
                     
                 case 11:
-                    for(int i=0 ; i < 50 ; ++i)
-                        System.out.println(scoreGen.genChordProgression().toString());
+                    for(int i=1 ; i < 9 ; ++i)
+                    {
+                        scoreGen.writeChord(new StringBuffer(), i);
+                    }
             }
         }
 

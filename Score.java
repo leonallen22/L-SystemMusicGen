@@ -28,7 +28,7 @@ public class Score
     public Score()
     {
         score = new Pattern();
-        keySig = 1;
+        keySig = 2;
         tempo = 120;
         degree = 1;
         note = -1;
@@ -123,6 +123,66 @@ public class Score
     {
         return score;
     }
+    
+    public int[] getChord(int chordDegree)
+    {
+        int[] chord = new int[3];
+        int degree = 1;
+        int tonic = 0;
+        
+        while (!notes[tonic].equals(keySigs[keySig-1]))
+            tonic = upHalfStep(tonic);
+        
+        while(degree != chordDegree)
+        {
+            switch(degree)
+            {
+                case 1:
+                    tonic = upWholeStep(tonic);
+                    degree += 1;
+                    break;
+    
+                case 2:
+                    tonic = upWholeStep(tonic);
+                    degree += 1;
+                    break;
+    
+                case 3:
+                    tonic = upHalfStep(tonic);
+                    degree += 1;
+                    break;
+                    
+                case 4:
+                    tonic = upWholeStep(tonic);
+                    degree += 1;
+                    break;
+    
+                case 5:
+                    tonic = upWholeStep(tonic);
+                    degree += 1;
+                    break;
+                    
+                case 6:
+                    tonic = upWholeStep(tonic);
+                    degree += 1;
+                    break;
+    
+                case 7:
+                    tonic = upHalfStep(tonic);
+                    degree += 1.0;
+                    break;
+            }
+            
+            if (tonic == 12)
+                tonic = 0;
+        }
+        
+        chord[0] = tonic;
+        chord[1] = (chord[0] + 4) % 12;
+        chord[2] = (chord[1] + 3) % 12;
+        
+        return chord;
+    }
 
     /**
      * Sets the value of keySig and the key of the analyzer to the integer accepted. This forces the analyzer to reset and analyze MIDI files in the new key.
@@ -186,92 +246,11 @@ public class Score
         degree = 1.0;
         int tonic = 0;
 
-        while (!notes[tonic].equals(keySigs[keySig]))
+        while (!notes[tonic].equals(keySigs[keySig-1]))
             tonic = upHalfStep(tonic);
 
         while (tonic != note)
-        {
-            if (degree == 1.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 1.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 2.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 2.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 3.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 1.0;
-            }
-
-            else if (degree == 4.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 4.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 5.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 5.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 6.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 6.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 7.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 1.0;
-            }
-
-            else
-            {
-                tonic = upHalfStep(tonic);
-                degree = 1.5;
-            }
-
-            if (tonic == 12)
-                tonic = 0;
-        }
+            tonic = upDegree(tonic);
 
         if (tonic == 12)
             tonic = 0;
@@ -348,98 +327,109 @@ public class Score
                 break;
         }
 
-        while (!notes[tonic].equals(keySigs[keySig - 1]))
+        while (!notes[tonic].equals(keySigs[keySig-1]))
             tonic = upHalfStep(tonic);
 
         while (tonic != pitch)
-        {
-            if (degree == 1.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 1.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 2.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 2.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 3.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 1.0;
-            }
-
-            else if (degree == 4.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 4.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 5.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 5.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 6.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 6.5)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 0.5;
-            }
-
-            else if (degree == 7.0)
-            {
-                tonic = upHalfStep(tonic);
-                degree += 1.0;
-            }
-
-            else
-            {
-                tonic = upHalfStep(tonic);
-                degree = 1.5;
-            }
-
-            if (tonic == 12)
-                tonic = 0;
-        }
+            tonic = upDegree(tonic);
 
         if (tonic == 12)
             tonic = 0;
 
         if (degree == 8.0)
             degree = 1.0;
+    }
+    
+    /**
+     * Increments the note passed and degree based on current scale degree.
+     * 
+     * @param tonic  note to increment.
+     * @return The modified parameter.
+     */
+    private int upDegree(int note)
+    {
+        if (degree == 1.0)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 1.5)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 2.0)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 2.5)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 3.0)
+        {
+            note = upHalfStep(note);
+            degree += 1.0;
+        }
+
+        else if (degree == 4.0)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 4.5)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 5.0)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 5.5)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 6.0)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 6.5)
+        {
+            note = upHalfStep(note);
+            degree += 0.5;
+        }
+
+        else if (degree == 7.0)
+        {
+            note = upHalfStep(note);
+            degree += 1.0;
+        }
+
+        else
+        {
+            note = upHalfStep(note);
+            degree = 1.5;
+        }
+
+        if (note == 12)
+            note = 0;
+        
+        return note;
     }
 
     /**

@@ -198,13 +198,6 @@ public class ScoreGenerator
                     break;
             }
         }
-        System.out.println("I    V    IV    vi    iii    i");
-        for(ArrayList<Integer> list : chordProb)
-        {
-            for(Integer x : list)
-                System.out.print(x + " ");
-            System.out.println();
-        }
     }
 
     /**
@@ -359,11 +352,12 @@ public class ScoreGenerator
     private String generate(String production, int tonic, boolean markov, int order)
     {
         StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 I80 ");	// Stores the score string that will be returned
-        int color = turtle.getColor();
         char[] prod = production.toCharArray();											// Array of characters from the production
+        char[] rhythm = rhythmGen.genRhythm();
+        int color = turtle.getColor();
+        genChordProgression();
         turtle.popY();
         turtle.pushY(tonic);
-        char[] rhythm = rhythmGen.genRhythm();
         int r = 0;
 
         // Step through each symbol in production
@@ -401,7 +395,15 @@ public class ScoreGenerator
                             r = 0;
                         }
 
-                        buffer = drawMarkov(buffer, true, order, rhythm[r]);
+                        if(beat % 4.0 == 1.0)
+                        {
+                            
+                        }
+                        
+                        else
+                        {
+                            buffer = drawMarkov(buffer, true, order, rhythm[r]);
+                        }
                         ++r;
                     }
                     break;
@@ -954,6 +956,18 @@ public class ScoreGenerator
                 break;
         }
 
+        return buffer;
+    }
+    
+    public StringBuffer writeChord(StringBuffer buffer, int chordDegree)
+    {
+        int[] chord = score.getChord(chordDegree);
+        
+        for(int i=0; i < 3; ++i)
+            System.out.print(chord[i] + " ");
+        
+        System.out.println();
+        
         return buffer;
     }
 

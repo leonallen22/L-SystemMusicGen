@@ -84,7 +84,7 @@ public class ScoreGenerator
     private RhythmGenerator               rhythmGen;    // Generates rhythms to be implemented into the melody or accompaniment
     private int[]                         chords;       // Chord progression to be implemented into composition
     private ArrayList<ArrayList<Integer>> chordProb;    // Stores the chords and the likelihood of their transition to other chords
-    private double                        beat;         // Keeps track of the beat to determine when to place measure marker and generate a new rhythm
+    private int                           beat;         // Keeps track of the beat to determine when to place measure marker and generate a new rhythm
     private int                           lowerBound;   // Lower bound of note pitch
     private int                           upperBound;   // Upper bound of note pitch
 
@@ -98,9 +98,9 @@ public class ScoreGenerator
         score = new Score();
         rhythmGen = new RhythmGenerator();
         initChordProb();
-        beat = 1.0;
+        beat = 0;
         upperBound = 95;
-        lowerBound = 36;
+        lowerBound = 45;
     }
 
     /**
@@ -116,9 +116,9 @@ public class ScoreGenerator
         rhythmGen = new RhythmGenerator();
         initChordProb();
         turtle.pushAngle(angle);
-        beat = 1.0;
+        beat = 0;
         upperBound = 95;
-        lowerBound = 36;    
+        lowerBound = 45;    
     }
     
     private void initChordProb()
@@ -283,7 +283,7 @@ public class ScoreGenerator
     {
         score.resetScore();
         String pat = "";
-        beat = 1;
+        beat = 0;
 
         switch (score.getKeyInt())
         {
@@ -369,7 +369,7 @@ public class ScoreGenerator
         // Step through each symbol in production
         for (int i = 0; i < prod.length; ++i)
         {
-            /*if(beat % 8 == 1.0)
+            /*if(beat % 256 == 32)
             {
                 writeChord(buffer, chords[c], rhythm[r]);
                 ++r;
@@ -392,7 +392,7 @@ public class ScoreGenerator
                 case 'g':
                     if (!markov)
                     {
-                        if (beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
+                        if (beat % 128 == 0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
                             buffer.append(" |");
 
                         buffer = drawLine(buffer, true);
@@ -400,14 +400,14 @@ public class ScoreGenerator
 
                     else
                     {
-                        if (beat % 4.0 == 1.0 && r != 0)
+                        if (beat % 128 == 0 && r != 0)
                         {
                             buffer.append(" |");
                             rhythm = rhythmGen.genRhythm();
                             r = 0;
                         }
 
-                        if(beat % 2.0 == 1.0)
+                        if(beat % 64 == 0)
                         {
                             c = c % chords.length;
                             writeChord(buffer, chords[c], rhythm[r]);
@@ -426,7 +426,7 @@ public class ScoreGenerator
                 case 'f':
                     if (!markov)
                     {
-                        if (beat % 4 == 1.0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
+                        if (beat % 128 == 0 && buffer.toString().matches(".*\\[\\d*\\]s+"))
                             buffer.append(" |");
 
                         buffer = drawLine(buffer, false);
@@ -434,7 +434,7 @@ public class ScoreGenerator
 
                     else
                     {
-                        if (beat % 4.0 == 1.0 && r != 0)
+                        if (beat % 128 == 0 && r != 0)
                         {
                             buffer.append(" |");
                             System.out.println("---New Rhythm---\r\n");
@@ -557,7 +557,7 @@ public class ScoreGenerator
             else
                 buffer.append(" [" + pitch + "]s");
 
-            beat += 0.25;
+            beat += 8;
         }
 
         else if (direction == 1 || direction == 3)
@@ -645,42 +645,42 @@ public class ScoreGenerator
         {
             case '0':
                 buffer.append(" Ro");
-                beat += 0.03125;
+                beat += 1;
                 return buffer;
 
             case '1':
                 buffer.append(" Rx");
-                beat += 0.0625;
+                beat += 2;
                 return buffer;
 
             case '2':
                 buffer.append(" Rt");
-                beat += 0.125;
+                beat += 4;
                 return buffer;
 
             case '3':
                 buffer.append(" Rs");
-                beat += 0.25;
+                beat += 8;
                 return buffer;
 
             case '4':
                 buffer.append(" Ri");
-                beat += 0.5;
+                beat += 16;
                 return buffer;
 
             case '5':
                 buffer.append(" Rq");
-                beat += 1.0;
+                beat += 32;
                 return buffer;
 
             case '6':
                 buffer.append(" Rh");
-                beat += 2.0;
+                beat += 64;
                 return buffer;
 
             case '7':
                 buffer.append(" Rw");
-                beat += 4.0;
+                beat += 128;
                 return buffer;
         }
 
@@ -816,35 +816,35 @@ public class ScoreGenerator
         switch (duration)
         {
             case 'o':
-                beat += 0.03125;
+                beat += 1;
                 break;
 
             case 'x':
-                beat += 0.0625;
+                beat += 2;
                 break;
 
             case 't':
-                beat += 0.125;
+                beat += 4;
                 break;
 
             case 's':
-                beat += 0.25;
+                beat += 8;
                 break;
 
             case 'i':
-                beat += 0.5;
+                beat += 16;
                 break;
 
             case 'q':
-                beat += 1.0;
+                beat += 32;
                 break;
 
             case 'h':
-                beat += 2.0;
+                beat += 64;
                 break;
 
             case 'w':
-                beat += 4.0;
+                beat += 128;
                 break;
         }
 
@@ -867,153 +867,167 @@ public class ScoreGenerator
         int pitch1 = turtle.getY();
         int pitch2 = pitch1;
         int pitch3 = pitch2;
-        double restingtime = 2.0;
+        double restingtime = 64;
         String rests = "";
         
         switch (duration)
         {
             case 'o':
-                beat += 0.03125;
-                restingtime -= 0.03125;
+                beat += 1;
+                restingtime -= 1;
                 break;
 
             case 'x':
-                beat += 0.0625;
-                restingtime -= 0.0625;
+                beat += 2;
+                restingtime -= 2;
                 break;
 
             case 't':
-                beat += 0.125;
-                restingtime -= 0.0125;
+                beat += 4;
+                restingtime -= 4;
                 break;
 
             case 's':
-                beat += 0.25;
-                restingtime -= 0.25;
+                beat += 8;
+                restingtime -= 8;
                 break;
 
             case 'i':
-                beat += 0.5;
-                restingtime -= 0.5;
+                beat += 16;
+                restingtime -= 16;
                 break;
 
             case 'q':
-                beat += 1.0;
-                restingtime -= 1.0;
+                beat += 32;
+                restingtime -= 32;
                 break;
 
             case 'h':
-                beat += 2.0;
-                restingtime -= 2.0;
+                beat += 64;
+                restingtime -= 64;
                 break;
 
             case 'w':
-                beat += 4.0;
-                restingtime -= 4.0;
+                beat += 128;
+                restingtime -= 128;
                 break;
                 
             case '0':
                 duration = 'o';
-                beat += 0.03125;
-                restingtime -= 0.03125;
+                beat += 1;
+                restingtime -= 1;
                 break;
 
             case '1':
                 duration = 'x';
-                beat += 0.0625;
-                restingtime -= 0.0625;
+                beat += 2;
+                restingtime -= 2;
                 break;
 
             case '2':
                 duration = 't';
-                beat += 0.125;
-                restingtime -= 0.125;
+                beat += 4;
+                restingtime -= 4;
                 break;
 
             case '3':
                 duration = 's';
-                beat += 0.25;
-                restingtime -= 0.25;
+                beat += 8;
+                restingtime -= 8;
                 break;
 
             case '4':
                 duration = 'i';
-                beat += 0.5;
-                restingtime -= 0.5;
+                beat += 16;
+                restingtime -= 16;
                 break;
 
             case '5':
                 duration = 'q';
-                beat += 1.0;
-                restingtime -= 1.0;
+                beat += 32;
+                restingtime -= 32;
                 break;
 
             case '6':
                 duration = 'h';
-                beat += 2.0;
-                restingtime -= 2.0;
+                beat += 64;
+                restingtime -= 64;
                 break;
 
             case '7':
                 duration = 'w';
-                beat += 4.0;
-                restingtime -= 4.0;
+                beat += 128;
+                restingtime -= 128;
                 break;
         }
         
-        while(restingtime != 0.0)
+        while(restingtime != 0)
         {
-            if(restingtime >= 1.0)
+            if(restingtime >= 128)
             {
-                while(restingtime >= 1.0)
+                rests += "Rw";
+                restingtime -= 128;
+            }
+            
+            else if(restingtime >= 64)
+            {
+                while(restingtime >= 64)
+                {
+                    rests += "Rh";
+                    restingtime -= 64;
+                }
+            }
+            else if(restingtime >= 32)
+            {
+                while(restingtime >= 32)
                 {
                     rests += " Rq";
-                    restingtime -= 1.0;
+                    restingtime -= 32;
                 }
             }
             
-            else if(restingtime >= 0.5)
+            else if(restingtime >= 16)
             {
-                while(restingtime >= 0.5)
+                while(restingtime >= 16)
                 {
                     rests += " Ri";
-                    restingtime -= 0.5;
+                    restingtime -= 16;
                 }
             }
             
-            else if(restingtime >= 0.25)
+            else if(restingtime >= 8)
             {
-                while(restingtime >= 0.25)
+                while(restingtime >= 8)
                 {
                     rests += " Rs";
-                    restingtime -= 0.25;
+                    restingtime -= 8;
                 }
             }
             
-            else if(restingtime >= 0.125)
+            else if(restingtime >= 4)
             {
-                while(restingtime >= 0.125)
+                while(restingtime >= 4)
                 {
                     rests += " Rt";
-                    restingtime -= 0.125;
+                    restingtime -= 4;
                 }
             }
             
-            else if(restingtime >= 0.0625)
+            else if(restingtime >= 2)
             {
-                while(restingtime >= 0.0625)
+                while(restingtime >= 2)
                 {
                     rests += " Rx";
-                    restingtime -= 0.0625;
+                    restingtime -= 2;
                 }
             }
             
-            else if(restingtime >= 0.03125)
+            else if(restingtime >= 1)
             {
-                while(restingtime >= 0.03125)
+                while(restingtime >= 1)
                 {
                     rests += " Ro";
-                    restingtime -= 0.03125;
+                    restingtime -= 1;
                 }
             }
         }

@@ -552,11 +552,11 @@ public class Score
      */
     public void nextBeat()
     {
-        if (beat < 4)
-            ++beat;
+        if (beat < 96)
+            beat += 32;
 
         else
-            beat = 1;
+            beat = 0;
     }
 
     /**

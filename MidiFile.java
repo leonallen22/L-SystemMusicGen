@@ -592,10 +592,14 @@ public class MidiFile
                     break;
                     
                 case 11:
+                    StringBuffer buffer = new StringBuffer();
                     for(int i=1 ; i < 9 ; ++i)
                     {
-                        scoreGen.writeChord(new StringBuffer(), i);
+                        //scoreGen.writeChord(buffer, i, 'q', 36);
                     }
+                    Pattern pat = new Pattern(buffer.toString());
+                    System.out.println(pat);
+                    player.play(pat);
             }
         }
 

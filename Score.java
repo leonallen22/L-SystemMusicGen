@@ -28,7 +28,7 @@ public class Score
     public Score()
     {
         score = new Pattern();
-        keySig = 2;
+        keySig = 1;
         tempo = 120;
         degree = 1;
         note = -1;
@@ -338,6 +338,83 @@ public class Score
 
         if (degree == 8.0)
             degree = 1.0;
+    }
+    
+    /**
+     * @param next  desired note
+     * @param pitch  current pitch
+     * @param lowerBound  lower boundary for pitch
+     * @param upperBound  upper boundary for pitch
+     * @return Closest pitch matching next.
+     */
+    public int findClosestPitch(int next, int pitch, int lowerBound, int upperBound)
+    {
+        int distanceup = 0;
+        int distancedown = 0;
+        int note = pitch % 12;
+        int original = note;
+        
+        while (note != next)
+        {
+            note = upHalfStep(note);
+
+            if (note > 11)
+                note = 0;
+
+            ++distanceup;
+        }
+
+        note = original;
+
+        while (note != next)
+        {
+            note = downHalfStep(note);
+
+            if (note < 0)
+                note = 11;
+
+            ++distancedown;
+        }
+        
+        note = original;
+        
+        if(distanceup < distancedown)
+        {
+            while (distanceup > 0)
+            {
+                note = upHalfStep(note);
+
+                if (note > 11)
+                    note = 0;
+
+                pitch = upHalfStep(pitch);
+
+                if (pitch > upperBound)
+                    pitch -= 24;
+
+                --distanceup;
+            }
+        }
+        
+        else
+        {
+            while (distancedown > 0)
+            {
+                note = downHalfStep(note);
+
+                if (note < 0)
+                    note = 11;
+
+                pitch = downHalfStep(pitch);
+
+                if (pitch < lowerBound)
+                    pitch += 24;
+
+                --distancedown;
+            }
+        }
+        
+        return pitch;
     }
     
     /**

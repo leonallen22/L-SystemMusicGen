@@ -351,18 +351,31 @@ public class ScoreGenerator
      */
     private String generate(String production, int tonic, boolean markov, int order)
     {
-        StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 I80 ");	// Stores the score string that will be returned
+        StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 ");	// Stores the score string that will be returned
         char[] prod = production.toCharArray();											// Array of characters from the production
         char[] rhythm = rhythmGen.genRhythm();
         int color = turtle.getColor();
         genChordProgression();
         turtle.popY();
         turtle.pushY(tonic);
+        int c = 0;
         int r = 0;
+        
+        for(int x: chords)
+            System.out.print(x + " ");
+        
+       System.out.println();
 
         // Step through each symbol in production
         for (int i = 0; i < prod.length; ++i)
         {
+            /*if(beat % 8 == 1.0)
+            {
+                writeChord(buffer, chords[c], rhythm[r]);
+                ++r;
+                ++c;
+            }*/
+            
             switch (prod[i])
             {
             // Increment turtle's yaw
@@ -390,14 +403,15 @@ public class ScoreGenerator
                         if (beat % 4.0 == 1.0 && r != 0)
                         {
                             buffer.append(" |");
-                            System.out.println("---New Rhythm---\r\n");
                             rhythm = rhythmGen.genRhythm();
                             r = 0;
                         }
 
-                        if(beat % 4.0 == 1.0)
+                        if(beat % 2.0 == 1.0)
                         {
-                            
+                            c = c % chords.length;
+                            writeChord(buffer, chords[c], rhythm[r]);
+                            ++c;
                         }
                         
                         else
@@ -626,7 +640,7 @@ public class ScoreGenerator
         int originalnote = score.getNote();
         int note = originalnote;
         int nextnote = -1;
-
+        
         switch (duration)
         {
             case '0':
@@ -688,68 +702,7 @@ public class ScoreGenerator
 
             if (nextnote != -1)
             {
-                int distance = 0;
-                int distance2 = 0;
-
-                while (note != nextnote)
-                {
-                    note = score.downHalfStep(note);
-
-                    if (note < 0)
-                        note = 11;
-
-                    ++distance;
-                }
-
-                note = originalnote;
-
-                while (note != nextnote)
-                {
-                    note = score.upHalfStep(note);
-
-                    if (note > 11)
-                        note = 0;
-
-                    ++distance2;
-                }
-
-                note = originalnote;
-
-                if (distance < distance2)
-                {
-                    while (distance > 0)
-                    {
-                        note = score.downHalfStep(note);
-
-                        if (note < 0)
-                            note = 11;
-
-                        pitch = score.downHalfStep(pitch);
-
-                        if (pitch < lowerBound)
-                            pitch += 24;
-
-                        --distance;
-                    }
-                }
-
-                else
-                {
-                    while (distance2 > 0)
-                    {
-                        note = score.upHalfStep(note);
-
-                        if (note > 11)
-                            note = 0;
-
-                        pitch = score.upHalfStep(pitch);
-
-                        if (pitch > upperBound)
-                            pitch -= 24;
-
-                        --distance2;
-                    }
-                }
+                pitch = score.findClosestPitch(nextnote, pitch, lowerBound, upperBound);
 
                 turtle.popY();
                 turtle.pushY(pitch);
@@ -775,68 +728,7 @@ public class ScoreGenerator
 
             if (nextnote != -1)
             {
-                int distance = 0;
-                int distance2 = 0;
-
-                while (note != nextnote)
-                {
-                    note = score.downHalfStep(note);
-
-                    if (note < 0)
-                        note = 11;
-
-                    ++distance;
-                }
-
-                note = originalnote;
-
-                while (note != nextnote)
-                {
-                    note = score.upHalfStep(note);
-
-                    if (note > 11)
-                        note = 0;
-
-                    ++distance2;
-                }
-
-                note = originalnote;
-
-                if (distance < distance2)
-                {
-                    while (distance > 0)
-                    {
-                        note = score.downHalfStep(note);
-
-                        if (note < 0)
-                            note = 11;
-
-                        pitch = score.downHalfStep(pitch);
-
-                        if (pitch < lowerBound)
-                            pitch += 24;
-
-                        --distance;
-                    }
-                }
-
-                else
-                {
-                    while (distance2 > 0)
-                    {
-                        note = score.upHalfStep(note);
-
-                        if (note > 11)
-                            note = 0;
-
-                        pitch = score.upHalfStep(pitch);
-
-                        if (pitch > upperBound)
-                            pitch -= 24;
-
-                        --distance2;
-                    }
-                }
+                pitch = score.findClosestPitch(nextnote, pitch, lowerBound, upperBound);
 
                 turtle.popY();
                 turtle.pushY(pitch);
@@ -959,14 +851,229 @@ public class ScoreGenerator
         return buffer;
     }
     
-    public StringBuffer writeChord(StringBuffer buffer, int chordDegree)
+    /**
+     * Writes desired chord to the StringBuffer passed.
+     * @param buffer  buffer to be written to
+     * @param chordDegree  chord to write to buffer
+     * @param duration  duration of the chord
+     * @return  Modified buffer.
+     */
+    public StringBuffer writeChord(StringBuffer buffer, int chordDegree, char duration)
     {
-        int[] chord = score.getChord(chordDegree);
+        int[] chord = score.getChord(chordDegree+1);
+        int note1 = chord[0];
+        int note2 = chord[1];
+        int note3 = chord[2];
+        int pitch1 = turtle.getY();
+        int pitch2 = pitch1;
+        int pitch3 = pitch2;
+        double restingtime = 2.0;
+        String rests = "";
         
-        for(int i=0; i < 3; ++i)
-            System.out.print(chord[i] + " ");
+        switch (duration)
+        {
+            case 'o':
+                beat += 0.03125;
+                restingtime -= 0.03125;
+                break;
+
+            case 'x':
+                beat += 0.0625;
+                restingtime -= 0.0625;
+                break;
+
+            case 't':
+                beat += 0.125;
+                restingtime -= 0.0125;
+                break;
+
+            case 's':
+                beat += 0.25;
+                restingtime -= 0.25;
+                break;
+
+            case 'i':
+                beat += 0.5;
+                restingtime -= 0.5;
+                break;
+
+            case 'q':
+                beat += 1.0;
+                restingtime -= 1.0;
+                break;
+
+            case 'h':
+                beat += 2.0;
+                restingtime -= 2.0;
+                break;
+
+            case 'w':
+                beat += 4.0;
+                restingtime -= 4.0;
+                break;
+                
+            case '0':
+                duration = 'o';
+                beat += 0.03125;
+                restingtime -= 0.03125;
+                break;
+
+            case '1':
+                duration = 'x';
+                beat += 0.0625;
+                restingtime -= 0.0625;
+                break;
+
+            case '2':
+                duration = 't';
+                beat += 0.125;
+                restingtime -= 0.125;
+                break;
+
+            case '3':
+                duration = 's';
+                beat += 0.25;
+                restingtime -= 0.25;
+                break;
+
+            case '4':
+                duration = 'i';
+                beat += 0.5;
+                restingtime -= 0.5;
+                break;
+
+            case '5':
+                duration = 'q';
+                beat += 1.0;
+                restingtime -= 1.0;
+                break;
+
+            case '6':
+                duration = 'h';
+                beat += 2.0;
+                restingtime -= 2.0;
+                break;
+
+            case '7':
+                duration = 'w';
+                beat += 4.0;
+                restingtime -= 4.0;
+                break;
+        }
         
-        System.out.println();
+        while(restingtime != 0.0)
+        {
+            if(restingtime >= 1.0)
+            {
+                while(restingtime >= 1.0)
+                {
+                    rests += " Rq";
+                    restingtime -= 1.0;
+                }
+            }
+            
+            else if(restingtime >= 0.5)
+            {
+                while(restingtime >= 0.5)
+                {
+                    rests += " Ri";
+                    restingtime -= 0.5;
+                }
+            }
+            
+            else if(restingtime >= 0.25)
+            {
+                while(restingtime >= 0.25)
+                {
+                    rests += " Rs";
+                    restingtime -= 0.25;
+                }
+            }
+            
+            else if(restingtime >= 0.125)
+            {
+                while(restingtime >= 0.125)
+                {
+                    rests += " Rt";
+                    restingtime -= 0.125;
+                }
+            }
+            
+            else if(restingtime >= 0.0625)
+            {
+                while(restingtime >= 0.0625)
+                {
+                    rests += " Rx";
+                    restingtime -= 0.0625;
+                }
+            }
+            
+            else if(restingtime >= 0.03125)
+            {
+                while(restingtime >= 0.03125)
+                {
+                    rests += " Ro";
+                    restingtime -= 0.03125;
+                }
+            }
+        }
+
+        pitch1 = score.findClosestPitch(note1, pitch1, lowerBound, upperBound);
+        pitch2 = score.findClosestPitch(note2, pitch2, lowerBound, upperBound);
+        pitch3 = score.findClosestPitch(note3, pitch3, lowerBound, upperBound);
+        
+        if(pitch1 > pitch2 && pitch1 > pitch3)
+        {
+            buffer.append(" [" + pitch1 + "]" + duration);
+            
+            if(pitch2 > pitch3)
+            {
+                buffer.append(" V1 [" + pitch2 + "] " + duration + rests);
+                buffer.append(" V2 [" + pitch3 + "] " + duration + rests);
+            }
+            
+            else
+            {
+                buffer.append(" V1 [" + pitch3 + "]" + duration + rests);
+                buffer.append(" V2 [" + pitch2 + "]" + duration + rests);
+            }
+        }
+        
+        else if(pitch2 > pitch1 && pitch2 > pitch3)
+        {
+            buffer.append(" [" + pitch2 + "]" + duration);
+            
+            if(pitch1 > pitch3)
+            {
+                buffer.append(" V1 [" + pitch1 + "]" + duration + rests);
+                buffer.append(" V2 [" + pitch3 + "]" + duration + rests);
+            }
+            
+            else
+            {
+                buffer.append(" V1 [" + pitch3 + "]" + duration + rests);
+                buffer.append(" V2 [" + pitch1 + "]" + duration + rests);
+            }
+        }
+        
+        else
+        {
+            buffer.append(" [" + pitch3 + "]" + duration);
+            
+            if(pitch1 > pitch2)
+            {
+                buffer.append(" V1 [" + pitch1 + "]" + duration + rests);
+                buffer.append(" V2 [" + pitch2 + "]" + duration + rests);
+            }
+            
+            else
+            {
+                buffer.append(" V1 [" + pitch2 + "]" + duration + rests);
+                buffer.append(" V2 [" + pitch1 + "]" + duration + rests);
+            }
+        }
+        
+        buffer.append(" V0");
         
         return buffer;
     }
@@ -1129,11 +1236,6 @@ public class ScoreGenerator
         for(int i=0 ; i < chordProg.size(); ++i)
             chords[i] = chordProg.get(i);
     }
-    
-    /*public getChord()
-    {
-        
-    }/*
 
     /**
      * Randomly chooses a note based on the first-order probabilities provided by MusicAnalyzer.

@@ -191,7 +191,6 @@ public class RhythmGenerator
         }
 
         rhythm = genRhythmString(pulses, steps, duration);
-        System.out.println(rhythm);
         this.rhythm = rhythm.toCharArray();
         return this.rhythm;
     }

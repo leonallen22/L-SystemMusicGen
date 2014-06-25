@@ -1134,7 +1134,6 @@ public class ScoreGenerator
 
     /**
      * Generates chord progressions for Major scales for use in the underlying harmonic structure of the composition.
-     * @return an ArrayList of Integers which represent the sequence of chords to be used
      */
     public void genChordProgression()
     {

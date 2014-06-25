@@ -259,18 +259,18 @@ public class MidiFile
                                     System.out.print("\r\nEnter name for MIDI file: ");
                                     String file = scan.next();
 
-                                    MusicStringParser parser = new MusicStringParser();
+                                    /*MusicStringParser parser = new MusicStringParser();
                                     MusicXmlRenderer renderer = new MusicXmlRenderer();
 
                                     parser.addParserListener(renderer);
-                                    parser.parse(pattern);
+                                    parser.parse(pattern);*/
 
                                     try
                                     {
                                         player.saveMidi(pattern, new File(file + ".mid"));
-                                        FileWriter filewriter = new FileWriter(new File(file + ".xml"));
+                                        /*FileWriter filewriter = new FileWriter(new File(file + ".xml"));
                                         filewriter.write(renderer.getMusicXMLString());
-                                        filewriter.close();
+                                        filewriter.close();*/
                                         System.out.println("MIDI & MusicXML files saved successfully.\r\n");
                                     }
                                     catch (IOException e)
@@ -326,18 +326,18 @@ public class MidiFile
                                     System.out.print("\r\nEnter name for MIDI file: ");
                                     String file = scan.next();
 
-                                    MusicStringParser parser = new MusicStringParser();
+                                    /*MusicStringParser parser = new MusicStringParser();
                                     MusicXmlRenderer renderer = new MusicXmlRenderer();
 
                                     parser.addParserListener(renderer);
-                                    parser.parse(pattern);
+                                    parser.parse(pattern);*/
 
                                     try
                                     {
                                         player.saveMidi(pattern, new File(file + ".mid"));
-                                        FileWriter filewriter = new FileWriter(new File(file + ".xml"));
+                                        /*FileWriter filewriter = new FileWriter(new File(file + ".xml"));
                                         filewriter.write(renderer.getMusicXMLString());
-                                        filewriter.close();
+                                        filewriter.close();*/
                                         System.out.println("MIDI & MusicXML files saved successfully.\r\n");
                                     }
                                     catch (IOException e)

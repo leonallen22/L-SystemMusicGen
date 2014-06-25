@@ -353,30 +353,47 @@ public class Score
         int distancedown = 0;
         int note = pitch % 12;
         int original = note;
+        int originalpitch = pitch;
         
         while (note != next)
         {
             note = upHalfStep(note);
+            pitch = upHalfStep(pitch);
 
             if (note > 11)
                 note = 0;
+            
+            if(pitch > upperBound)
+            {
+                distanceup = 99;
+                break;
+            }
 
             ++distanceup;
         }
 
         note = original;
+        pitch = originalpitch;
 
         while (note != next)
         {
             note = downHalfStep(note);
+            pitch = downHalfStep(pitch);
 
             if (note < 0)
                 note = 11;
+            
+            if(pitch < lowerBound)
+            {
+                distancedown = 99;
+                break;
+            }
 
             ++distancedown;
         }
         
         note = original;
+        pitch = originalpitch;
         
         if(distanceup < distancedown)
         {

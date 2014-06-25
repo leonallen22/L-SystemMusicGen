@@ -592,10 +592,27 @@ public class MidiFile
                     break;
                     
                 case 11:
+                    Score s = scoreGen.getScoreT();
                     StringBuffer buffer = new StringBuffer();
                     for(int i=1 ; i < 9 ; ++i)
                     {
-                        //scoreGen.writeChord(buffer, i, 'q', 36);
+                        int start = 48;
+                        int note = 0;
+                        int[] chord = s.getChord(i);
+                        for(int j=0; j < chord.length; ++j)
+                        {
+                            if(j == 0)
+                                note = s.findClosestPitch(chord[j], start, 48, 95);
+                            
+                            else if(j == 1)
+                                note += 4;
+                            
+                            else
+                                note += 3;
+                            
+                            System.out.print(note + " ");
+                        }
+                        System.out.println();
                     }
                     Pattern pat = new Pattern(buffer.toString());
                     System.out.println(pat);

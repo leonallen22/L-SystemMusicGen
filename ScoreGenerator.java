@@ -87,6 +87,7 @@ public class ScoreGenerator
     private int                           beat;         // Keeps track of the beat to determine when to place measure marker and generate a new rhythm
     private int                           lowerBound;   // Lower bound of note pitch
     private int                           upperBound;   // Upper bound of note pitch
+    private int                           chordInterval;// Interval at which chords are written into score
 
     /**
      * Default Constructor.
@@ -101,6 +102,7 @@ public class ScoreGenerator
         beat = 0;
         upperBound = 95;
         lowerBound = 45;
+        chordInterval = 64;
     }
 
     /**
@@ -118,7 +120,8 @@ public class ScoreGenerator
         turtle.pushAngle(angle);
         beat = 0;
         upperBound = 95;
-        lowerBound = 45;    
+        lowerBound = 45;
+        chordInterval = 64;
     }
     
     private void initChordProb()
@@ -222,6 +225,11 @@ public class ScoreGenerator
     public Pattern getScore()
     {
         return score.getScore();
+    }
+    
+    public Score getScoreT()
+    {
+        return score;
     }
     
     /**
@@ -352,7 +360,7 @@ public class ScoreGenerator
     private String generate(String production, int tonic, boolean markov, int order)
     {
         StringBuffer buffer = new StringBuffer("T" + score.getTempo() + " V0 ");	// Stores the score string that will be returned
-        char[] prod = production.toCharArray();											// Array of characters from the production
+        char[] prod = production.toCharArray();										// Array of characters from the production
         char[] rhythm = rhythmGen.genRhythm();
         int color = turtle.getColor();
         genChordProgression();
@@ -407,17 +415,24 @@ public class ScoreGenerator
                             r = 0;
                         }
 
-                        if(beat % 64 == 0)
+                        if(beat % chordInterval == 0 && rhythm.length <= 4)
                         {
                             c = c % chords.length;
                             writeChord(buffer, chords[c], rhythm[r]);
                             ++c;
                         }
                         
+                        else if(beat % chordInterval == 0)
+                        {
+                            buffer.append(" V1 Rh V2 Rh V0");
+                            buffer = drawMarkov(buffer, true, order, rhythm[r]);
+                        }
+                        
                         else
                         {
                             buffer = drawMarkov(buffer, true, order, rhythm[r]);
                         }
+                        
                         ++r;
                     }
                     break;
@@ -437,12 +452,28 @@ public class ScoreGenerator
                         if (beat % 128 == 0 && r != 0)
                         {
                             buffer.append(" |");
-                            System.out.println("---New Rhythm---\r\n");
                             rhythm = rhythmGen.genRhythm();
                             r = 0;
                         }
+                        
+                        if(beat % chordInterval == 0 && rhythm.length <= 4)
+                        {
+                            c = c % chords.length;
+                            writeChord(buffer, chords[c], rhythm[r]);
+                            ++c;
+                        }
+                        
+                        else if(beat % 64 == 0)
+                        {
+                            buffer.append(" V1 Rh V2 Rh V0");
+                            buffer = drawMarkov(buffer, true, order, rhythm[r]);
+                        }
+                        
+                        else
+                        {
+                            buffer = drawMarkov(buffer, true, order, rhythm[r]);
+                        }
 
-                        buffer = drawMarkov(buffer, false, order, rhythm[r]);
                         ++r;
                     }
                     break;
@@ -862,8 +893,6 @@ public class ScoreGenerator
     {
         int[] chord = score.getChord(chordDegree+1);
         int note1 = chord[0];
-        int note2 = chord[1];
-        int note3 = chord[2];
         int pitch1 = turtle.getY();
         int pitch2 = pitch1;
         int pitch3 = pitch2;
@@ -1033,8 +1062,19 @@ public class ScoreGenerator
         }
 
         pitch1 = score.findClosestPitch(note1, pitch1, lowerBound, upperBound);
-        pitch2 = score.findClosestPitch(note2, pitch2, lowerBound, upperBound);
-        pitch3 = score.findClosestPitch(note3, pitch3, lowerBound, upperBound);
+        
+        if(pitch1 + 7 <= upperBound)
+        {
+            pitch2 = pitch1 + 4;
+            pitch3 = pitch2 + 3;
+        }
+        
+        else
+        {
+            pitch1 -= 12;
+            pitch2 = pitch1 + 4;
+            pitch3 = pitch2 + 3;
+        }
         
         if(pitch1 > pitch2 && pitch1 > pitch3)
         {
